@@ -2,17 +2,17 @@
  * Loaded font family names — must match useFonts keys in app/_layout.tsx.
  */
 export const fonts = {
-  nunito: {
-    regular: "Nunito_400Regular",
-    medium: "Nunito_500Medium",
-    semibold: "Nunito_600SemiBold",
-    bold: "Nunito_700Bold",
+  english: {
+    regular: "NotoSans_400Regular",
+    medium: "NotoSans_500Medium",
+    semibold: "NotoSans_600SemiBold",
+    bold: "NotoSans_700Bold",
   },
   urdu: {
-    regular: "NotoNastaliqUrdu_400Regular",
-    medium: "NotoNastaliqUrdu_500Medium",
-    semibold: "NotoNastaliqUrdu_600SemiBold",
-    bold: "NotoNastaliqUrdu_700Bold",
+    regular: "NotoNaskhArabic_400Regular",
+    medium: "NotoNaskhArabic_500Medium",
+    semibold: "NotoNaskhArabic_600SemiBold",
+    bold: "NotoNaskhArabic_700Bold",
   },
 } as const;
 

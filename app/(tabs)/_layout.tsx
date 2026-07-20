@@ -12,7 +12,7 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
         headerStyle: { backgroundColor: palette.background },
         headerTintColor: palette.cream,
-        headerTitleStyle: { fontFamily: fonts.nunito.semibold },
+        headerTitleStyle: { fontFamily: fonts.english.semibold },
         tabBarActiveTintColor: Colors.dark.tabIconSelected,
         tabBarInactiveTintColor: Colors.dark.tabIconDefault,
         tabBarStyle: {
@@ -20,7 +20,7 @@ export default function TabLayout() {
           borderTopColor: Colors.dark.border,
         },
         tabBarLabelStyle: {
-          fontFamily: fonts.nunito.medium,
+          fontFamily: fonts.english.medium,
           fontSize: 12,
         },
       }}

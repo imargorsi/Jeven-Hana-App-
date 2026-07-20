@@ -19,7 +19,7 @@ export type TTextTone = "cream" | "primary" | "muted" | "success" | "background"
 export interface ITextProps extends RNTextProps {
   variant?: TTextVariant;
   tone?: TTextTone;
-  /** Use Noto Nastaliq for Urdu / Nastaliq script snippets. */
+  /** Use Noto Naskh Arabic for Urdu / RTL script snippets. */
   isUrdu?: boolean;
   weight?: TFontWeight;
   className?: string;
@@ -59,7 +59,7 @@ const toneClassName: Record<TTextTone, string> = {
 };
 
 function resolveFontFamily(isUrdu: boolean, weight: TFontWeight): string {
-  return isUrdu ? fonts.urdu[weight] : fonts.nunito[weight];
+  return isUrdu ? fonts.urdu[weight] : fonts.english[weight];
 }
 
 export function Text({
@@ -79,7 +79,7 @@ export function Text({
       className={cn(
         variantClassName[variant],
         toneClassName[tone],
-        isUrdu && "text-right leading-loose",
+        isUrdu && "text-right leading-relaxed",
         className,
       )}
       style={[

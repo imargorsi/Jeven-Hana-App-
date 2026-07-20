@@ -18,7 +18,7 @@ export default function HomeScreen() {
             خوش آمدید
           </Text>
           <Text variant="body" tone="muted">
-            Design tokens, Nunito, and Noto Nastaliq — use Text, Button, Chip,
+            Design tokens, Noto Sans, and Noto Naskh Arabic — use Text, Button, Chip,
             and Card everywhere.
           </Text>
         </View>

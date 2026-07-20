@@ -1,15 +1,15 @@
 import {
-  NotoNastaliqUrdu_400Regular,
-  NotoNastaliqUrdu_500Medium,
-  NotoNastaliqUrdu_600SemiBold,
-  NotoNastaliqUrdu_700Bold,
-} from "@expo-google-fonts/noto-nastaliq-urdu";
+  NotoNaskhArabic_400Regular,
+  NotoNaskhArabic_500Medium,
+  NotoNaskhArabic_600SemiBold,
+  NotoNaskhArabic_700Bold,
+} from "@expo-google-fonts/noto-naskh-arabic";
 import {
-  Nunito_400Regular,
-  Nunito_500Medium,
-  Nunito_600SemiBold,
-  Nunito_700Bold,
-} from "@expo-google-fonts/nunito";
+  NotoSans_400Regular,
+  NotoSans_500Medium,
+  NotoSans_600SemiBold,
+  NotoSans_700Bold,
+} from "@expo-google-fonts/noto-sans";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -28,21 +28,21 @@ export {
 } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  initialRouteName: "index",
 };
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Nunito_400Regular,
-    Nunito_500Medium,
-    Nunito_600SemiBold,
-    Nunito_700Bold,
-    NotoNastaliqUrdu_400Regular,
-    NotoNastaliqUrdu_500Medium,
-    NotoNastaliqUrdu_600SemiBold,
-    NotoNastaliqUrdu_700Bold,
+    NotoSans_400Regular,
+    NotoSans_500Medium,
+    NotoSans_600SemiBold,
+    NotoSans_700Bold,
+    NotoNaskhArabic_400Regular,
+    NotoNaskhArabic_500Medium,
+    NotoNaskhArabic_600SemiBold,
+    NotoNaskhArabic_700Bold,
   });
 
   useEffect(() => {
@@ -66,10 +66,13 @@ export default function RootLayout() {
         screenOptions={{
           headerStyle: { backgroundColor: palette.background },
           headerTintColor: palette.cream,
-          headerTitleStyle: { fontFamily: fonts.nunito.semibold },
+          headerTitleStyle: { fontFamily: fonts.english.semibold },
           contentStyle: { backgroundColor: palette.background },
         }}
       >
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
