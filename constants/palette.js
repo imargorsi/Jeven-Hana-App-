@@ -1,0 +1,14 @@
+/**
+ * Single source of truth for brand hex values.
+ * Imported by `constants/Colors.ts` and `tailwind.config.js`.
+ * Do not duplicate these hex codes elsewhere in app UI code.
+ */
+const palette = {
+  background: "#0D1B3D",
+  surface: "#13234F",
+  primary: "#F1C40F",
+  cream: "#F8F6F2",
+  success: "#16A344",
+};
+
+module.exports = { palette };

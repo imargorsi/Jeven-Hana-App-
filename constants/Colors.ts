@@ -1,19 +1,34 @@
-const tintColorLight = "#2f95dc";
-const tintColorDark = "#fff";
+import { palette as paletteValues } from "@/constants/palette";
+import { withAlpha } from "@/lib/color.utils";
 
-export default {
+/**
+ * Jevan Hana design tokens — use Tailwind classes in UI;
+ * use `palette` only for navigation, StatusBar, icons, and similar APIs.
+ */
+export const palette = paletteValues;
+
+export type TPaletteColor = keyof typeof palette;
+
+/** Navigation / Expo Router theme bridge (app is dark-first). */
+const Colors = {
   light: {
-    text: "#000",
-    background: "#fff",
-    tint: tintColorLight,
-    tabIconDefault: "#ccc",
-    tabIconSelected: tintColorLight,
+    text: palette.cream,
+    background: palette.background,
+    tint: palette.primary,
+    tabIconDefault: withAlpha(palette.cream, 0.45),
+    tabIconSelected: palette.primary,
+    card: palette.surface,
+    border: withAlpha(palette.cream, 0.12),
   },
   dark: {
-    text: "#fff",
-    background: "#000",
-    tint: tintColorDark,
-    tabIconDefault: "#ccc",
-    tabIconSelected: tintColorDark,
+    text: palette.cream,
+    background: palette.background,
+    tint: palette.primary,
+    tabIconDefault: withAlpha(palette.cream, 0.45),
+    tabIconSelected: palette.primary,
+    card: palette.surface,
+    border: withAlpha(palette.cream, 0.12),
   },
 };
+
+export default Colors;

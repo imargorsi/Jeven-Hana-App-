@@ -1,12 +1,26 @@
+import {
+  NotoNastaliqUrdu_400Regular,
+  NotoNastaliqUrdu_500Medium,
+  NotoNastaliqUrdu_600SemiBold,
+  NotoNastaliqUrdu_700Bold,
+} from "@expo-google-fonts/noto-nastaliq-urdu";
+import {
+  Nunito_400Regular,
+  Nunito_500Medium,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+} from "@expo-google-fonts/nunito";
 import { useFonts } from "expo-font";
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
 import "../global.css";
 
-import { useColorScheme } from "@/components/useColorScheme";
+import { palette } from "@/constants/Colors";
+import { fonts } from "@/constants/Fonts";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -14,19 +28,23 @@ export {
 } from "expo-router";
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(tabs)",
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Nunito_400Regular,
+    Nunito_500Medium,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    NotoNastaliqUrdu_400Regular,
+    NotoNastaliqUrdu_500Medium,
+    NotoNastaliqUrdu_600SemiBold,
+    NotoNastaliqUrdu_700Bold,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -41,18 +59,20 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
+    <>
+      <StatusBar style="light" />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: palette.background },
+          headerTintColor: palette.cream,
+          headerTitleStyle: { fontFamily: fonts.nunito.semibold },
+          contentStyle: { backgroundColor: palette.background },
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
-    </ThemeProvider>
+    </>
   );
 }

@@ -1,35 +1,59 @@
-import { StyleSheet } from "react-native";
+import { ScrollView, View } from "react-native";
 
-import EditScreenInfo from "@/components/EditScreenInfo";
-import { Text, View } from "@/components/Themed";
+import { Button, Card, Chip, Screen, Text } from "@/components/ui";
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <Screen>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="gap-6 px-5 pb-10 pt-4"
+      >
+        <View className="gap-2">
+          <Text variant="caption" tone="primary" weight="semibold">
+            JEVAN HANA
+          </Text>
+          <Text variant="display">Theme preview</Text>
+          <Text isUrdu variant="h3" tone="primary">
+            خوش آمدید
+          </Text>
+          <Text variant="body" tone="muted">
+            Design tokens, Nunito, and Noto Nastaliq — use Text, Button, Chip,
+            and Card everywhere.
+          </Text>
+        </View>
+
+        <Card className="gap-3">
+          <Text variant="h3">Typography</Text>
+          <Text variant="h1">Heading One</Text>
+          <Text variant="h2">Heading Two</Text>
+          <Text variant="body">Body copy for English content.</Text>
+          <Text isUrdu variant="body">
+            اپنا محلہ، اپنی پہچان
+          </Text>
+          <Text variant="caption" tone="muted">
+            Caption / helper text
+          </Text>
+        </Card>
+
+        <View className="gap-3">
+          <Text variant="h3">Buttons</Text>
+          <Button>Primary action</Button>
+          <Button variant="secondary">Secondary action</Button>
+          <Button variant="ghost">Ghost action</Button>
+          <Button variant="success">Success action</Button>
+        </View>
+
+        <View className="gap-3">
+          <Text variant="h3">Chips</Text>
+          <View className="flex-row flex-wrap gap-2">
+            <Chip isActive>All</Chip>
+            <Chip>Cafes</Chip>
+            <Chip>Restaurants</Chip>
+            <Chip>Shops</Chip>
+          </View>
+        </View>
+      </ScrollView>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});
