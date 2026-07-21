@@ -7,7 +7,7 @@ import { BusinessCard } from "@/components/BusinessCard";
 import { CategoryChip } from "@/components/CategoryChip";
 import { EventCard } from "@/components/EventCard";
 import { PlaceCard } from "@/components/PlaceCard";
-import { EmptyState, LoadingBlock, Screen, Text } from "@/components/ui";
+import { EmptyState, LoadingBlock, Screen } from "@/components/ui";
 import { getBestOfById } from "@/lib/services/best-of.service";
 import { getBusinessById } from "@/lib/services/businesses.service";
 import { getEventById } from "@/lib/services/events.service";
@@ -54,11 +54,8 @@ export default function SavedScreen() {
     .filter((row) => row.data != null);
 
   return (
-    <Screen withSafeArea={false}>
+    <Screen title="Saved" subtitle="محفوظ شدہ" showBack>
       <View className="px-4 pb-2">
-        <Text variant="bodySmall" tone="muted" className="mb-3">
-          Your saved picks · محفوظ شدہ
-        </Text>
         <FlatList
           horizontal
           data={[

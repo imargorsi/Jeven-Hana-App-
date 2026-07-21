@@ -58,7 +58,7 @@ export default function NotificationsScreen() {
 
   if (query.isLoading) {
     return (
-      <Screen withSafeArea={false}>
+      <Screen title="Notifications" showBack>
         <LoadingBlock />
       </Screen>
     );
@@ -66,18 +66,17 @@ export default function NotificationsScreen() {
 
   if (query.isError) {
     return (
-      <Screen withSafeArea={false} className="px-4">
+      <Screen title="Notifications" showBack>
         <ErrorState onRetry={() => void query.refetch()} />
       </Screen>
     );
   }
 
   return (
-    <Screen withSafeArea={false}>
-      <View className="flex-row items-center justify-between px-4 pb-2">
-        <Text variant="bodySmall" tone="muted">
-          {grouped.reduce((sum, g) => sum + g.unreadCount, 0)} unread
-        </Text>
+    <Screen
+      title="Notifications"
+      showBack
+      headerRight={
         <Button
           size="sm"
           variant="ghost"
@@ -86,6 +85,12 @@ export default function NotificationsScreen() {
         >
           Mark all read
         </Button>
+      }
+    >
+      <View className="px-4 pb-2">
+        <Text variant="bodySmall" tone="muted">
+          {grouped.reduce((sum, g) => sum + g.unreadCount, 0)} unread
+        </Text>
       </View>
 
       <FlatList

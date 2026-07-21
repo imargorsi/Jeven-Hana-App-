@@ -85,8 +85,12 @@ export default function SearchScreen() {
   const showIdle = debounced.length === 0;
 
   return (
-    <Screen withSafeArea={false}>
-      <View className="px-4 pt-2">
+    <Screen
+      title="Search"
+      showBack
+      hideHeaderSearch
+    >
+      <View className="px-4 pt-1">
         <SearchInput
           value={input}
           onChangeText={setInput}

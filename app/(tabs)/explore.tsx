@@ -9,7 +9,6 @@ import { CategoryChip } from "@/components/CategoryChip";
 import { PlaceCard } from "@/components/PlaceCard";
 import {
   Screen,
-  SearchInput,
   SectionHeader,
   Text,
   LoadingBlock,
@@ -44,10 +43,7 @@ export default function ExploreScreen() {
 
   if (query.isLoading) {
     return (
-      <Screen className="px-4">
-        <Text variant="h2" className="mb-4">
-          Explore
-        </Text>
+      <Screen title="Explore" subtitle="دریافت کریں">
         <LoadingBlock />
       </Screen>
     );
@@ -55,7 +51,7 @@ export default function ExploreScreen() {
 
   if (query.isError || !query.data) {
     return (
-      <Screen className="px-4">
+      <Screen title="Explore" subtitle="دریافت کریں">
         <ErrorState onRetry={() => void query.refetch()} />
       </Screen>
     );
@@ -64,26 +60,12 @@ export default function ExploreScreen() {
   const { categories, businesses, places, bestOf, topRated } = query.data;
 
   return (
-    <Screen>
+    <Screen title="Explore" subtitle="دریافت کریں">
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-4 pb-10"
         showsVerticalScrollIndicator={false}
       >
-        <Text variant="h2" className="mb-1">
-          Explore
-        </Text>
-        <Text variant="bodySmall" tone="muted" className="mb-4">
-          Discover Jevan Hana · دریافت کریں
-        </Text>
-
-        <SearchInput
-          value=""
-          onChangeText={() => undefined}
-          onPress={() => router.push(href("/search"))}
-          className="mb-4"
-        />
-
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}

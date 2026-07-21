@@ -13,3 +13,5 @@ export { SaveButton, ShareButton } from "@/components/ui/SaveButton";
 export { AdminBadge, PinnedBadge, RankBadge } from "@/components/ui/Badges";
 export { SearchInput } from "@/components/ui/SearchInput";
 export { AppHeader } from "@/components/ui/AppHeader";
+export { AppTabBar } from "@/components/ui/AppTabBar";
+export { PageHeading } from "@/components/ui/PageHeading";

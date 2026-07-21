@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/expo";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -11,11 +10,9 @@ import { CommunityPostCard } from "@/components/CommunityPostCard";
 import { EventCard } from "@/components/EventCard";
 import { PlaceCard } from "@/components/PlaceCard";
 import {
-  AppHeader,
   ErrorState,
   LoadingBlock,
   Screen,
-  SearchInput,
   SectionHeader,
   Text,
 } from "@/components/ui";
@@ -24,34 +21,28 @@ import { getBestOfListings } from "@/lib/services/best-of.service";
 import { getBusinesses } from "@/lib/services/businesses.service";
 import { getCommunityPosts } from "@/lib/services/community.service";
 import { getEvents } from "@/lib/services/events.service";
-import { getNotifications } from "@/lib/services/notifications.service";
 import { getPlaces } from "@/lib/services/places.service";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { user } = useUser();
-  const firstName = user?.firstName ?? "neighbour";
 
   const homeQuery = useQuery({
     queryKey: ["home-feed"],
     queryFn: async () => {
-      const [businesses, places, bestOf, posts, events, notifs] =
-        await Promise.all([
-          getBusinesses({ featuredOnly: true, limit: 6 }),
-          getPlaces({ nearbyOnly: true, limit: 6 }),
-          getBestOfListings({ limit: 6 }),
-          getCommunityPosts({ limit: 4 }),
-          getEvents({ upcomingOnly: true, limit: 4 }),
-          getNotifications(),
-        ]);
-      return { businesses, places, bestOf, posts, events, notifs };
+      const [businesses, places, bestOf, posts, events] = await Promise.all([
+        getBusinesses({ featuredOnly: true, limit: 6 }),
+        getPlaces({ nearbyOnly: true, limit: 6 }),
+        getBestOfListings({ limit: 6 }),
+        getCommunityPosts({ limit: 4 }),
+        getEvents({ upcomingOnly: true, limit: 4 }),
+      ]);
+      return { businesses, places, bestOf, posts, events };
     },
   });
 
   if (homeQuery.isLoading) {
     return (
-      <Screen className="px-4">
-        <AppHeader greeting={`Assalamualaikum, ${firstName}`} />
+      <Screen title="Home" subtitle="جیون حنا">
         <LoadingBlock />
       </Screen>
     );
@@ -59,36 +50,21 @@ export default function HomeScreen() {
 
   if (homeQuery.isError || !homeQuery.data) {
     return (
-      <Screen className="px-4">
-        <AppHeader greeting={`Assalamualaikum, ${firstName}`} />
+      <Screen title="Home" subtitle="جیون حنا">
         <ErrorState onRetry={() => void homeQuery.refetch()} />
       </Screen>
     );
   }
 
-  const { businesses, places, bestOf, posts, events, notifs } = homeQuery.data;
-  const unread = notifs.filter((n) => !n.isRead).length;
+  const { businesses, places, bestOf, posts, events } = homeQuery.data;
 
   return (
-    <Screen>
+    <Screen title="Home" subtitle="جیون حنا">
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-4 pb-10"
         showsVerticalScrollIndicator={false}
       >
-        <AppHeader
-          greeting={`Assalamualaikum, ${firstName}`}
-          unreadCount={unread}
-        />
-
-        <SearchInput
-          value=""
-          onChangeText={() => undefined}
-          placeholder="Search businesses, places, events…"
-          onPress={() => router.push(href("/search"))}
-          className="mb-5"
-        />
-
         <Pressable
           onPress={() => router.push(href("/best-of"))}
           className="mb-6 overflow-hidden rounded-card border border-primary/30"

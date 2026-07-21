@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { FlatList, ScrollView, View } from "react-native";
+import { FlatList, ScrollView } from "react-native";
 
 import { CategoryChip } from "@/components/CategoryChip";
 import { EventCard } from "@/components/EventCard";
@@ -9,7 +9,6 @@ import {
   ErrorState,
   LoadingBlock,
   Screen,
-  Text,
 } from "@/components/ui";
 import {
   getEventCategories,
@@ -60,14 +59,7 @@ export default function EventsTabScreen() {
   }, []);
 
   return (
-    <Screen>
-      <View className="px-4 pb-2">
-        <Text variant="h2">Events</Text>
-        <Text variant="caption" tone="muted" isUrdu>
-          تقریبات
-        </Text>
-      </View>
-
+    <Screen title="Events" subtitle="تقریبات">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

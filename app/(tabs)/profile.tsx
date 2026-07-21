@@ -43,15 +43,8 @@ export default function ProfileTabScreen() {
     "Neighbour";
 
   return (
-    <Screen>
+    <Screen title="Profile" subtitle="پروفائل">
       <ScrollView contentContainerClassName="px-4 pb-10">
-        <Text variant="h2" className="mb-1">
-          Profile
-        </Text>
-        <Text variant="caption" tone="muted" isUrdu className="mb-6">
-          پروفائل
-        </Text>
-
         <View className="mb-6 items-center rounded-card border border-cream/10 bg-surface p-6">
           <Avatar
             uri={user?.imageUrl}

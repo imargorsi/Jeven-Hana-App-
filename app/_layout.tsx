@@ -80,9 +80,9 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="search" options={{ title: "Search" }} />
-        <Stack.Screen name="notifications" options={{ title: "Notifications" }} />
-        <Stack.Screen name="saved" options={{ title: "Saved" }} />
+        <Stack.Screen name="search" options={{ headerShown: false }} />
+        <Stack.Screen name="notifications" options={{ headerShown: false }} />
+        <Stack.Screen name="saved" options={{ headerShown: false }} />
         <Stack.Screen name="businesses" options={{ headerShown: false }} />
         <Stack.Screen name="places" options={{ headerShown: false }} />
         <Stack.Screen name="best-of" options={{ headerShown: false }} />

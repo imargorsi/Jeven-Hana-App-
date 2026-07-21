@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { FlatList, Pressable, RefreshControl, View } from "react-native";
+import { FlatList, Pressable, RefreshControl } from "react-native";
 
 import { CategoryChip } from "@/components/CategoryChip";
 import { CommunityPostCard } from "@/components/CommunityPostCard";
@@ -33,14 +33,10 @@ export default function CommunityTabScreen() {
   );
 
   return (
-    <Screen>
-      <View className="flex-row items-center justify-between px-4 pb-2 pt-1">
-        <View>
-          <Text variant="h2">Community</Text>
-          <Text variant="caption" tone="muted" isUrdu>
-            کمیونٹی فیڈ
-          </Text>
-        </View>
+    <Screen
+      title="Community"
+      subtitle="کمیونٹی فیڈ"
+      headerRight={
         <Pressable
           onPress={() => router.push(href("/community/create"))}
           className="rounded-button bg-primary px-4 py-2"
@@ -49,8 +45,8 @@ export default function CommunityTabScreen() {
             Create
           </Text>
         </Pressable>
-      </View>
-
+      }
+    >
       <FlatList
         horizontal
         data={FILTERS}
