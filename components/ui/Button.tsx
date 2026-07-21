@@ -24,9 +24,9 @@ export interface IButtonProps extends Omit<PressableProps, "children"> {
 }
 
 const sizeClassName: Record<TButtonSize, string> = {
-  sm: "min-h-10 px-4",
-  md: "min-h-12 px-5",
-  lg: "min-h-14 px-6",
+  sm: "min-h-11 px-4 py-2.5",
+  md: "min-h-12 px-5 py-3",
+  lg: "min-h-14 px-6 py-3.5",
 };
 
 const variantClassName: Record<TButtonVariant, string> = {
@@ -71,7 +71,7 @@ export function Button({
       accessibilityRole="button"
       disabled={isInactive}
       className={cn(
-        "items-center justify-center rounded-button active:opacity-90",
+        "items-center justify-center overflow-visible rounded-button active:opacity-90",
         sizeClassName[size],
         variantClassName[variant],
         isFullWidth && "w-full",
@@ -89,6 +89,7 @@ export function Button({
           variant="button"
           tone={textTone[variant]}
           className={textClassName}
+          style={{ includeFontPadding: true }}
         >
           {children}
         </Text>
