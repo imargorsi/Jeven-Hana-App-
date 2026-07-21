@@ -9,6 +9,8 @@ const palette = {
   primary: "#F1C40F",
   cream: "#F8F6F2",
   success: "#16A344",
+  error: "#DC2626",
+  muted: "#94A3B8",
 };
 
 module.exports = { palette };

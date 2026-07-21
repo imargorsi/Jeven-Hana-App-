@@ -43,3 +43,9 @@ yarn-error.*
 # local agent / session docs
 AGENTS.md
 doc/
+
+# xMind reference leftovers (removed from disk; keep ignored if re-cloned)
+/Backend/
+/Mobile/
+README 2.md
+zero-to-deploy.md

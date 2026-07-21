@@ -16,6 +16,8 @@ module.exports = {
         primary: palette.primary,
         cream: palette.cream,
         success: palette.success,
+        error: palette.error,
+        muted: palette.muted,
       },
       fontFamily: {
         english: ["NotoSans_400Regular"],

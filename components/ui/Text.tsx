@@ -14,7 +14,13 @@ export type TTextVariant =
   | "label"
   | "button";
 
-export type TTextTone = "cream" | "primary" | "muted" | "success" | "background";
+export type TTextTone =
+  | "cream"
+  | "primary"
+  | "muted"
+  | "success"
+  | "background"
+  | "error";
 
 export interface ITextProps extends RNTextProps {
   variant?: TTextVariant;
@@ -56,6 +62,7 @@ const toneClassName: Record<TTextTone, string> = {
   muted: "text-cream/60",
   success: "text-success",
   background: "text-background",
+  error: "text-error",
 };
 
 function resolveFontFamily(isUrdu: boolean, weight: TFontWeight): string {

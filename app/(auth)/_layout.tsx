@@ -1,14 +1,42 @@
-import { Stack } from "expo-router";
+import { useAuth } from "@clerk/expo";
+import { Redirect, Stack } from "expo-router";
+import { ActivityIndicator, View } from "react-native";
 
 import { palette } from "@/constants/Colors";
+import { isClerkConfigured } from "@/features/auth/auth.config";
+
+function ClerkAuthGuard({ children }: { children: React.ReactNode }) {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator color={palette.primary} />
+      </View>
+    );
+  }
+
+  if (isSignedIn) {
+    return <Redirect href="/(tabs)" />;
+  }
+
+  return children;
+}
 
 export default function AuthLayout() {
-  return (
+  const stack = (
     <Stack
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: palette.background },
+        animation: "slide_from_right",
       }}
     />
   );
+
+  if (!isClerkConfigured) {
+    return stack;
+  }
+
+  return <ClerkAuthGuard>{stack}</ClerkAuthGuard>;
 }

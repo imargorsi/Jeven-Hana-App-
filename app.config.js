@@ -1,4 +1,12 @@
+const { load } = require("@expo/env");
+
 const { palette } = require("./constants/palette");
+
+load(process.cwd());
+
+const clerkPublishableKey =
+  process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 /** @type {import('expo/config').ExpoConfig} */
 module.exports = {
@@ -37,8 +45,13 @@ module.exports = {
       },
     ],
     "expo-font",
+    "expo-secure-store",
+    "expo-image",
   ],
   experiments: {
     typedRoutes: true,
+  },
+  extra: {
+    clerkPublishableKey,
   },
 };

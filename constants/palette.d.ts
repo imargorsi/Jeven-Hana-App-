@@ -4,4 +4,6 @@ export declare const palette: {
   primary: string;
   cream: string;
   success: string;
+  error: string;
+  muted: string;
 };

@@ -1,0 +1,130 @@
+import { IMG } from "@/data/mocks/mock.utils";
+import type { ICommunityPost, IPostComment } from "@/types/community.types";
+import type { IAppUser } from "@/types/user.types";
+
+export const mockUsers: IAppUser[] = [
+  {
+    id: "user-admin",
+    username: "jevanhana_admin",
+    firstName: "Jevan",
+    lastName: "Admin",
+    fullName: "Jevan Hana Admin",
+    avatarUrl: IMG.avatar,
+    isAdmin: true,
+    createdAt: "2025-01-01T00:00:00Z",
+  },
+  {
+    id: "user-1",
+    username: "sara_jh",
+    firstName: "Sara",
+    lastName: "Ahmed",
+    fullName: "Sara Ahmed",
+    avatarUrl: IMG.avatar,
+    createdAt: "2025-03-01T00:00:00Z",
+  },
+  {
+    id: "user-2",
+    username: "bilal_gt",
+    firstName: "Bilal",
+    lastName: "Khan",
+    fullName: "Bilal Khan",
+    createdAt: "2025-04-12T00:00:00Z",
+  },
+];
+
+export let communityPosts: ICommunityPost[] = [
+  {
+    id: "post-1",
+    content:
+      "📢 Water supply maintenance tomorrow 10am–2pm in Block A. Please store water. — Jevan Hana Admin",
+    imageUrls: [],
+    category: "announcement",
+    createdAt: "2026-07-20T08:00:00Z",
+    user: mockUsers[0],
+    likeCount: 42,
+    commentCount: 8,
+    isPinned: true,
+    isAnnouncement: true,
+    likedByIds: [],
+  },
+  {
+    id: "post-2",
+    content: "Lost golden retriever near Hana Family Park. Please DM if seen. Collar has a blue tag.",
+    imageUrls: [IMG.park],
+    category: "lost-found",
+    createdAt: "2026-07-19T16:30:00Z",
+    user: mockUsers[1],
+    likeCount: 18,
+    commentCount: 5,
+    likedByIds: [],
+  },
+  {
+    id: "post-3",
+    content: "Strongly recommend Garden Town Grill for family dinner — great karahi and parking nearby.",
+    imageUrls: [IMG.restaurant],
+    category: "recommendation",
+    createdAt: "2026-07-18T19:00:00Z",
+    user: mockUsers[2],
+    likeCount: 31,
+    commentCount: 4,
+    likedByIds: [],
+  },
+  {
+    id: "post-4",
+    content: "Local update: new street lights installed on Lane 3. Looking cleaner at night!",
+    imageUrls: [],
+    category: "local-update",
+    createdAt: "2026-07-17T12:00:00Z",
+    user: mockUsers[1],
+    likeCount: 22,
+    commentCount: 2,
+    likedByIds: [],
+  },
+  {
+    id: "post-5",
+    content: "Friday bazaar this week will include a book stall for kids. See you at the community hall.",
+    imageUrls: [IMG.event],
+    category: "news",
+    createdAt: "2026-07-16T09:00:00Z",
+    user: mockUsers[0],
+    likeCount: 55,
+    commentCount: 11,
+    isAnnouncement: true,
+    likedByIds: [],
+  },
+];
+
+export let postComments: IPostComment[] = [
+  {
+    id: "cmt-1",
+    postId: "post-1",
+    content: "Thanks for the heads up!",
+    createdAt: "2026-07-20T09:00:00Z",
+    user: mockUsers[1],
+    likeCount: 3,
+  },
+  {
+    id: "cmt-2",
+    postId: "post-1",
+    content: "Block B affected too?",
+    createdAt: "2026-07-20T09:15:00Z",
+    user: mockUsers[2],
+    likeCount: 1,
+  },
+  {
+    id: "cmt-3",
+    postId: "post-2",
+    content: "Sharing with the neighbourhood WhatsApp group.",
+    createdAt: "2026-07-19T17:00:00Z",
+    user: mockUsers[2],
+    likeCount: 5,
+  },
+];
+
+export function setCommunityPosts(next: ICommunityPost[]) {
+  communityPosts = next;
+}
+
+export function setPostComments(next: IPostComment[]) {
+  postComments = next;
+}

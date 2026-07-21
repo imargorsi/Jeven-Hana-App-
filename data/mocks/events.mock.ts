@@ -1,0 +1,88 @@
+import { IMG } from "@/data/mocks/mock.utils";
+import type { IEvent, IEventCategory } from "@/types/event.types";
+
+const jevanLoc = {
+  lat: 31.5032,
+  lng: 74.3489,
+  address: "Jevan Hana Community Hall, Garden Town",
+};
+
+export const eventCategories: IEventCategory[] = [
+  { slug: "community", name: "Community", nameUrdu: "کمیونٹی" },
+  { slug: "religious", name: "Religious", nameUrdu: "مذہبی" },
+  { slug: "sports", name: "Sports", nameUrdu: "کھیل" },
+  { slug: "family", name: "Family", nameUrdu: "خاندانی" },
+  { slug: "education", name: "Education", nameUrdu: "تعلیم" },
+  { slug: "health", name: "Health", nameUrdu: "صحت" },
+  { slug: "local-market", name: "Local Market", nameUrdu: "لوکل مارکیٹ" },
+  { slug: "social-welfare", name: "Social Welfare", nameUrdu: "فلاحی" },
+];
+
+export const events: IEvent[] = [
+  {
+    id: "evt-1",
+    title: "Friday Bazaar",
+    titleUrdu: "جمعہ بازار",
+    description: "Weekly market with produce, clothes, and kids stalls.",
+    categorySlug: "local-market",
+    imageUrls: [IMG.event],
+    startsAt: "2026-07-24T09:00:00Z",
+    endsAt: "2026-07-24T17:00:00Z",
+    location: jevanLoc,
+    organizerName: "Jevan Hana Welfare",
+    organizerContact: "+923001112233",
+    isFeatured: true,
+    interestedCount: 86,
+  },
+  {
+    id: "evt-2",
+    title: "Community Cricket Match",
+    titleUrdu: "کرکٹ میچ",
+    description: "Residents vs. Garden Town XI — bring the family.",
+    categorySlug: "sports",
+    imageUrls: [IMG.park],
+    startsAt: "2026-07-26T15:00:00Z",
+    endsAt: "2026-07-26T19:00:00Z",
+    location: { ...jevanLoc, address: "Hana Family Park" },
+    organizerName: "JH Sports Club",
+    isFeatured: true,
+    interestedCount: 64,
+  },
+  {
+    id: "evt-3",
+    title: "Free Health Camp",
+    description: "BP, sugar, and basic checkup for seniors.",
+    categorySlug: "health",
+    imageUrls: [IMG.community],
+    startsAt: "2026-07-28T10:00:00Z",
+    endsAt: "2026-07-28T14:00:00Z",
+    location: { ...jevanLoc, address: "Garden Town Clinic" },
+    organizerName: "CarePlus Pharmacy",
+    organizerContact: "+923009990011",
+    interestedCount: 41,
+  },
+  {
+    id: "evt-4",
+    title: "Kids Story Hour",
+    description: "Urdu and English storytelling for ages 5–10.",
+    categorySlug: "family",
+    imageUrls: [IMG.event],
+    startsAt: "2026-07-30T16:00:00Z",
+    endsAt: "2026-07-30T17:30:00Z",
+    location: jevanLoc,
+    organizerName: "Little Stars School",
+    interestedCount: 28,
+  },
+  {
+    id: "evt-5",
+    title: "Ramadan Iftar Drive (Past)",
+    description: "Community iftar for neighbours in need.",
+    categorySlug: "religious",
+    imageUrls: [IMG.mosque],
+    startsAt: "2026-03-15T18:00:00Z",
+    endsAt: "2026-03-15T20:00:00Z",
+    location: { ...jevanLoc, address: "Masjid-e-Noor" },
+    organizerName: "Jevan Hana Admin",
+    interestedCount: 120,
+  },
+];

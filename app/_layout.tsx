@@ -1,3 +1,5 @@
+import { ClerkProvider } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import {
   NotoNaskhArabic_400Regular,
   NotoNaskhArabic_500Medium,
@@ -10,17 +12,20 @@ import {
   NotoSans_600SemiBold,
   NotoSans_700Bold,
 } from "@expo-google-fonts/noto-sans";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 import "../global.css";
 
 import { palette } from "@/constants/Colors";
 import { fonts } from "@/constants/Fonts";
+import { clerkPublishableKey } from "@/features/auth/auth.config";
+import { createQueryClient } from "@/lib/queryClient";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -34,6 +39,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [queryClient] = useState(() => createQueryClient());
   const [loaded, error] = useFonts({
     NotoSans_400Regular,
     NotoSans_500Medium,
@@ -59,8 +65,8 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <>
+  const tree = (
+    <QueryClientProvider client={queryClient}>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -74,8 +80,27 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="search" options={{ title: "Search" }} />
+        <Stack.Screen name="notifications" options={{ title: "Notifications" }} />
+        <Stack.Screen name="saved" options={{ title: "Saved" }} />
+        <Stack.Screen name="businesses" options={{ headerShown: false }} />
+        <Stack.Screen name="places" options={{ headerShown: false }} />
+        <Stack.Screen name="best-of" options={{ headerShown: false }} />
+        <Stack.Screen name="community" options={{ headerShown: false }} />
+        <Stack.Screen name="events" options={{ headerShown: false }} />
+        <Stack.Screen name="profile" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
-    </>
+    </QueryClientProvider>
+  );
+
+  if (!clerkPublishableKey) {
+    return tree;
+  }
+
+  return (
+    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
+      {tree}
+    </ClerkProvider>
   );
 }

@@ -34,6 +34,27 @@ export default defineConfig([
     },
   },
   { files: ["**/*.ts", "**/*.tsx"], rules: { "no-undef": "off" } },
+  {
+    files: ["scripts/**/*.js", "metro.config.js", "app.config.js"],
+    languageOptions: {
+      globals: {
+        __dirname: "readonly",
+        __filename: "readonly",
+        module: "readonly",
+        require: "readonly",
+        exports: "readonly",
+        process: "readonly",
+        console: "readonly",
+      },
+    },
+  },
   eslintConfigPrettier,
-  globalIgnores(["node_modules/**", ".expo/**", "dist/**", "web-build/**"]),
+  globalIgnores([
+    "node_modules/**",
+    ".expo/**",
+    "dist/**",
+    "web-build/**",
+    "Mobile/**",
+    "Backend/**",
+  ]),
 ]);
