@@ -27,10 +27,10 @@ Implemented with **mock data** (no backend yet):
 | Jevan Hana Ka Best | Curated recommendations |
 | Community | Feed with like + share; **no post detail**; admin posts for v1 |
 | Events | Sectioned list (Today → This Month) + Going; **no detail page** |
-| Search | Debounced multi-entity search + recent / trending |
-| Notifications | Grouped list, mark read; event taps → Events tab |
+| Search | Back + field; recent/trending chips; soft filters; shared cards |
+| Notifications | Grouped list, mark read; post → Community, event → Events tab |
 | Saved | Flat list under Profile (`/profile/saved`); `/saved` redirects |
-| Profile | Overview, edit, my posts, saved places, events going, logout |
+| Profile | Edit, my posts, saved places, events going, logout (no settings) |
 
 **Not in scope:** stories, reels, chat, followers, reshares, feed ranking, event detail (v1), i18n translation files (mixed English/Urdu strings inline via `Text` `isUrdu`).
 
@@ -71,10 +71,11 @@ assets/              # Images, fonts
 components/          # Shared cards + UI primitives
 constants/           # palette, Colors, Fonts, tokens
 data/mocks/          # Mock entities (replace with API later)
-features/            # auth, community, onboarding
+features/            # auth, community, events, explore, home, search, …
 lib/                 # queryClient, services, utils
 stores/              # Zustand (app, saved, search)
 types/               # Shared TypeScript entities
+doc/modules/         # Local product notes (gitignored)
 ```
 
 ## Data layer
