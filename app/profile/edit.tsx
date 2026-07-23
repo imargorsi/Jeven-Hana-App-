@@ -1,11 +1,21 @@
 import { useUser } from "@clerk/expo";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
+import { SymbolView } from "expo-symbols";
 import { useState } from "react";
-import { Alert, ScrollView, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 
-import { Button, Screen, TextField } from "@/components/ui";
+import { Button, Screen, Text, TextField } from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
+import { palette } from "@/constants/Colors";
+import { IMG } from "@/data/mocks/mock.utils";
 
 export default function EditProfileScreen() {
   const { user } = useUser();
@@ -14,6 +24,12 @@ export default function EditProfileScreen() {
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [isSaving, setIsSaving] = useState(false);
   const [localImage, setLocalImage] = useState<string | null>(null);
+
+  const displayName = `${firstName} ${lastName}`.trim() || "Neighbour";
+  const avatarUri =
+    localImage ?? (user?.hasImage ? user.imageUrl : IMG.avatar);
+  const username = user?.username ? `@${user.username}` : null;
+  const email = user?.primaryEmailAddress?.emailAddress;
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -50,38 +66,116 @@ export default function EditProfileScreen() {
 
   return (
     <Screen withSafeArea={false}>
-      <ScrollView
-        contentContainerClassName="px-4 pb-10 pt-2"
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View className="mb-6 items-center">
-          <Avatar
-            uri={localImage ?? user?.imageUrl}
-            name={`${firstName} ${lastName}`}
-            size="lg"
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="px-4 pb-10 pt-2"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="mb-7 items-center">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Change photo"
+              onPress={() => void pickImage()}
+              className="relative active:opacity-90"
+            >
+              <View
+                className="rounded-full p-0.5"
+                style={{
+                  borderWidth: 2.5,
+                  borderColor: palette.primary,
+                  backgroundColor: palette.surface,
+                }}
+              >
+                <Avatar uri={avatarUri} name={displayName} size="xl" />
+              </View>
+              <View
+                className="absolute bottom-0.5 right-0.5 h-8 w-8 items-center justify-center rounded-full"
+                style={{
+                  backgroundColor: palette.primary,
+                  borderWidth: 2,
+                  borderColor: palette.background,
+                }}
+              >
+                <SymbolView
+                  name={{
+                    ios: "camera.fill",
+                    android: "photo_camera",
+                    web: "photo_camera",
+                  }}
+                  size={14}
+                  tintColor={palette.background}
+                />
+              </View>
+            </Pressable>
+
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Change photo"
+              onPress={() => void pickImage()}
+              className="mt-3 active:opacity-70"
+            >
+              <Text variant="caption" weight="semibold" tone="primary">
+                Change photo
+              </Text>
+            </Pressable>
+
+            {username ? (
+              <Text
+                variant="bodySmall"
+                weight="semibold"
+                tone="primary"
+                className="mt-2.5"
+              >
+                {username}
+              </Text>
+            ) : null}
+            {email ? (
+              <Text
+                variant="caption"
+                tone="muted"
+                className="mt-0.5 text-center"
+                numberOfLines={1}
+              >
+                {email}
+              </Text>
+            ) : null}
+          </View>
+
+          <TextField
+            label="First name"
+            value={firstName}
+            onChangeText={setFirstName}
+            autoCapitalize="words"
+            autoCorrect={false}
+            returnKeyType="next"
+            containerClassName="mb-4"
           />
-          <Button size="sm" variant="secondary" className="mt-3" onPress={() => void pickImage()}>
-            Change photo
+          <TextField
+            label="Last name"
+            value={lastName}
+            onChangeText={setLastName}
+            autoCapitalize="words"
+            autoCorrect={false}
+            returnKeyType="done"
+            onSubmitEditing={() => void save()}
+            containerClassName="mb-7"
+          />
+
+          <Button
+            isFullWidth
+            size="lg"
+            isLoading={isSaving}
+            onPress={() => void save()}
+          >
+            Save changes
           </Button>
-        </View>
-
-        <TextField
-          label="First name"
-          value={firstName}
-          onChangeText={setFirstName}
-          containerClassName="mb-4"
-        />
-        <TextField
-          label="Last name"
-          value={lastName}
-          onChangeText={setLastName}
-          containerClassName="mb-6"
-        />
-
-        <Button isFullWidth isLoading={isSaving} onPress={() => void save()}>
-          Save changes
-        </Button>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Screen>
   );
 }

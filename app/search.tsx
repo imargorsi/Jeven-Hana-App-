@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { BestOfCard } from "@/components/BestOfCard";
 import { BusinessCard } from "@/components/BusinessCard";
-import { CategoryChip } from "@/components/CategoryChip";
-import { CommunityPostCard } from "@/components/CommunityPostCard";
+import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
 import { EventCard } from "@/components/EventCard";
 import { PlaceCard } from "@/components/PlaceCard";
 import {
@@ -16,6 +15,13 @@ import {
   SearchInput,
   Text,
 } from "@/components/ui";
+import { StackBackButton } from "@/components/ui/StackBackButton";
+import { useCommunityPosts } from "@/features/community/useCommunityPosts.hook";
+import { SearchChipCloud } from "@/features/search/components/SearchChipCloud";
+import {
+  SearchFilterRow,
+  TAB_LABEL,
+} from "@/features/search/components/SearchFilterRow";
 import {
   getSearchSuggestions,
   getTrendingSearches,
@@ -23,15 +29,6 @@ import {
 } from "@/lib/services/search.service";
 import { useSearchStore } from "@/stores/useSearchStore";
 import type { TSearchTab } from "@/types/search.types";
-
-const TABS: { key: TSearchTab; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "businesses", label: "Businesses" },
-  { key: "places", label: "Places" },
-  { key: "best-of", label: "Ka Best" },
-  { key: "community", label: "Community" },
-  { key: "events", label: "Events" },
-];
 
 export default function SearchScreen() {
   const [input, setInput] = useState("");
@@ -41,6 +38,7 @@ export default function SearchScreen() {
   const addRecent = useSearchStore((s) => s.addRecentSearch);
   const clearRecent = useSearchStore((s) => s.clearRecentSearches);
   const removeRecent = useSearchStore((s) => s.removeRecentSearch);
+  const { likePost } = useCommunityPosts();
 
   useEffect(() => {
     const timer = setTimeout(() => setDebounced(input.trim()), 300);
@@ -82,109 +80,124 @@ export default function SearchScreen() {
     );
   }, [results]);
 
+  const visibleCount = useMemo(() => {
+    if (!results) return 0;
+    if (tab === "all") return totalCount;
+    if (tab === "businesses") return results.businesses.length;
+    if (tab === "places") return results.places.length;
+    if (tab === "best-of") return results.bestOf.length;
+    if (tab === "community") return results.posts.length;
+    return results.events.length;
+  }, [results, tab, totalCount]);
+
   const showIdle = debounced.length === 0;
+  const suggestions = suggestionsQuery.data ?? [];
 
   return (
-    <Screen
-      title="Search"
-      showBack
-      hideHeaderSearch
-    >
-      <View className="px-4 pt-1">
-        <SearchInput
-          value={input}
-          onChangeText={setInput}
-          autoFocus
-          onSubmit={() => runSearch(input)}
-          onClear={() => {
-            setInput("");
-            setDebounced("");
-          }}
-          className="mb-3"
-        />
+    <Screen withAppHeader={false}>
+      <View className="px-4 pb-3 pt-1">
+        <View className="mb-1 flex-row items-center gap-2.5">
+          <StackBackButton className="ml-0 mr-0" />
+          <View className="min-w-0 flex-1">
+            <SearchInput
+              value={input}
+              onChangeText={setInput}
+              autoFocus
+              placeholder="Businesses, places, events…"
+              onSubmit={() => runSearch(input)}
+              onClear={() => {
+                setInput("");
+                setDebounced("");
+                setTab("all");
+              }}
+              className="rounded-full border-cream/10 bg-surface"
+            />
+          </View>
+        </View>
+
         {!showIdle ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-3">
-            {TABS.map((t) => (
-              <CategoryChip
-                key={t.key}
-                label={t.label}
-                isActive={tab === t.key}
-                onPress={() => setTab(t.key)}
-              />
-            ))}
-          </ScrollView>
+          <View className="mt-3.5">
+            <SearchFilterRow selected={tab} onSelect={setTab} />
+            {!resultsQuery.isLoading && !resultsQuery.isError ? (
+              <Text variant="caption" tone="muted" className="mt-2.5">
+                {visibleCount} {visibleCount === 1 ? "result" : "results"}
+                {tab !== "all" ? ` · ${TAB_LABEL[tab]}` : ""}
+              </Text>
+            ) : null}
+          </View>
         ) : null}
       </View>
 
       {showIdle ? (
-        <ScrollView contentContainerClassName="px-4 pb-10">
-          {recent.length > 0 ? (
-            <View className="mb-6">
-              <View className="mb-2 flex-row items-center justify-between">
-                <Text variant="h3">Recent</Text>
-                <Pressable onPress={clearRecent}>
-                  <Text variant="label" tone="primary">
-                    Clear
-                  </Text>
-                </Pressable>
-              </View>
-              {recent.map((q) => (
-                <Pressable
-                  key={q}
-                  onPress={() => runSearch(q)}
-                  onLongPress={() => removeRecent(q)}
-                  className="border-b border-cream/10 py-3"
-                >
-                  <Text>{q}</Text>
-                </Pressable>
-              ))}
-            </View>
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="gap-6 px-4 pb-10 pt-1"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <SearchChipCloud
+            title="Recent"
+            items={recent}
+            variant="recent"
+            onSelect={runSearch}
+            onClear={clearRecent}
+            onLongPressItem={removeRecent}
+          />
+
+          <SearchChipCloud
+            title="Trending in Jevan Hana"
+            items={trendingQuery.data ?? []}
+            variant="trending"
+            onSelect={runSearch}
+          />
+
+          {suggestions.length > 0 && input.length > 0 ? (
+            <SearchChipCloud
+              title="Suggestions"
+              items={suggestions}
+              variant="suggestion"
+              onSelect={runSearch}
+            />
           ) : null}
 
-          <Text variant="h3" className="mb-2">
-            Trending
-          </Text>
-          {(trendingQuery.data ?? []).map((q) => (
-            <Pressable
-              key={q}
-              onPress={() => runSearch(q)}
-              className="border-b border-cream/10 py-3"
-            >
-              <Text>{q}</Text>
-            </Pressable>
-          ))}
-
-          {(suggestionsQuery.data ?? []).length > 0 && input.length > 0 ? (
-            <View className="mt-6">
-              <Text variant="h3" className="mb-2">
-                Suggestions
+          {recent.length === 0 && (trendingQuery.data?.length ?? 0) === 0 ? (
+            <View className="rounded-card border border-dashed border-cream/15 bg-surface/50 px-4 py-10">
+              <Text
+                variant="bodySmall"
+                weight="medium"
+                className="text-center"
+              >
+                Search Jevan Hana
               </Text>
-              {suggestionsQuery.data?.map((q) => (
-                <Pressable
-                  key={q}
-                  onPress={() => runSearch(q)}
-                  className="border-b border-cream/10 py-3"
-                >
-                  <Text>{q}</Text>
-                </Pressable>
-              ))}
+              <Text
+                variant="caption"
+                tone="muted"
+                className="mt-1.5 text-center"
+              >
+                Find businesses, places, Ka Best, events, and community updates.
+              </Text>
             </View>
           ) : null}
         </ScrollView>
       ) : resultsQuery.isLoading ? (
-        <LoadingBlock />
+        <LoadingBlock className="py-16" />
       ) : resultsQuery.isError ? (
         <ErrorState onRetry={() => void resultsQuery.refetch()} />
-      ) : totalCount === 0 ? (
+      ) : visibleCount === 0 ? (
         <EmptyState
           title="No results"
-          description={`Nothing matched “${debounced}”.`}
+          description={`Nothing matched “${debounced}”. Try another word or filter.`}
         />
       ) : (
-        <ScrollView contentContainerClassName="gap-3 px-4 pb-10">
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="gap-3.5 px-4 pb-10"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           {(tab === "all" || tab === "businesses") &&
             results?.businesses.map((b) => (
-              <BusinessCard key={b.id} business={b} />
+              <BusinessCard key={b.id} business={b} variant="compact" />
             ))}
           {(tab === "all" || tab === "places") &&
             results?.places.map((p) => <PlaceCard key={p.id} place={p} />)}
@@ -194,7 +207,7 @@ export default function SearchScreen() {
             ))}
           {(tab === "all" || tab === "community") &&
             results?.posts.map((p) => (
-              <CommunityPostCard key={p.id} post={p} />
+              <CommunityUpdateCard key={p.id} post={p} onLike={likePost} />
             ))}
           {(tab === "all" || tab === "events") &&
             results?.events.map((e) => <EventCard key={e.id} event={e} />)}

@@ -1,14 +1,9 @@
-import { events, eventCategories } from "@/data/mocks/events.mock";
+import { events } from "@/data/mocks/events.mock";
 import { delay, paginate } from "@/data/mocks/mock.utils";
 import type { IPaginatedResult } from "@/types/common.types";
-import type { IEvent, IEventCategory, TEventCategorySlug } from "@/types/event.types";
+import type { IEvent, TEventCategorySlug } from "@/types/event.types";
 
 const interestedIds = new Set<string>();
-
-export async function getEventCategories(): Promise<IEventCategory[]> {
-  await delay();
-  return eventCategories;
-}
 
 export async function getEvents(params?: {
   categorySlug?: TEventCategorySlug;
@@ -55,6 +50,18 @@ export async function getEventById(id: string): Promise<IEvent | null> {
   const event = events.find((e) => e.id === id);
   if (!event) return null;
   return { ...event, isInterestedByMe: interestedIds.has(id) };
+}
+
+/** Events the current user marked as Going. */
+export async function getGoingEvents(): Promise<IEvent[]> {
+  await delay();
+  return events
+    .filter((e) => interestedIds.has(e.id))
+    .map((e) => ({ ...e, isInterestedByMe: true }))
+    .sort(
+      (a, b) =>
+        new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+    );
 }
 
 export async function toggleEventInterested(id: string): Promise<IEvent | null> {

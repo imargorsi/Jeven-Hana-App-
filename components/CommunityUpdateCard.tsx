@@ -1,5 +1,4 @@
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Pressable, View } from "react-native";
 
@@ -9,7 +8,6 @@ import { palette } from "@/constants/Colors";
 import { cn } from "@/lib/cn.utils";
 import { formatRelativeTime } from "@/lib/formatter.utils";
 import { shareContent } from "@/lib/linking.utils";
-import { href } from "@/lib/navigation.utils";
 import { hasUrduScript } from "@/lib/text.utils";
 import type { ICommunityPost } from "@/types/community.types";
 
@@ -24,24 +22,23 @@ const CATEGORY_LABEL: Record<ICommunityPost["category"], string> = {
 
 interface ICommunityUpdateCardProps {
   post: ICommunityPost;
+  onLike?: (id: string) => void;
   className?: string;
 }
 
+/** Feed card for v1 — like + share only (no post detail screen). */
 export function CommunityUpdateCard({
   post,
+  onLike,
   className,
 }: ICommunityUpdateCardProps) {
-  const router = useRouter();
   const isUrdu = post.contentIsUrdu ?? hasUrduScript(post.content);
-  const reactions = post.reactions ?? [];
-  const totalReactions = reactions.reduce((sum, item) => sum + item.count, 0);
+  const likeCount = post.likeCount;
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      onPress={() => router.push(href(`/community/${post.id}`))}
+    <View
       className={cn(
-        "rounded-card border border-cream/10 bg-surface p-3.5 active:opacity-95",
+        "rounded-card border border-cream/10 bg-surface p-3.5",
         className,
       )}
     >
@@ -103,64 +100,59 @@ export function CommunityUpdateCard({
         variant="bodySmall"
         isUrdu={isUrdu}
         className={cn(isUrdu ? "text-right" : "text-left")}
-        numberOfLines={3}
+        numberOfLines={5}
       >
         {post.content}
       </Text>
 
       <View className="mt-3 flex-row items-center justify-between gap-3 border-t border-cream/10 pt-2.5">
-        <View className="flex-row items-center gap-1.5">
+        <Pressable
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={post.isLikedByMe ? "Unlike" : "Like"}
+          disabled={!onLike}
+          onPress={() => onLike?.(post.id)}
+          className="flex-row items-center gap-1.5 active:opacity-70"
+        >
           <SymbolView
             name={{
-              ios: "heart",
-              android: "favorite_border",
+              ios: post.isLikedByMe ? "heart.fill" : "heart",
+              android: post.isLikedByMe ? "favorite" : "favorite_border",
               web: "favorite",
+            }}
+            size={14}
+            tintColor={post.isLikedByMe ? palette.primary : palette.muted}
+          />
+          <Text
+            variant="caption"
+            tone={post.isLikedByMe ? "primary" : "muted"}
+            weight={post.isLikedByMe ? "semibold" : "medium"}
+          >
+            {likeCount}
+          </Text>
+        </Pressable>
+
+        <Pressable
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Share"
+          onPress={() => void shareContent(post.content)}
+          className="flex-row items-center gap-1.5 active:opacity-70"
+        >
+          <SymbolView
+            name={{
+              ios: "square.and.arrow.up",
+              android: "share",
+              web: "share",
             }}
             size={14}
             tintColor={palette.muted}
           />
           <Text variant="caption" tone="muted">
-            {totalReactions > 0 ? totalReactions : post.likeCount}
+            Share
           </Text>
-        </View>
-
-        <View className="flex-row items-center gap-3.5">
-          <View className="flex-row items-center gap-1">
-            <SymbolView
-              name={{
-                ios: "bubble.right",
-                android: "chat_bubble_outline",
-                web: "chat",
-              }}
-              size={14}
-              tintColor={palette.muted}
-            />
-            <Text variant="caption" tone="muted">
-              {post.commentCount}
-            </Text>
-          </View>
-          <Pressable
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Share"
-            onPress={(e) => {
-              e.stopPropagation?.();
-              void shareContent(post.content);
-            }}
-            className="active:opacity-70"
-          >
-            <SymbolView
-              name={{
-                ios: "square.and.arrow.up",
-                android: "share",
-                web: "share",
-              }}
-              size={14}
-              tintColor={palette.muted}
-            />
-          </Pressable>
-        </View>
+        </Pressable>
       </View>
-    </Pressable>
+    </View>
   );
 }

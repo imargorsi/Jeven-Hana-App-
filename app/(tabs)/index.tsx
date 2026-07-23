@@ -14,7 +14,7 @@ export default function HomeScreen() {
     <Screen>
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 pb-16 pt-3"
+        contentContainerClassName="px-4 pb-32 pt-3"
         showsVerticalScrollIndicator={false}
       >
         <View style={{ marginBottom: SECTION_SPACING }}>
@@ -26,7 +26,7 @@ export default function HomeScreen() {
         <View style={{ marginBottom: SECTION_SPACING }}>
           <HomeNearbyHighlights />
         </View>
-        <View>
+        <View style={{ marginBottom: 40 }}>
           <HomeCommunityUpdates />
         </View>
       </ScrollView>

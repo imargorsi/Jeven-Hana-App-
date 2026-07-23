@@ -1,77 +1,42 @@
-import { useRouter } from "expo-router";
 import { useState } from "react";
-import { FlatList, Pressable, RefreshControl } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 
-import { CategoryChip } from "@/components/CategoryChip";
-import { CommunityPostCard } from "@/components/CommunityPostCard";
+import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
 import {
   EmptyState,
   ErrorState,
   LoadingBlock,
   Screen,
-  Text,
 } from "@/components/ui";
 import { palette } from "@/constants/Colors";
+import {
+  CommunityFilterRow,
+  type TCommunityFilterKey,
+} from "@/features/community/components/CommunityFilterRow";
 import { useCommunityPosts } from "@/features/community/useCommunityPosts.hook";
-import { href } from "@/lib/navigation.utils";
-import type { TPostCategory } from "@/types/community.types";
-
-const FILTERS: { key: TPostCategory | "all"; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "announcement", label: "Announcements" },
-  { key: "news", label: "News" },
-  { key: "local-update", label: "Updates" },
-  { key: "recommendation", label: "Tips" },
-  { key: "lost-found", label: "Lost & found" },
-];
 
 export default function CommunityTabScreen() {
-  const router = useRouter();
-  const [filter, setFilter] = useState<TPostCategory | "all">("all");
+  const [filter, setFilter] = useState<TCommunityFilterKey>("all");
   const { posts, feedQuery, likePost } = useCommunityPosts(
     filter === "all" ? undefined : filter,
   );
 
   return (
-    <Screen
-      title="Community"
-      subtitle="کمیونٹی فیڈ"
-      headerRight={
-        <Pressable
-          onPress={() => router.push(href("/community/create"))}
-          className="rounded-button bg-primary px-4 py-2"
-        >
-          <Text variant="label" tone="background" weight="semibold">
-            Create
-          </Text>
-        </Pressable>
-      }
-    >
-      <FlatList
-        horizontal
-        data={FILTERS}
-        keyExtractor={(item) => item.key}
-        showsHorizontalScrollIndicator={false}
-        className="max-h-12 px-4"
-        contentContainerClassName="items-center"
-        renderItem={({ item }) => (
-          <CategoryChip
-            label={item.label}
-            isActive={filter === item.key}
-            onPress={() => setFilter(item.key)}
-          />
-        )}
-      />
+    <Screen>
+      <View className="mb-4 mt-2">
+        <CommunityFilterRow selected={filter} onSelect={setFilter} />
+      </View>
 
       {feedQuery.isLoading ? (
-        <LoadingBlock />
+        <LoadingBlock className="py-16" />
       ) : feedQuery.isError ? (
         <ErrorState onRetry={() => void feedQuery.refetch()} />
       ) : (
         <FlatList
           data={posts}
           keyExtractor={(item) => item.id}
-          contentContainerClassName="gap-3 px-4 pb-10 pt-3"
+          contentContainerClassName="gap-3.5 px-4"
+          contentContainerStyle={{ paddingBottom: 48 }}
           refreshControl={
             <RefreshControl
               refreshing={feedQuery.isRefetching}
@@ -86,16 +51,16 @@ export default function CommunityTabScreen() {
           }}
           onEndReachedThreshold={0.4}
           renderItem={({ item }) => (
-            <CommunityPostCard post={item} onLike={likePost} />
+            <CommunityUpdateCard post={item} onLike={likePost} />
           )}
+          ListFooterComponent={<View style={{ height: 24 }} />}
           ListEmptyComponent={
             <EmptyState
-              title="No posts yet"
-              description="Be the first to share a local update."
-              actionLabel="Create post"
-              onAction={() => router.push(href("/community/create"))}
+              title="No updates yet"
+              description="Admin announcements and neighbourhood news will show up here."
             />
           }
+          showsVerticalScrollIndicator={false}
         />
       )}
     </Screen>

@@ -1,22 +1,32 @@
 import { Stack } from "expo-router";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AppHeader } from "@/components/ui/AppHeader";
-import { stackChromeScreenOptions } from "@/components/ui/StackChromeLayout";
+import { StackBackButton } from "@/components/ui/StackBackButton";
+import { palette } from "@/constants/Colors";
+import { fonts } from "@/constants/Fonts";
 
 export default function ProfileStackLayout() {
   return (
     <View className="flex-1 bg-background">
-      <SafeAreaView edges={["top"]} className="bg-background">
-        <View className="px-4">
-          <AppHeader />
-        </View>
-      </SafeAreaView>
-      <Stack screenOptions={stackChromeScreenOptions}>
-        <Stack.Screen name="edit" options={{ title: "Edit profile" }} />
-        <Stack.Screen name="settings" options={{ title: "Settings" }} />
-        <Stack.Screen name="posts" options={{ title: "My posts" }} />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: palette.background },
+          headerTintColor: palette.cream,
+          headerTitleStyle: {
+            fontFamily: fonts.english.semibold,
+            fontSize: 17,
+          },
+          headerShadowVisible: false,
+          headerBackVisible: false,
+          headerLeft: () => <StackBackButton />,
+          headerTitleAlign: "left",
+          contentStyle: { backgroundColor: palette.background },
+        }}
+      >
+          <Stack.Screen name="edit" options={{ title: "Edit profile" }} />
+          <Stack.Screen name="posts" options={{ title: "My posts" }} />
+          <Stack.Screen name="saved" options={{ title: "Saved places" }} />
+          <Stack.Screen name="going" options={{ title: "Events going" }} />
       </Stack>
     </View>
   );

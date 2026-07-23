@@ -4,22 +4,6 @@
  */
 import type { TSavedItemType } from "@/types/saved-item.types";
 
-export interface ISavedItemsPayload {
-  businesses: string[];
-  places: string[];
-  events: string[];
-  "best-of": string[];
-}
-
-export async function fetchSavedItemIds(): Promise<ISavedItemsPayload> {
-  return {
-    businesses: [],
-    places: [],
-    events: [],
-    "best-of": [],
-  };
-}
-
 export async function syncSavedItem(
   _type: TSavedItemType,
   _id: string,

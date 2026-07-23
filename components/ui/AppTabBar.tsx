@@ -1,5 +1,6 @@
 import type { BottomTabBarProps } from "expo-router/build/react-navigation/bottom-tabs";
 import { SymbolView } from "expo-symbols";
+import type { ComponentProps } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -7,23 +8,29 @@ import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
 import { withAlpha } from "@/lib/color.utils";
 
-type TTabIcon = {
-  ios: string;
-  android: string;
-  web: string;
-};
+type TSymbolName = NonNullable<ComponentProps<typeof SymbolView>["name"]>;
 
 const TAB_META: Record<
   string,
-  { label: string; icon: TTabIcon }
+  {
+    label: string;
+    icon: TSymbolName;
+    iconActive: TSymbolName;
+  }
 > = {
   index: {
     label: "Home",
     icon: { ios: "house", android: "home", web: "home" },
+    iconActive: { ios: "house.fill", android: "home", web: "home" },
   },
   explore: {
     label: "Explore",
     icon: {
+      ios: "magnifyingglass",
+      android: "search",
+      web: "search",
+    },
+    iconActive: {
       ios: "magnifyingglass",
       android: "search",
       web: "search",
@@ -36,10 +43,20 @@ const TAB_META: Record<
       android: "group",
       web: "group",
     },
+    iconActive: {
+      ios: "person.2.fill",
+      android: "group",
+      web: "group",
+    },
   },
   events: {
     label: "Events",
     icon: {
+      ios: "calendar",
+      android: "event",
+      web: "event",
+    },
+    iconActive: {
       ios: "calendar",
       android: "event",
       web: "event",
@@ -52,28 +69,32 @@ const TAB_META: Record<
       android: "person_outline",
       web: "person",
     },
+    iconActive: {
+      ios: "person.fill",
+      android: "person",
+      web: "person",
+    },
   },
 };
 
 /**
- * Bottom tab bar matching `screens/home.png`:
- * outline icons, gold active state, gold underline under active label.
+ * Premium bottom tab bar — surface bar, gold active icons with soft circle outline.
  */
 export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
-  const inactive = withAlpha(palette.cream, 0.55);
+  const inactive = withAlpha(palette.cream, 0.45);
 
   return (
     <View
       style={{
-        backgroundColor: palette.background,
-        borderTopColor: withAlpha(palette.cream, 0.1),
+        backgroundColor: palette.surface,
+        borderTopColor: withAlpha(palette.cream, 0.08),
         borderTopWidth: 1,
-        paddingBottom: Math.max(insets.bottom, 8),
-        paddingTop: 8,
+        paddingBottom: Math.max(insets.bottom, 10),
+        paddingTop: 10,
       }}
     >
-      <View className="flex-row items-stretch px-1">
+      <View className="flex-row items-stretch px-2">
         {state.routes.map((route, index) => {
           const meta = TAB_META[route.name];
           if (!meta) return null;
@@ -99,31 +120,48 @@ export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps)
               key={route.key}
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel ?? meta.label}
+              accessibilityLabel={
+                options.tabBarAccessibilityLabel ?? meta.label
+              }
               onPress={onPress}
-              className="flex-1 items-center justify-center py-1 active:opacity-80"
+              className="flex-1 items-center justify-center active:opacity-80"
+              style={{ minHeight: 56 }}
             >
-              <SymbolView
-                name={meta.icon as never}
-                size={22}
-                tintColor={color}
-              />
-              <Text
-                variant="caption"
-                weight={isFocused ? "semibold" : "medium"}
-                style={{ color, marginTop: 4, fontSize: 11, lineHeight: 16 }}
-              >
-                {meta.label}
-              </Text>
-              <View
-                style={{
-                  marginTop: 4,
-                  height: 2,
-                  width: 28,
-                  borderRadius: 999,
-                  backgroundColor: isFocused ? palette.primary : "transparent",
-                }}
-              />
+              <View className="items-center">
+                <View
+                  className="items-center justify-center rounded-full"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderWidth: isFocused ? 1.5 : 0,
+                    borderColor: isFocused
+                      ? withAlpha(palette.primary, 0.55)
+                      : "transparent",
+                    backgroundColor: isFocused
+                      ? withAlpha(palette.primary, 0.08)
+                      : "transparent",
+                  }}
+                >
+                  <SymbolView
+                    name={isFocused ? meta.iconActive : meta.icon}
+                    size={20}
+                    tintColor={color}
+                  />
+                </View>
+
+                <Text
+                  variant="caption"
+                  weight={isFocused ? "semibold" : "medium"}
+                  style={{
+                    color,
+                    marginTop: 4,
+                    fontSize: 11,
+                    lineHeight: 14,
+                  }}
+                >
+                  {meta.label}
+                </Text>
+              </View>
             </Pressable>
           );
         })}

@@ -29,6 +29,7 @@ export function useEventsBySection() {
     onSuccess: (_data, id) => {
       void queryClient.invalidateQueries({ queryKey: ["events"] });
       void queryClient.invalidateQueries({ queryKey: ["home-events"] });
+      void queryClient.invalidateQueries({ queryKey: ["events-going"] });
       void queryClient.invalidateQueries({ queryKey: ["event", id] });
     },
     onSettled: () => {

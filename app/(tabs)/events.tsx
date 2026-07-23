@@ -43,7 +43,7 @@ export default function EventsTabScreen() {
     <Screen>
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 pb-14 pt-3"
+        contentContainerClassName="px-4 pb-28 pt-3"
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

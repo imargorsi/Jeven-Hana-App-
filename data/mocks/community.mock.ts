@@ -1,5 +1,5 @@
 import { IMG } from "@/data/mocks/mock.utils";
-import type { ICommunityPost, IPostComment } from "@/types/community.types";
+import type { ICommunityPost } from "@/types/community.types";
 import type { IAppUser } from "@/types/user.types";
 
 export const mockUsers: IAppUser[] = [
@@ -175,37 +175,6 @@ export let communityPosts: ICommunityPost[] = [
   },
 ];
 
-export let postComments: IPostComment[] = [
-  {
-    id: "cmt-1",
-    postId: "post-1",
-    content: "Thanks for the heads up!",
-    createdAt: "2026-07-20T09:00:00Z",
-    user: mockUsers[1],
-    likeCount: 3,
-  },
-  {
-    id: "cmt-2",
-    postId: "post-1",
-    content: "Block B affected too?",
-    createdAt: "2026-07-20T09:15:00Z",
-    user: mockUsers[2],
-    likeCount: 1,
-  },
-  {
-    id: "cmt-3",
-    postId: "post-2",
-    content: "Sharing with the neighbourhood WhatsApp group.",
-    createdAt: "2026-07-19T17:00:00Z",
-    user: mockUsers[2],
-    likeCount: 5,
-  },
-];
-
 export function setCommunityPosts(next: ICommunityPost[]) {
   communityPosts = next;
-}
-
-export function setPostComments(next: IPostComment[]) {
-  postComments = next;
 }

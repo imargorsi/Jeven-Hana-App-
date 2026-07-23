@@ -17,17 +17,6 @@ export interface IPostReaction {
   count: number;
 }
 
-export interface IPostComment {
-  id: string;
-  postId: string;
-  content: string;
-  createdAt: string;
-  user: IAppUser;
-  likeCount: number;
-  isLikedByMe?: boolean;
-  parentId?: string | null;
-}
-
 export interface ICommunityPost {
   id: string;
   content: string;

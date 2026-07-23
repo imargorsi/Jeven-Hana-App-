@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 
@@ -7,7 +7,10 @@ import { ErrorState, LoadingBlock, SectionHeader } from "@/components/ui";
 import { HomeSectionEmpty } from "@/features/home/components/HomeSectionEmpty";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
-import { getAdminCommunityHighlights } from "@/lib/services/community.service";
+import {
+  getAdminCommunityHighlights,
+  toggleLikePost,
+} from "@/lib/services/community.service";
 
 const POST_LIMIT = 5;
 
@@ -17,10 +20,23 @@ interface IHomeCommunityUpdatesProps {
 
 export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const postsQuery = useQuery({
     queryKey: ["home-community-updates", POST_LIMIT],
     queryFn: () => getAdminCommunityHighlights(POST_LIMIT),
+  });
+
+  const likeMutation = useMutation({
+    mutationFn: toggleLikePost,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ["home-community-updates"],
+      });
+      void queryClient.invalidateQueries({ queryKey: ["community-posts"] });
+      void queryClient.invalidateQueries({ queryKey: ["search"] });
+      void queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    },
   });
 
   const posts = postsQuery.data ?? [];
@@ -70,7 +86,11 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
 
       <View className="gap-3">
         {posts.map((post) => (
-          <CommunityUpdateCard key={post.id} post={post} />
+          <CommunityUpdateCard
+            key={post.id}
+            post={post}
+            onLike={(id) => likeMutation.mutate(id)}
+          />
         ))}
       </View>
     </View>

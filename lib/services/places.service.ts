@@ -1,12 +1,7 @@
 import { delay, paginate } from "@/data/mocks/mock.utils";
-import { placeCategories, places } from "@/data/mocks/places.mock";
+import { places } from "@/data/mocks/places.mock";
 import type { IPaginatedResult } from "@/types/common.types";
-import type { IPlace, IPlaceCategory, TPlaceCategorySlug } from "@/types/place.types";
-
-export async function getPlaceCategories(): Promise<IPlaceCategory[]> {
-  await delay();
-  return placeCategories;
-}
+import type { IPlace, TPlaceCategorySlug } from "@/types/place.types";
 
 export async function getPlaces(params?: {
   categorySlug?: TPlaceCategorySlug;

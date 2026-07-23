@@ -1,30 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FlatList, View } from "react-native";
 
-import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
+import { EventCard } from "@/components/EventCard";
 import { EmptyState, ErrorState, LoadingBlock, Screen } from "@/components/ui";
 import {
-  getCommunityPosts,
-  toggleLikePost,
-} from "@/lib/services/community.service";
+  getGoingEvents,
+  toggleEventInterested,
+} from "@/lib/services/events.service";
 
-export default function MyPostsScreen() {
+export default function EventsGoingScreen() {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: ["my-posts"],
-    queryFn: () => getCommunityPosts({ userId: "user-1", limit: 40 }),
+    queryKey: ["events-going"],
+    queryFn: getGoingEvents,
   });
 
-  const likeMutation = useMutation({
-    mutationFn: toggleLikePost,
+  const interestedMutation = useMutation({
+    mutationFn: toggleEventInterested,
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["my-posts"] });
-      void queryClient.invalidateQueries({ queryKey: ["community-posts"] });
-      void queryClient.invalidateQueries({ queryKey: ["search"] });
-      void queryClient.invalidateQueries({
-        queryKey: ["home-community-updates"],
-      });
+      void queryClient.invalidateQueries({ queryKey: ["events-going"] });
+      void queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
 
@@ -47,19 +43,23 @@ export default function MyPostsScreen() {
   return (
     <Screen withSafeArea={false} withAppHeader={false}>
       <FlatList
-        data={query.data?.items ?? []}
+        data={query.data ?? []}
         keyExtractor={(item) => item.id}
         contentContainerClassName="gap-3.5 px-4 pb-10 pt-2"
         renderItem={({ item }) => (
-          <CommunityUpdateCard
-            post={item}
-            onLike={(id) => likeMutation.mutate(id)}
+          <EventCard
+            event={item}
+            onToggleInterested={() => interestedMutation.mutate(item.id)}
+            isToggling={
+              interestedMutation.isPending &&
+              interestedMutation.variables === item.id
+            }
           />
         )}
         ListEmptyComponent={
           <EmptyState
-            title="No posts yet"
-            description="Your community updates will show up here."
+            title="No events yet"
+            description="Tap Going on an event to keep it here."
           />
         }
         ItemSeparatorComponent={() => <View className="h-0" />}

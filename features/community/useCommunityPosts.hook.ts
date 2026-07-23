@@ -30,6 +30,11 @@ export function useCommunityPosts(category?: TPostCategory) {
     mutationFn: toggleLikePost,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["community-posts"] });
+      void queryClient.invalidateQueries({ queryKey: ["search"] });
+      void queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+      void queryClient.invalidateQueries({
+        queryKey: ["home-community-updates"],
+      });
     },
   });
 

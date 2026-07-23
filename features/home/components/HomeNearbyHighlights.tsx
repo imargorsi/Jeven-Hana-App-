@@ -25,6 +25,7 @@ import { useAutoScrollCarousel } from "@/features/home/useAutoScrollCarousel.hoo
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import { getBusinesses } from "@/lib/services/businesses.service";
+import type { IBusiness } from "@/types/business.types";
 
 const CARD_STEP = NEARBY_HIGHLIGHT_CARD_WIDTH + NEARBY_HIGHLIGHT_CARD_GAP;
 const AUTO_INTERVAL_MS = 6000;
@@ -33,15 +34,18 @@ interface IHomeNearbyHighlightsProps {
   className?: string;
 }
 
-export function HomeNearbyHighlights({ className }: IHomeNearbyHighlightsProps) {
+export function HomeNearbyHighlights({
+  className,
+}: IHomeNearbyHighlightsProps) {
   const router = useRouter();
 
   const highlightsQuery = useQuery({
     queryKey: ["home-nearby-highlights"],
-    queryFn: () => getBusinesses({ limit: 8 }),
+    queryFn: (): Promise<{ items: IBusiness[] }> =>
+      getBusinesses({ limit: 8 }),
   });
 
-  const businesses = highlightsQuery.data?.items ?? [];
+  const businesses: IBusiness[] = highlightsQuery.data?.items ?? [];
 
   const getOffsetForIndex = useCallback(
     (index: number) => index * CARD_STEP,

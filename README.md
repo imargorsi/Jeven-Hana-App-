@@ -25,12 +25,12 @@ Implemented with **mock data** (no backend yet):
 | Businesses | Detail (call / WhatsApp / directions, reviews); index → Explore |
 | Places | Detail; listing/category routes redirect → Explore for v1 |
 | Jevan Hana Ka Best | Curated recommendations |
-| Community | Feed, create post, comments, like, edit/delete own |
+| Community | Feed with like + share; **no post detail**; admin posts for v1 |
 | Events | Sectioned list (Today → This Month) + Going; **no detail page** |
 | Search | Debounced multi-entity search + recent / trending |
 | Notifications | Grouped list, mark read; event taps → Events tab |
-| Saved | Businesses, places, events, Ka Best |
-| Profile | Overview, edit, my posts, settings, logout |
+| Saved | Flat list under Profile (`/profile/saved`); `/saved` redirects |
+| Profile | Overview, edit, my posts, saved places, events going, logout |
 
 **Not in scope:** stories, reels, chat, followers, reshares, feed ranking, event detail (v1), i18n translation files (mixed English/Urdu strings inline via `Text` `isUrdu`).
 

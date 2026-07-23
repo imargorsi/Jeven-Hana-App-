@@ -1,16 +1,17 @@
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  type LayoutChangeEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
+  Pressable,
   ScrollView,
-  useWindowDimensions,
   View,
 } from "react-native";
 
-import { Button } from "@/components/ui/Button";
 import { CarouselDots } from "@/components/ui/CarouselDots";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
@@ -20,11 +21,10 @@ import {
   type IHomeHeroSlide,
 } from "@/features/home/home.slides";
 import { cn } from "@/lib/cn.utils";
+import { withAlpha } from "@/lib/color.utils";
 import { href } from "@/lib/navigation.utils";
 
-/** Matches Home screen content `px-4`. */
-const SCREEN_GUTTER = 16;
-const SLIDE_HEIGHT = 200;
+const SLIDE_HEIGHT = 168;
 
 interface IHomeHeroSliderProps {
   className?: string;
@@ -32,18 +32,21 @@ interface IHomeHeroSliderProps {
 
 export function HomeHeroSlider({ className }: IHomeHeroSliderProps) {
   const router = useRouter();
-  const { width: windowWidth } = useWindowDimensions();
+  const [slideWidth, setSlideWidth] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
   const isMountedRef = useRef(false);
-
-  const slideWidth = windowWidth - SCREEN_GUTTER * 2;
 
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
     };
+  }, []);
+
+  const onLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextWidth = Math.round(event.nativeEvent.layout.width);
+    setSlideWidth((current) => (current === nextWidth ? current : nextWidth));
   }, []);
 
   const updateActiveIndex = useCallback((index: number) => {
@@ -54,6 +57,7 @@ export function HomeHeroSlider({ className }: IHomeHeroSliderProps) {
 
   const goToIndex = useCallback(
     (index: number) => {
+      if (slideWidth <= 0) return;
       scrollRef.current?.scrollTo({
         x: index * slideWidth,
         animated: true,
@@ -65,6 +69,7 @@ export function HomeHeroSlider({ className }: IHomeHeroSliderProps) {
 
   const onMomentumScrollEnd = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (slideWidth <= 0) return;
       const index = Math.round(
         event.nativeEvent.contentOffset.x / slideWidth,
       );
@@ -75,24 +80,38 @@ export function HomeHeroSlider({ className }: IHomeHeroSliderProps) {
 
   return (
     <View className={cn(className)}>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        decelerationRate="fast"
-        onMomentumScrollEnd={onMomentumScrollEnd}
+      <View
+        onLayout={onLayout}
+        className="overflow-hidden rounded-card border border-cream/10 bg-surface"
         style={{ height: SLIDE_HEIGHT }}
       >
-        {HOME_HERO_SLIDES.map((slide) => (
-          <HeroSlide
-            key={slide.id}
-            slide={slide}
-            width={slideWidth}
-            onCtaPress={() => router.push(href(slide.href))}
-          />
-        ))}
-      </ScrollView>
+        {slideWidth > 0 ? (
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            pagingEnabled
+            bounces={false}
+            overScrollMode="never"
+            nestedScrollEnabled
+            showsHorizontalScrollIndicator={false}
+            decelerationRate="fast"
+            snapToInterval={slideWidth}
+            snapToAlignment="start"
+            disableIntervalMomentum
+            onMomentumScrollEnd={onMomentumScrollEnd}
+            style={{ width: slideWidth, height: SLIDE_HEIGHT }}
+          >
+            {HOME_HERO_SLIDES.map((slide) => (
+              <HeroSlide
+                key={slide.id}
+                slide={slide}
+                width={slideWidth}
+                onCtaPress={() => router.push(href(slide.href))}
+              />
+            ))}
+          </ScrollView>
+        ) : null}
+      </View>
 
       <CarouselDots
         count={HOME_HERO_SLIDES.length}
@@ -112,58 +131,82 @@ interface IHeroSlideProps {
 
 function HeroSlide({ slide, width, onCtaPress }: IHeroSlideProps) {
   return (
-    <View
-      style={{ width, height: SLIDE_HEIGHT }}
-      className="overflow-hidden rounded-card border border-cream/10"
-    >
+    <View style={{ width, height: SLIDE_HEIGHT }} className="overflow-hidden">
       <Image
         source={toImageSource(slide.image)}
         style={{ width, height: SLIDE_HEIGHT }}
         contentFit="cover"
-        transition={200}
+        transition={250}
       />
-      <View className="absolute inset-0 bg-background/50" />
-      <View className="absolute inset-0 justify-between p-3.5">
-        <View className="items-end pt-0.5">
+
+      <LinearGradient
+        colors={[
+          withAlpha(palette.background, 0.2),
+          withAlpha(palette.background, 0.45),
+          withAlpha(palette.background, 0.92),
+        ]}
+        locations={[0, 0.4, 1]}
+        style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+      />
+
+      <View className="absolute inset-0 justify-end px-4 pb-4 pt-3">
+        <View className="items-end">
           <Text
             isUrdu
-            variant="h1"
+            variant="h3"
             weight="bold"
             className="text-right"
-            numberOfLines={2}
+            numberOfLines={1}
           >
             {slide.titleUrdu}
           </Text>
           <Text
             isUrdu
-            variant="bodySmall"
-            tone="muted"
-            className="mt-1.5 text-right"
+            variant="caption"
+            className="mt-1 max-w-[88%] text-right text-cream/70"
             numberOfLines={2}
           >
             {slide.subtitleUrdu}
           </Text>
-        </View>
 
-        <View className="items-end">
-          <Button
-            size="sm"
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={slide.ctaLabel}
             onPress={onCtaPress}
-            className="flex-row items-center gap-2 self-end px-3.5"
+            className="mt-3 overflow-hidden rounded-full active:opacity-90"
           >
-            <Text variant="button" tone="background">
-              {slide.ctaLabel}
-            </Text>
-            <SymbolView
-              name={{
-                ios: "arrow.right",
-                android: "arrow_forward",
-                web: "arrow_forward",
+            <LinearGradient
+              colors={[palette.primarySoft, palette.primary, palette.primaryDeep]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 8,
+                paddingVertical: 10,
+                paddingLeft: 16,
+                paddingRight: 10,
               }}
-              size={15}
-              tintColor={palette.background}
-            />
-          </Button>
+            >
+              <Text variant="caption" weight="bold" tone="background">
+                {slide.ctaLabel}
+              </Text>
+              <View
+                className="h-6 w-6 items-center justify-center rounded-full"
+                style={{ backgroundColor: withAlpha(palette.background, 0.2) }}
+              >
+                <SymbolView
+                  name={{
+                    ios: "arrow.right",
+                    android: "arrow_forward",
+                    web: "arrow_forward",
+                  }}
+                  size={12}
+                  tintColor={palette.background}
+                />
+              </View>
+            </LinearGradient>
+          </Pressable>
         </View>
       </View>
     </View>

@@ -38,7 +38,7 @@ export default function ExploreScreen() {
         className="flex-1"
         data={businesses}
         keyExtractor={(item) => item.id}
-        contentContainerClassName="px-4 pb-14 pt-4"
+        contentContainerClassName="px-4 pb-28 pt-4"
         ListHeaderComponent={
           <View className="mb-5">
             <ExploreCategoryRow
