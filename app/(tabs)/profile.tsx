@@ -5,10 +5,12 @@ import { SymbolView } from "expo-symbols";
 import type { ComponentProps } from "react";
 import { Alert, Pressable, ScrollView, View } from "react-native";
 
-import { Screen, Text } from "@/components/ui";
+import { Button, Screen, Text } from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
 import { palette } from "@/constants/Colors";
 import { IMG } from "@/data/mocks/mock.utils";
+import { isClerkConfigured } from "@/features/auth/auth.config";
+import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { withAlpha } from "@/lib/color.utils";
 import { href } from "@/lib/navigation.utils";
 
@@ -44,7 +46,7 @@ const PROFILE_LINKS: IProfileLink[] = [
   },
   {
     title: "Saved places",
-    subtitle: "Businesses, places & Ka Best",
+                subtitle: "Businesses, places & events",
     icon: {
       ios: "bookmark",
       android: "bookmark_border",
@@ -64,10 +66,67 @@ const PROFILE_LINKS: IProfileLink[] = [
   },
 ];
 
+function GuestProfile() {
+  const router = useRouter();
+
+  return (
+    <Screen>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-4 pt-3"
+        contentContainerStyle={{ paddingBottom: 48 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="mb-6 overflow-hidden rounded-card border border-cream/10 bg-surface px-5 py-8">
+          <Text variant="h3" weight="bold" className="text-center">
+            Your neighbourhood account
+          </Text>
+          <Text
+            variant="bodySmall"
+            tone="muted"
+            className="mt-2 text-center"
+          >
+            Create an account to save places, mark events Going, like updates,
+            and write reviews.
+          </Text>
+
+          <Button
+            isFullWidth
+            size="lg"
+            className="mt-6"
+            onPress={() => router.push(href("/register"))}
+          >
+            Create account
+          </Button>
+          <Button
+            isFullWidth
+            size="lg"
+            variant="secondary"
+            className="mt-3"
+            onPress={() => router.push(href("/login"))}
+          >
+            Log in
+          </Button>
+        </View>
+
+        <Text variant="caption" tone="muted" className="text-center">
+          You can keep browsing Explore, Home, Community, and Events without an
+          account.
+        </Text>
+      </ScrollView>
+    </Screen>
+  );
+}
+
 export default function ProfileTabScreen() {
+  const { isSignedIn, requireAuth } = useRequireAuth();
   const { user } = useUser();
   const { signOut } = useAuth();
   const router = useRouter();
+
+  if (isClerkConfigured && !isSignedIn) {
+    return <GuestProfile />;
+  }
 
   const fullName =
     [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
@@ -147,7 +206,9 @@ export default function ProfileTabScreen() {
               key={link.route}
               accessibilityRole="button"
               accessibilityLabel={link.title}
-              onPress={() => router.push(href(link.route))}
+              onPress={() =>
+                requireAuth(() => router.push(href(link.route)))
+              }
               className="flex-row items-center gap-3.5 px-4 py-3.5 active:opacity-80"
               style={
                 index < PROFILE_LINKS.length - 1

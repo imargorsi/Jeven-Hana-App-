@@ -85,7 +85,6 @@ export default function RootLayout() {
         <Stack.Screen name="saved" options={{ headerShown: false }} />
         <Stack.Screen name="businesses" options={{ headerShown: false }} />
         <Stack.Screen name="places" options={{ headerShown: false }} />
-        <Stack.Screen name="best-of" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
       </Stack>
     </QueryClientProvider>

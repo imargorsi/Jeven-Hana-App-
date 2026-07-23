@@ -5,6 +5,7 @@ import { Image, Pressable, View } from "react-native";
 
 import { SearchInput } from "@/components/ui/SearchInput";
 import { palette } from "@/constants/Colors";
+import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import { getNotifications } from "@/lib/services/notifications.service";
@@ -16,16 +17,17 @@ interface IAppHeaderProps {
 }
 
 /**
- * Global production header — same on every authenticated screen:
- * [Logo] · [Search] · [Notifications]
+ * Global header — logo · search (public) · notifications (account).
  */
 export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
   const router = useRouter();
+  const { requireAuth, isSignedIn } = useRequireAuth();
 
   const notificationsQuery = useQuery({
     queryKey: ["notifications"],
     queryFn: getNotifications,
     staleTime: 30_000,
+    enabled: isSignedIn,
   });
 
   const unreadCount =
@@ -71,7 +73,9 @@ export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
         accessibilityLabel="Notifications"
         hitSlop={8}
         className="h-10 w-10 shrink-0 items-center justify-center active:opacity-70"
-        onPress={() => router.push(href("/notifications"))}
+        onPress={() =>
+          requireAuth(() => router.push(href("/notifications")))
+        }
       >
         <SymbolView
           name={{
@@ -82,7 +86,7 @@ export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
           size={22}
           tintColor={palette.primary}
         />
-        {unreadCount > 0 ? (
+        {isSignedIn && unreadCount > 0 ? (
           <View className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" />
         ) : null}
       </Pressable>

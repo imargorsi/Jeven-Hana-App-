@@ -6,12 +6,12 @@ import { palette } from "@/constants/Colors";
 
 interface IClerkSignedInGuardProps {
   children: React.ReactNode;
-  redirectHref?: "/login" | "/onboarding";
+  redirectHref?: "/login" | "/register" | "/onboarding";
 }
 
 export function ClerkSignedInGuard({
   children,
-  redirectHref = "/login",
+  redirectHref = "/register",
 }: IClerkSignedInGuardProps) {
   const { isSignedIn, isLoaded } = useAuth();
 

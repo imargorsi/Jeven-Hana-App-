@@ -3,6 +3,7 @@ import { SymbolView } from "expo-symbols";
 import { Pressable, View } from "react-native";
 
 import { palette } from "@/constants/Colors";
+import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { useSavedItemsStore } from "@/stores/useSavedItemsStore";
 import type { TSavedItemType } from "@/types/saved-item.types";
@@ -23,6 +24,7 @@ export function SaveButton({
   color,
   className,
 }: ISaveButtonProps) {
+  const { requireAuth } = useRequireAuth();
   const isSaved = useSavedItemsStore((s) => s.isSaved(type, id));
   const toggleSaved = useSavedItemsStore((s) => s.toggleSaved);
   const tint = color ?? (isSaved ? palette.primary : palette.cream);
@@ -34,8 +36,10 @@ export function SaveButton({
       hitSlop={8}
       className={cn("p-1 active:opacity-70", className)}
       onPress={() => {
-        void Haptics.selectionAsync();
-        toggleSaved(type, id);
+        requireAuth(() => {
+          void Haptics.selectionAsync();
+          toggleSaved(type, id);
+        });
       }}
     >
       <SymbolView

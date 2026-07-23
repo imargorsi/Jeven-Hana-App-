@@ -6,6 +6,7 @@ import { ContactActions } from "@/components/ContactActions";
 import { ImageGallery } from "@/components/ImageGallery";
 import {
   ErrorState,
+  KaBestBadge,
   LoadingBlock,
   SaveButton,
   Screen,
@@ -62,7 +63,12 @@ export default function PlaceDetailScreen() {
       <ScrollView contentContainerClassName="pb-10">
         <ImageGallery urls={place.imageUrls} />
         <View className="px-4 pt-4">
-          <Text variant="h2">{place.name}</Text>
+          <View className="flex-row flex-wrap items-center gap-2">
+            <Text variant="h2" className="shrink">
+              {place.name}
+            </Text>
+            {place.isKaBest ? <KaBestBadge size="sm" /> : null}
+          </View>
           {place.nameUrdu ? (
             <Text variant="body" tone="muted" isUrdu className="mt-1">
               {place.nameUrdu}

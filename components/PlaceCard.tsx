@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 
+import { KaBestBadge } from "@/components/ui/Badges";
 import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
 import { toImageSource } from "@/data/mocks/mock.utils";
@@ -32,11 +33,18 @@ export function PlaceCard({
         className,
       )}
     >
-      <Image
-        source={toImageSource(place.imageUrls[0])}
-        className={cn("w-full bg-background", isHorizontal ? "h-36" : "h-40")}
-        contentFit="cover"
-      />
+      <View className="relative">
+        <Image
+          source={toImageSource(place.imageUrls[0])}
+          className={cn("w-full bg-background", isHorizontal ? "h-36" : "h-40")}
+          contentFit="cover"
+        />
+        {place.isKaBest ? (
+          <View className="absolute left-2.5 top-2.5">
+            <KaBestBadge size="sm" />
+          </View>
+        ) : null}
+      </View>
       <View className="flex-row p-3">
         <View className="flex-1 pr-2">
           <Text variant="bodySmall" weight="semibold" numberOfLines={1}>
@@ -47,7 +55,12 @@ export function PlaceCard({
               {place.nameUrdu}
             </Text>
           ) : null}
-          <Text variant="caption" tone="muted" className="mt-1" numberOfLines={2}>
+          <Text
+            variant="caption"
+            tone="muted"
+            className="mt-1"
+            numberOfLines={2}
+          >
             {place.description}
           </Text>
         </View>

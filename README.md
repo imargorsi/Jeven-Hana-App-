@@ -11,28 +11,46 @@ Community app for residents of **Jevan Hana, Garden Town, Lahore** — local dis
 - TanStack Query — server-state patterns (currently backed by mocks)
 - Zustand + AsyncStorage — client persistence (onboarding, saved items, recent searches)
 
+## Product scope (v1 / v2)
+
+Full tables live in local `doc/modules/scope.md` (gitignored). Summary:
+
+### v1 — anyone (guest OK)
+
+Onboarding → **Home**. Browse Home, Explore, Search, Community, Events. Open business / place detail (Ka Best is a **badge** on those listings, not a separate module). Call, WhatsApp, directions, share.
+
+### v1 — signed-in only
+
+Like posts · Going on events · Save listings · Write business reviews · Notifications · Edit profile · My posts / Saved / Going · Log out.
+
+Guests who try these go to **Create account**.
+
+### v1 — not allowed
+
+Create community posts · Host / create events · Add or claim businesses · Post detail / comments · Event detail · Settings screen · Stories / chat / followers.
+
+### v2 — planned
+
+Resident **create posts** · **Add / claim businesses** · **Host events** · optional comments · push prefs · real API sync.
+
 ## Current status (frontend MVP)
 
 Implemented with **mock data** (no backend yet):
 
 | Area | Routes / notes |
 | ---- | -------------- |
-| Onboarding | `app/onboarding.tsx` |
-| Auth | Login, register, email verification, Google/Facebook SSO |
-| Tabs | Home, Explore, Community, Events, Profile |
-| Home | Hero, Quick Access, Nearby Highlights, Community list (5) |
-| Explore | Business category filters + compact listings |
-| Businesses | Detail (call / WhatsApp / directions, reviews); index → Explore |
-| Places | Detail; listing/category routes redirect → Explore for v1 |
-| Jevan Hana Ka Best | Curated recommendations |
-| Community | Feed with like + share; **no post detail**; admin posts for v1 |
-| Events | Sectioned list (Today → This Month) + Going; **no detail page** |
-| Search | Back + field; recent/trending chips; soft filters; shared cards |
-| Notifications | Grouped list, mark read; post → Community, event → Events tab |
-| Saved | Flat list under Profile (`/profile/saved`); `/saved` redirects |
-| Profile | Edit, my posts, saved places, events going, logout (no settings) |
-
-**Not in scope:** stories, reels, chat, followers, reshares, feed ranking, event detail (v1), i18n translation files (mixed English/Urdu strings inline via `Text` `isUrdu`).
+| Onboarding | → Home (guest); no forced login |
+| Auth | Login / register when an account action is required |
+| Tabs | Public browse (Home, Explore, Community, Events, Profile) |
+| Home | Hero, Quick Access, Nearby, Community list (5) |
+| Explore / Search | **Public** discovery |
+| Businesses | Detail; review + save need account; call/share free |
+| Places | Detail; save needs account; browse → Explore |
+| Ka Best | **Badge only** on business/place (`isKaBest`) — not a separate module |
+| Community | Public feed; like needs account; **no create / detail** |
+| Events | Public list; Going needs account; **no detail / host** |
+| Notifications | Account |
+| Saved / Profile | Account (guest Profile = Sign up / Log in) |
 
 **Next:** replace `lib/services/*` mocks with real REST APIs.
 
@@ -75,7 +93,7 @@ features/            # auth, community, events, explore, home, search, …
 lib/                 # queryClient, services, utils
 stores/              # Zustand (app, saved, search)
 types/               # Shared TypeScript entities
-doc/modules/         # Local product notes (gitignored)
+doc/modules/         # Local product notes (gitignored); see scope.md
 ```
 
 ## Data layer

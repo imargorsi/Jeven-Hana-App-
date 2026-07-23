@@ -1,4 +1,4 @@
-export type TSavedItemType = "business" | "place" | "event" | "best-of";
+export type TSavedItemType = "business" | "place" | "event";
 
 export interface ISavedItemRef {
   type: TSavedItemType;

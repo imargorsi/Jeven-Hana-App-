@@ -5,6 +5,7 @@ import { Pressable, View } from "react-native";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
+import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 
@@ -67,6 +68,7 @@ interface IHomeQuickAccessProps {
 
 export function HomeQuickAccess({ className }: IHomeQuickAccessProps) {
   const router = useRouter();
+  const { requireAuth } = useRequireAuth();
 
   return (
     <View className={cn(className)}>
@@ -77,7 +79,13 @@ export function HomeQuickAccess({ className }: IHomeQuickAccessProps) {
             key={item.id}
             accessibilityRole="button"
             accessibilityLabel={item.labelUrdu}
-            onPress={() => router.push(href(item.route))}
+            onPress={() => {
+              if (item.id === "saved") {
+                requireAuth(() => router.push(href(item.route)));
+                return;
+              }
+              router.push(href(item.route));
+            }}
             className="min-h-[84px] flex-1 items-center justify-center rounded-card bg-surface px-1 py-2.5 active:opacity-90"
           >
             <View className="h-11 w-11 items-center justify-center rounded-2xl bg-primary/15">

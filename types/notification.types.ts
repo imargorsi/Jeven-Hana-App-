@@ -19,6 +19,6 @@ export interface INotification {
   actorName?: string;
   actorAvatarUrl?: TAppImage;
   /** Optional deep-link target */
-  targetType?: "post" | "event" | "business" | "place" | "best-of";
+  targetType?: "post" | "event" | "business" | "place";
   targetId?: string;
 }

@@ -17,7 +17,7 @@ export function OnboardingScreen() {
 
   const handleContinue = () => {
     setHasOnboarded(true);
-    router.replace("/login");
+    router.replace("/(tabs)");
   };
 
   return (

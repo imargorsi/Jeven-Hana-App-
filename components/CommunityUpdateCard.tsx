@@ -5,6 +5,7 @@ import { Pressable, View } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
+import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { formatRelativeTime } from "@/lib/formatter.utils";
 import { shareContent } from "@/lib/linking.utils";
@@ -32,6 +33,7 @@ export function CommunityUpdateCard({
   onLike,
   className,
 }: ICommunityUpdateCardProps) {
+  const { requireAuth } = useRequireAuth();
   const isUrdu = post.contentIsUrdu ?? hasUrduScript(post.content);
   const likeCount = post.likeCount;
 
@@ -111,7 +113,7 @@ export function CommunityUpdateCard({
           accessibilityRole="button"
           accessibilityLabel={post.isLikedByMe ? "Unlike" : "Like"}
           disabled={!onLike}
-          onPress={() => onLike?.(post.id)}
+          onPress={() => requireAuth(() => onLike?.(post.id))}
           className="flex-row items-center gap-1.5 active:opacity-70"
         >
           <SymbolView

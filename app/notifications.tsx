@@ -30,7 +30,6 @@ function navigateForNotification(
   if (n.targetType === "event") router.push(href("/(tabs)/events"));
   if (n.targetType === "business") router.push(href(`/businesses/${n.targetId}`));
   if (n.targetType === "place") router.push(href(`/places/${n.targetId}`));
-  if (n.targetType === "best-of") router.push(href(`/best-of/${n.targetId}`));
 }
 
 export default function NotificationsScreen() {

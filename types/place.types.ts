@@ -30,5 +30,7 @@ export interface IPlace {
   location: IGeoLocation;
   hours?: IOpeningHours[];
   isNearby?: boolean;
+  /** Curated Jevan Hana Ka Best badge */
+  isKaBest?: boolean;
   tags?: string[];
 }

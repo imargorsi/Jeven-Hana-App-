@@ -9,20 +9,17 @@ interface ISavedItemsState {
   businesses: string[];
   places: string[];
   events: string[];
-  "best-of": string[];
   isSaved: (type: TSavedItemType, id: string) => boolean;
   toggleSaved: (type: TSavedItemType, id: string) => void;
   removeSaved: (type: TSavedItemType, id: string) => void;
 }
 
-function keyFor(type: TSavedItemType): keyof Pick<
-  ISavedItemsState,
-  "businesses" | "places" | "events" | "best-of"
-> {
+function keyFor(
+  type: TSavedItemType,
+): keyof Pick<ISavedItemsState, "businesses" | "places" | "events"> {
   if (type === "business") return "businesses";
   if (type === "place") return "places";
-  if (type === "event") return "events";
-  return "best-of";
+  return "events";
 }
 
 export const useSavedItemsStore = create<ISavedItemsState>()(
@@ -31,7 +28,6 @@ export const useSavedItemsStore = create<ISavedItemsState>()(
       businesses: [],
       places: [],
       events: [],
-      "best-of": [],
       isSaved: (type, id) => get()[keyFor(type)].includes(id),
       toggleSaved: (type, id) => {
         const key = keyFor(type);

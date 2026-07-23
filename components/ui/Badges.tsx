@@ -3,29 +3,9 @@ import { View } from "react-native";
 import { Text } from "@/components/ui/Text";
 import { cn } from "@/lib/cn.utils";
 
-export function RankBadge({
-  rank,
-  className,
-}: {
-  rank: number;
-  className?: string;
-}) {
-  return (
-    <View
-      className={cn(
-        "h-8 w-8 items-center justify-center rounded-full bg-primary",
-        className,
-      )}
-    >
-      <Text variant="caption" tone="background" weight="bold">
-        #{rank}
-      </Text>
-    </View>
-  );
-}
-
 /**
  * Curated Jevan Hana Ka Best badge — solid primary gold, clean & modern.
+ * Badge only — not a separate listing module.
  */
 export function KaBestBadge({
   className,

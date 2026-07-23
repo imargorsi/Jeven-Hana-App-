@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
-import { BestOfCard } from "@/components/BestOfCard";
 import { BusinessCard } from "@/components/BusinessCard";
 import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
 import { EventCard } from "@/components/EventCard";
@@ -74,7 +73,6 @@ export default function SearchScreen() {
     return (
       results.businesses.length +
       results.places.length +
-      results.bestOf.length +
       results.posts.length +
       results.events.length
     );
@@ -85,7 +83,6 @@ export default function SearchScreen() {
     if (tab === "all") return totalCount;
     if (tab === "businesses") return results.businesses.length;
     if (tab === "places") return results.places.length;
-    if (tab === "best-of") return results.bestOf.length;
     if (tab === "community") return results.posts.length;
     return results.events.length;
   }, [results, tab, totalCount]);
@@ -174,7 +171,7 @@ export default function SearchScreen() {
                 tone="muted"
                 className="mt-1.5 text-center"
               >
-                Find businesses, places, Ka Best, events, and community updates.
+                Find businesses, places, events, and community updates.
               </Text>
             </View>
           ) : null}
@@ -201,10 +198,6 @@ export default function SearchScreen() {
             ))}
           {(tab === "all" || tab === "places") &&
             results?.places.map((p) => <PlaceCard key={p.id} place={p} />)}
-          {(tab === "all" || tab === "best-of") &&
-            results?.bestOf.map((b) => (
-              <BestOfCard key={b.id} listing={b} variant="vertical" />
-            ))}
           {(tab === "all" || tab === "community") &&
             results?.posts.map((p) => (
               <CommunityUpdateCard key={p.id} post={p} onLike={likePost} />

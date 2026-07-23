@@ -1,22 +1,19 @@
 import { useQueries } from "@tanstack/react-query";
 import { FlatList, View } from "react-native";
 
-import { BestOfCard } from "@/components/BestOfCard";
 import { BusinessCard } from "@/components/BusinessCard";
 import { EventCard } from "@/components/EventCard";
 import { PlaceCard } from "@/components/PlaceCard";
 import { EmptyState, LoadingBlock, Screen } from "@/components/ui";
-import { getBestOfById } from "@/lib/services/best-of.service";
 import { getBusinessById } from "@/lib/services/businesses.service";
 import { getEventById } from "@/lib/services/events.service";
 import { getPlaceById } from "@/lib/services/places.service";
 import { useSavedItemsStore } from "@/stores/useSavedItemsStore";
-import type { IBestOfListing } from "@/types/best-of.types";
 import type { IBusiness } from "@/types/business.types";
 import type { IEvent } from "@/types/event.types";
 import type { IPlace } from "@/types/place.types";
 
-type TSavedKind = "business" | "place" | "event" | "best-of";
+type TSavedKind = "business" | "place" | "event";
 
 interface ISavedRef {
   kind: TSavedKind;
@@ -26,20 +23,17 @@ interface ISavedRef {
 type TSavedRow =
   | { kind: "business"; id: string; data: IBusiness }
   | { kind: "place"; id: string; data: IPlace }
-  | { kind: "event"; id: string; data: IEvent }
-  | { kind: "best-of"; id: string; data: IBestOfListing };
+  | { kind: "event"; id: string; data: IEvent };
 
 export default function SavedPlacesScreen() {
   const businesses = useSavedItemsStore((s) => s.businesses);
   const places = useSavedItemsStore((s) => s.places);
   const events = useSavedItemsStore((s) => s.events);
-  const bestOf = useSavedItemsStore((s) => s["best-of"]);
 
   const refs: ISavedRef[] = [
     ...businesses.map((id) => ({ kind: "business" as const, id })),
     ...places.map((id) => ({ kind: "place" as const, id })),
     ...events.map((id) => ({ kind: "event" as const, id })),
-    ...bestOf.map((id) => ({ kind: "best-of" as const, id })),
   ];
 
   const queries = useQueries({
@@ -48,8 +42,7 @@ export default function SavedPlacesScreen() {
       queryFn: async () => {
         if (ref.kind === "business") return getBusinessById(ref.id);
         if (ref.kind === "place") return getPlaceById(ref.id);
-        if (ref.kind === "event") return getEventById(ref.id);
-        return getBestOfById(ref.id);
+        return getEventById(ref.id);
       },
     })),
   });
@@ -84,15 +77,12 @@ export default function SavedPlacesScreen() {
           if (item.kind === "place") {
             return <PlaceCard place={item.data} />;
           }
-          if (item.kind === "event") {
-            return <EventCard event={item.data} />;
-          }
-          return <BestOfCard listing={item.data} variant="vertical" />;
+          return <EventCard event={item.data} />;
         }}
         ListEmptyComponent={
           <EmptyState
             title="Nothing saved"
-            description="Bookmark businesses, places, or Ka Best to see them here."
+            description="Bookmark businesses, places, or events to see them here."
           />
         }
         ItemSeparatorComponent={() => <View className="h-0" />}

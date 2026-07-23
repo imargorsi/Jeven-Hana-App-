@@ -8,7 +8,6 @@ const TAB_LABEL: Record<TSearchTab, string> = {
   all: "All",
   businesses: "Businesses",
   places: "Places",
-  "best-of": "Ka Best",
   community: "Community",
   events: "Events",
 };
@@ -17,7 +16,6 @@ export const SEARCH_FILTERS: { key: TSearchTab; label: string }[] = [
   { key: "all", label: TAB_LABEL.all },
   { key: "businesses", label: TAB_LABEL.businesses },
   { key: "places", label: TAB_LABEL.places },
-  { key: "best-of", label: TAB_LABEL["best-of"] },
   { key: "community", label: TAB_LABEL.community },
   { key: "events", label: TAB_LABEL.events },
 ];

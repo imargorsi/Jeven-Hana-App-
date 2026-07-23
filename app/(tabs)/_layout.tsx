@@ -2,10 +2,9 @@ import { Tabs } from "expo-router";
 
 import { AppTabBar } from "@/components/ui/AppTabBar";
 import { palette } from "@/constants/Colors";
-import { isClerkConfigured } from "@/features/auth/auth.config";
-import { ClerkSignedInGuard } from "@/features/auth/components/ClerkSignedInGuard";
 
-function TabNavigator() {
+/** Tabs are public for browse; account actions gate to sign up. */
+export default function TabLayout() {
   return (
     <Tabs
       tabBar={(props) => <AppTabBar {...props} />}
@@ -20,17 +19,5 @@ function TabNavigator() {
       <Tabs.Screen name="events" options={{ title: "Events" }} />
       <Tabs.Screen name="profile" options={{ title: "Profile" }} />
     </Tabs>
-  );
-}
-
-export default function TabLayout() {
-  if (!isClerkConfigured) {
-    return <TabNavigator />;
-  }
-
-  return (
-    <ClerkSignedInGuard>
-      <TabNavigator />
-    </ClerkSignedInGuard>
   );
 }

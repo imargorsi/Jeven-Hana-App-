@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, TextInput, View } from "react-native";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
 import { fonts } from "@/constants/Fonts";
+import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { withAlpha } from "@/lib/color.utils";
 
@@ -19,6 +20,7 @@ export function BusinessReviewForm({
   onSubmit,
   className,
 }: IBusinessReviewFormProps) {
+  const { requireAuth } = useRequireAuth();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
@@ -47,9 +49,11 @@ export function BusinessReviewForm({
           disabled={!canSubmit}
           hitSlop={6}
           onPress={() => {
-            onSubmit({ rating, comment: comment.trim() });
-            setRating(0);
-            setComment("");
+            requireAuth(() => {
+              onSubmit({ rating, comment: comment.trim() });
+              setRating(0);
+              setComment("");
+            });
           }}
           className={cn(
             "min-h-9 flex-row items-center gap-1.5 rounded-button border border-primary bg-transparent px-3 py-1.5 active:opacity-80",
@@ -90,7 +94,7 @@ export function BusinessReviewForm({
               accessibilityRole="button"
               accessibilityLabel={`${value} star${value === 1 ? "" : "s"}`}
               hitSlop={8}
-              onPress={() => setRating(value)}
+              onPress={() => requireAuth(() => setRating(value))}
               className="active:opacity-80"
             >
               <SymbolView

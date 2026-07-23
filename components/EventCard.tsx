@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
+import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import {
   formatEventDate,
@@ -25,6 +26,7 @@ export function EventCard({
   onToggleInterested,
   className,
 }: IEventCardProps) {
+  const { requireAuth } = useRequireAuth();
   const month = formatEventMonthAbbrev(event.startsAt);
   const day = formatEventDay(event.startsAt);
   const isGoing = Boolean(event.isInterestedByMe);
@@ -70,7 +72,7 @@ export function EventCard({
                 accessibilityState={{ selected: isGoing }}
                 disabled={isToggling}
                 hitSlop={6}
-                onPress={onToggleInterested}
+                onPress={() => requireAuth(() => onToggleInterested?.())}
                 className={cn(
                   "h-8 min-w-8 items-center justify-center rounded-full px-2.5 active:opacity-80",
                   isGoing ? "bg-primary" : "bg-primary/15",
