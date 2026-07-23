@@ -13,7 +13,7 @@ export default function HomeScreen() {
     <Screen>
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 pb-12 pt-2"
+        contentContainerClassName="px-4 pb-12 pt-3"
         showsVerticalScrollIndicator={false}
       >
         <HomeTownStrip />

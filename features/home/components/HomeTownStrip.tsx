@@ -14,7 +14,7 @@ export function HomeTownStrip({ className }: IHomeTownStripProps) {
   return (
     <View
       className={cn(
-        "mb-4 flex-row items-center gap-1.5 rounded-chip border border-cream/10 bg-surface/60 px-3 py-2",
+        "mb-4 flex-row items-center gap-1.5 rounded-chip bg-surface px-3 py-2",
         className,
       )}
     >

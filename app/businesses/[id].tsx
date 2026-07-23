@@ -1,89 +1,131 @@
-import { useQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
+import { SymbolView } from "expo-symbols";
 import { ScrollView, View } from "react-native";
 
+import { BusinessReviewForm } from "@/components/BusinessReviewForm";
+import { BusinessReviewList } from "@/components/BusinessReviewList";
 import { ContactActions } from "@/components/ContactActions";
-import { ImageGallery } from "@/components/ImageGallery";
+import { ListingHero } from "@/components/ListingHero";
 import {
   ErrorState,
+  KaBestBadge,
   LoadingBlock,
   RatingDisplay,
-  SaveButton,
   Screen,
-  ShareButton,
   Text,
 } from "@/components/ui";
-import { formatShortDate } from "@/lib/formatter.utils";
+import { palette } from "@/constants/Colors";
+import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
+import { useBusinessDetail } from "@/features/businesses/useBusinessDetail.hook";
 import { shareContent } from "@/lib/linking.utils";
-import { getBusinessById } from "@/lib/services/businesses.service";
+import { getBusinessCategoryLabel } from "@/lib/services/businesses.service";
 
 export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const {
+    business,
+    isLoading,
+    isError,
+    refetch,
+    submitReview,
+    isSubmittingReview,
+  } = useBusinessDetail(id);
 
-  const query = useQuery({
-    queryKey: ["business", id],
-    queryFn: () => getBusinessById(id),
-    enabled: Boolean(id),
-  });
-
-  if (query.isLoading) {
+  if (isLoading) {
     return (
-      <Screen withSafeArea={false}>
+      <Screen withSafeArea={false} withAppHeader={false}>
         <LoadingBlock />
       </Screen>
     );
   }
 
-  if (query.isError || !query.data) {
+  if (isError || !business) {
     return (
-      <Screen withSafeArea={false} className="px-4">
-        <ErrorState onRetry={() => void query.refetch()} />
+      <Screen withSafeArea={false} withAppHeader={false} className="px-4">
+        <ErrorState onRetry={() => void refetch()} />
       </Screen>
     );
   }
 
-  const business = query.data;
+  const categoryLabel = getBusinessCategoryLabel(business.categorySlug);
+  const metaLine = [categoryLabel, ...(business.tags ?? [])]
+    .filter(Boolean)
+    .join(" · ");
+  const openStatus = getBusinessOpenStatus(business.hours);
+  const shareMessage = `${business.name} — ${business.location.address}`;
 
   return (
-    <Screen withSafeArea={false}>
-      <Stack.Screen
-        options={{
-          title: business.name,
-          headerRight: () => (
-            <View className="flex-row items-center gap-1 pr-1">
-              <SaveButton type="business" id={business.id} />
-              <ShareButton
-                onPress={() =>
-                  void shareContent(
-                    `${business.name} — ${business.location.address}`,
-                  )
-                }
-              />
+    <Screen withSafeArea={false} withAppHeader={false}>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="pb-14"
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <ListingHero
+          urls={business.imageUrls}
+          saveType="business"
+          saveId={business.id}
+          onShare={() => void shareContent(shareMessage)}
+        />
+
+        <View className="px-4 pt-2">
+          <View className="flex-row items-start justify-between gap-3">
+            <View className="min-w-0 flex-1 gap-2">
+              <Text variant="h2" numberOfLines={2}>
+                {business.name}
+              </Text>
+              {business.isKaBest ? <KaBestBadge size="sm" /> : null}
             </View>
-          ),
-        }}
-      />
-      <ScrollView contentContainerClassName="pb-10">
-        <ImageGallery urls={business.imageUrls} />
-        <View className="px-4 pt-4">
-          <Text variant="h2">{business.name}</Text>
-          {business.nameUrdu ? (
-            <Text variant="body" tone="muted" isUrdu className="mt-1">
-              {business.nameUrdu}
+            {business.nameUrdu ? (
+              <Text
+                variant="bodySmall"
+                tone="muted"
+                isUrdu
+                className="shrink pt-1"
+                numberOfLines={2}
+              >
+                {business.nameUrdu}
+              </Text>
+            ) : null}
+          </View>
+
+          <View className="mt-3 flex-row items-center gap-2">
+            <RatingDisplay
+              rating={business.rating}
+              reviewCount={business.reviewCount}
+              size="md"
+            />
+            <Text variant="caption" tone="muted">
+              reviews
             </Text>
-          ) : null}
-          <RatingDisplay
-            rating={business.rating}
-            reviewCount={business.reviewCount}
-            size="md"
-            className="mt-2"
-          />
-          <Text variant="body" className="mt-4">
-            {business.description}
-          </Text>
-          <Text variant="caption" tone="muted" className="mt-2">
-            {business.location.address}
-          </Text>
+          </View>
+
+          <View className="mt-2.5 flex-row flex-wrap items-center gap-2">
+            {metaLine ? (
+              <Text variant="caption" tone="muted">
+                {metaLine}
+              </Text>
+            ) : null}
+            <View
+              className={
+                openStatus.isOpen
+                  ? "rounded-chip bg-success/15 px-2 py-0.5"
+                  : "rounded-chip bg-cream/10 px-2 py-0.5"
+              }
+            >
+              <Text
+                variant="caption"
+                weight="semibold"
+                tone={openStatus.isOpen ? "success" : "muted"}
+              >
+                {openStatus.isOpen ? "Open" : "Closed"}
+              </Text>
+            </View>
+            <Text variant="caption" tone="muted">
+              {openStatus.detail}
+            </Text>
+          </View>
 
           <ContactActions
             className="mt-5"
@@ -92,48 +134,57 @@ export default function BusinessDetailScreen() {
             lat={business.location.lat}
             lng={business.location.lng}
             label={business.name}
+            onShare={() => void shareContent(shareMessage)}
           />
 
-          <Text variant="h3" className="mb-3 mt-8">
-            Opening hours
-          </Text>
-          <View className="gap-2 rounded-card border border-cream/10 bg-surface p-4">
-            {business.hours.map((h) => (
-              <View key={h.day} className="flex-row justify-between">
-                <Text variant="bodySmall">{h.day}</Text>
-                <Text variant="bodySmall" tone="muted">
-                  {h.isClosed ? "Closed" : `${h.open} – ${h.close}`}
-                </Text>
-              </View>
-            ))}
+          <View className="mt-8">
+            <Text variant="h3" className="mb-2">
+              About
+            </Text>
+            <Text variant="bodySmall" tone="muted" className="leading-6">
+              {business.description}
+            </Text>
           </View>
 
-          <Text variant="h3" className="mb-3 mt-8">
-            Ratings & reviews
-          </Text>
-          {business.reviews.length === 0 ? (
-            <Text tone="muted">No reviews yet.</Text>
-          ) : (
-            <View className="gap-3">
-              {business.reviews.map((review) => (
-                <View
-                  key={review.id}
-                  className="rounded-card border border-cream/10 bg-surface p-4"
-                >
-                  <View className="mb-1 flex-row items-center justify-between">
-                    <Text variant="bodySmall" weight="semibold">
-                      {review.authorName}
-                    </Text>
-                    <RatingDisplay rating={review.rating} />
-                  </View>
-                  <Text variant="bodySmall">{review.comment}</Text>
-                  <Text variant="caption" tone="muted" className="mt-2">
-                    {formatShortDate(review.createdAt)}
-                  </Text>
-                </View>
-              ))}
+          <View className="mt-6 flex-row items-start gap-3 rounded-card border border-cream/10 bg-surface/60 p-3.5">
+            <View className="h-9 w-9 items-center justify-center rounded-full bg-primary/15">
+              <SymbolView
+                name={{
+                  ios: "mappin.and.ellipse",
+                  android: "location_on",
+                  web: "location_on",
+                }}
+                size={16}
+                tintColor={palette.primary}
+              />
             </View>
-          )}
+            <View className="min-w-0 flex-1">
+              <Text variant="caption" tone="muted" weight="medium">
+                Address
+              </Text>
+              <Text variant="bodySmall" className="mt-0.5">
+                {business.location.address}
+              </Text>
+            </View>
+          </View>
+
+          <View className="mt-8">
+            <Text variant="h3" className="mb-1">
+              Reviews
+            </Text>
+            <Text variant="caption" tone="muted" className="mb-4">
+              {business.reviewCount} reviews · {business.rating.toFixed(1)}{" "}
+              average
+            </Text>
+
+            <BusinessReviewForm
+              className="mb-4"
+              isSubmitting={isSubmittingReview}
+              onSubmit={(input) => submitReview(input)}
+            />
+
+            <BusinessReviewList reviews={business.reviews} />
+          </View>
         </View>
       </ScrollView>
     </Screen>

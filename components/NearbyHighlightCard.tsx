@@ -9,14 +9,15 @@ import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
 import { toImageSource } from "@/data/mocks/mock.utils";
+import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import { getBusinessCategoryLabel } from "@/lib/services/businesses.service";
 import type { IBusiness } from "@/types/business.types";
 
-export const NEARBY_HIGHLIGHT_CARD_WIDTH = 224;
-export const NEARBY_HIGHLIGHT_CARD_GAP = 12;
-const IMAGE_HEIGHT = 144;
+export const NEARBY_HIGHLIGHT_CARD_WIDTH = 248;
+export const NEARBY_HIGHLIGHT_CARD_GAP = 14;
+const IMAGE_HEIGHT = 128;
 
 interface INearbyHighlightCardProps {
   business: IBusiness;
@@ -29,19 +30,22 @@ export function NearbyHighlightCard({
 }: INearbyHighlightCardProps) {
   const router = useRouter();
   const categoryLabel = getBusinessCategoryLabel(business.categorySlug);
-  const showKaBest = Boolean(business.isKaBest);
+  const metaLine = [categoryLabel, business.tags?.[0]]
+    .filter(Boolean)
+    .join(" · ");
+  const openStatus = getBusinessOpenStatus(business.hours);
 
   return (
     <Pressable
       accessibilityRole="button"
       onPress={() => router.push(href(`/businesses/${business.id}`))}
       className={cn(
-        "overflow-hidden rounded-card border border-cream/10 bg-surface",
+        "overflow-hidden rounded-card border border-cream/10 bg-surface active:opacity-95",
         className,
       )}
       style={{ width: NEARBY_HIGHLIGHT_CARD_WIDTH }}
     >
-      <View style={{ height: IMAGE_HEIGHT }}>
+      <View className="relative overflow-hidden" style={{ height: IMAGE_HEIGHT }}>
         <Image
           source={toImageSource(business.imageUrls[0])}
           style={{
@@ -51,47 +55,69 @@ export function NearbyHighlightCard({
           contentFit="cover"
           transition={200}
         />
-        {showKaBest ? (
-          <View className="absolute left-2 top-2">
-            <KaBestBadge />
-          </View>
-        ) : null}
+        <View className="absolute bottom-1.5 left-1.5 rounded-chip bg-background/75 px-1.5 py-0.5">
+          <Text
+            variant="caption"
+            weight="semibold"
+            tone={openStatus.isOpen ? "success" : "muted"}
+            style={{ fontSize: 10, lineHeight: 12 }}
+          >
+            {openStatus.isOpen ? "Open" : "Closed"}
+          </Text>
+        </View>
         <View
-          className="absolute right-2 top-2 rounded-full bg-background/55 p-1"
+          className="absolute right-1.5 top-1.5 rounded-full bg-background/55 p-1"
           onStartShouldSetResponder={() => true}
         >
-          <SaveButton type="business" id={business.id} size={18} />
+          <SaveButton
+            type="business"
+            id={business.id}
+            size={17}
+            color={palette.primary}
+          />
         </View>
       </View>
 
-      <View className="gap-1.5 p-3.5">
-        <View className="flex-row items-center gap-1.5">
-          <SymbolView
-            name={{
-              ios: "building.2",
-              android: "store",
-              web: "store",
-            }}
-            size={12}
-            tintColor={palette.primary}
-          />
-          <Text variant="caption" tone="muted" numberOfLines={1}>
-            {categoryLabel}
-          </Text>
-        </View>
-
+      <View className="gap-1.5 px-3.5 py-2.5">
         <Text variant="bodySmall" weight="semibold" numberOfLines={1}>
           {business.name}
         </Text>
 
-        <RatingDisplay
-          rating={business.rating}
-          reviewCount={business.reviewCount}
-        />
+        <View className="flex-row flex-wrap items-center gap-2">
+          {business.isKaBest ? <KaBestBadge size="sm" /> : null}
+          <RatingDisplay
+            rating={business.rating}
+            reviewCount={business.reviewCount}
+          />
+        </View>
 
-        <Text variant="caption" tone="muted" numberOfLines={1}>
-          {business.location.address}
-        </Text>
+        {metaLine ? (
+          <Text variant="caption" tone="muted" numberOfLines={1}>
+            {metaLine}
+          </Text>
+        ) : null}
+
+        <View className="flex-row items-center gap-1.5">
+          <View className="h-5 w-5 items-center justify-center rounded-full bg-primary/15">
+            <SymbolView
+              name={{
+                ios: "mappin.and.ellipse",
+                android: "location_on",
+                web: "location_on",
+              }}
+              size={11}
+              tintColor={palette.primary}
+            />
+          </View>
+          <Text
+            variant="caption"
+            tone="muted"
+            className="min-w-0 flex-1"
+            numberOfLines={1}
+          >
+            {business.location.address}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );

@@ -21,6 +21,8 @@ export interface IScreenProps extends ViewProps {
   /** Unified page title under the header. */
   title?: string;
   subtitle?: string;
+  /** Center the page title (e.g. Explore). */
+  titleAlign?: "start" | "center";
   showBack?: boolean;
   headerRight?: React.ReactNode;
 }
@@ -33,6 +35,7 @@ export function Screen({
   hideHeaderSearch = false,
   title,
   subtitle,
+  titleAlign = "start",
   showBack = false,
   headerRight,
   ...rest
@@ -51,6 +54,7 @@ export function Screen({
           <PageHeading
             title={title}
             subtitle={subtitle}
+            align={titleAlign}
             showBack={showBack}
             rightSlot={headerRight}
           />

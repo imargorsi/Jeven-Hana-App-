@@ -1,217 +1,81 @@
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { FlatList, View } from "react-native";
 
-import { BestOfCard } from "@/components/BestOfCard";
 import { BusinessCard } from "@/components/BusinessCard";
-import { CategoryChip } from "@/components/CategoryChip";
-import { PlaceCard } from "@/components/PlaceCard";
-import {
-  Screen,
-  SectionHeader,
-  Text,
-  LoadingBlock,
-  ErrorState,
-} from "@/components/ui";
-import { href } from "@/lib/navigation.utils";
-import { getBestOfListings } from "@/lib/services/best-of.service";
-import { getBusinessCategories, getBusinesses } from "@/lib/services/businesses.service";
-import { getPlaces } from "@/lib/services/places.service";
-
-type TExploreFilter = "all" | "businesses" | "places" | "best-of";
+import { ErrorState, LoadingBlock, Screen, Text } from "@/components/ui";
+import { ExploreCategoryRow } from "@/features/explore/components/ExploreCategoryRow";
+import { useExploreListings } from "@/features/explore/useExploreListings.hook";
 
 export default function ExploreScreen() {
-  const router = useRouter();
-  const [filter, setFilter] = useState<TExploreFilter>("all");
-  const [isGrid, setIsGrid] = useState(false);
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    businesses,
+    count,
+    isLoading,
+    isError,
+    refetch,
+  } = useExploreListings();
 
-  const query = useQuery({
-    queryKey: ["explore-hub"],
-    queryFn: async () => {
-      const [categories, businesses, places, bestOf, topRated] =
-        await Promise.all([
-          getBusinessCategories(),
-          getBusinesses({ featuredOnly: true, limit: 8 }),
-          getPlaces({ nearbyOnly: true, limit: 8 }),
-          getBestOfListings({ limit: 6 }),
-          getBusinesses({ topRatedOnly: true, limit: 8 }),
-        ]);
-      return { categories, businesses, places, bestOf, topRated };
-    },
-  });
-
-  if (query.isLoading) {
+  if (isLoading) {
     return (
-      <Screen title="Explore" subtitle="دریافت کریں">
-        <LoadingBlock />
+      <Screen>
+        <LoadingBlock className="py-16" />
       </Screen>
     );
   }
 
-  if (query.isError || !query.data) {
+  if (isError) {
     return (
-      <Screen title="Explore" subtitle="دریافت کریں">
-        <ErrorState onRetry={() => void query.refetch()} />
+      <Screen>
+        <ErrorState onRetry={() => void refetch()} />
       </Screen>
     );
   }
-
-  const { categories, businesses, places, bestOf, topRated } = query.data;
 
   return (
-    <Screen title="Explore" subtitle="دریافت کریں">
-      <ScrollView
+    <Screen>
+      <FlatList
         className="flex-1"
-        contentContainerClassName="px-4 pb-10"
-        showsVerticalScrollIndicator={false}
-      >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="mb-5"
-        >
-          {(
-            [
-              ["all", "All"],
-              ["businesses", "Businesses"],
-              ["places", "Places"],
-              ["best-of", "Ka Best"],
-            ] as const
-          ).map(([key, label]) => (
-            <CategoryChip
-              key={key}
-              label={label}
-              isActive={filter === key}
-              onPress={() => setFilter(key)}
+        data={businesses}
+        keyExtractor={(item) => item.id}
+        contentContainerClassName="px-4 pb-14 pt-4"
+        ListHeaderComponent={
+          <View className="mb-5">
+            <ExploreCategoryRow
+              selected={selectedCategory}
+              onSelect={setSelectedCategory}
             />
-          ))}
-        </ScrollView>
 
-        <View className="mb-6 flex-row gap-3">
-          <Pressable
-            onPress={() => router.push(href("/businesses"))}
-            className="flex-1 rounded-card border border-cream/10 bg-surface p-4"
-          >
-            <Text variant="bodySmall" weight="semibold">
-              Business Directory
-            </Text>
-            <Text variant="caption" tone="muted" className="mt-1">
-              Restaurants, shops & services
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => router.push(href("/places"))}
-            className="flex-1 rounded-card border border-cream/10 bg-surface p-4"
-          >
-            <Text variant="bodySmall" weight="semibold">
-              Places Directory
-            </Text>
-            <Text variant="caption" tone="muted" className="mt-1">
-              Mosques, parks & more
-            </Text>
-          </Pressable>
-        </View>
-
-        <Pressable
-          onPress={() => router.push(href("/best-of"))}
-          className="mb-6 rounded-card border border-primary/30 bg-primary/10 p-4"
-        >
-          <Text variant="h3">Jevan Hana Ka Best</Text>
-          <Text variant="caption" tone="muted" className="mt-1">
-            Neighbour-voted local favourites
-          </Text>
-        </Pressable>
-
-        <SectionHeader title="Popular categories" />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="mb-6"
-        >
-          {categories.slice(0, 8).map((cat) => (
-            <CategoryChip
-              key={cat.slug}
-              label={cat.name}
-              onPress={() =>
-                router.push(href(`/businesses/category/${cat.slug}`))
-              }
-            />
-          ))}
-        </ScrollView>
-
-        {(filter === "all" || filter === "best-of") && (
-          <>
-            <SectionHeader
-              title="Ka Best picks"
-              onActionPress={() => router.push(href("/best-of"))}
-            />
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="mb-6"
-              contentContainerClassName="gap-3"
-            >
-              {bestOf.items.map((listing) => (
-                <BestOfCard key={listing.id} listing={listing} />
-              ))}
-            </ScrollView>
-          </>
-        )}
-
-        {(filter === "all" || filter === "businesses") && (
-          <>
-            <View className="mb-3 flex-row items-center justify-between">
-              <SectionHeader
-                title="Top-rated listings"
-                onActionPress={() => router.push(href("/businesses"))}
-                className="mb-0 flex-1"
-              />
-              <Pressable onPress={() => setIsGrid((v) => !v)} hitSlop={8}>
-                <Text variant="label" tone="primary">
-                  {isGrid ? "List" : "Grid"}
+            <View className="mt-6 flex-row items-end justify-between">
+              <View>
+                <Text variant="h3">Nearby</Text>
+                <Text variant="caption" tone="muted" className="mt-0.5">
+                  {count} {count === 1 ? "place" : "places"} in Jevan Hana
                 </Text>
-              </Pressable>
+              </View>
             </View>
-            <View
-              className={
-                isGrid ? "mb-6 flex-row flex-wrap gap-3" : "mb-6 gap-3"
-              }
-            >
-              {topRated.items.map((biz) => (
-                <BusinessCard
-                  key={biz.id}
-                  business={biz}
-                  variant={isGrid ? "vertical" : "compact"}
-                  className={isGrid ? "w-[48%]" : undefined}
-                />
-              ))}
-            </View>
-          </>
-        )}
-
-        {(filter === "all" || filter === "places") && (
-          <>
-            <SectionHeader
-              title="Nearby listings"
-              onActionPress={() => router.push(href("/places"))}
-            />
-            <View className="gap-3">
-              {places.items.map((place) => (
-                <PlaceCard key={place.id} place={place} />
-              ))}
-            </View>
-          </>
-        )}
-
-        {filter === "businesses" && businesses.items.length > 0 ? (
-          <View className="mt-4 gap-3">
-            {businesses.items.map((biz) => (
-              <BusinessCard key={biz.id} business={biz} />
-            ))}
           </View>
-        ) : null}
-      </ScrollView>
+        }
+        ItemSeparatorComponent={() => <View className="h-5" />}
+        renderItem={({ item }) => (
+          <BusinessCard business={item} variant="compact" />
+        )}
+        ListEmptyComponent={
+          <View className="rounded-card border border-dashed border-cream/15 bg-surface/50 px-4 py-12">
+            <Text variant="bodySmall" weight="medium" className="text-center">
+              No places in this category
+            </Text>
+            <Text
+              variant="caption"
+              tone="muted"
+              className="mt-1.5 text-center"
+            >
+              Try another filter or check back soon.
+            </Text>
+          </View>
+        }
+        showsVerticalScrollIndicator={false}
+      />
     </Screen>
   );
 }

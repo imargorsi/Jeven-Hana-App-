@@ -24,7 +24,7 @@ import { href } from "@/lib/navigation.utils";
 
 /** Matches Home screen content `px-4`. */
 const SCREEN_GUTTER = 16;
-const SLIDE_HEIGHT = 208;
+const SLIDE_HEIGHT = 200;
 
 interface IHomeHeroSliderProps {
   className?: string;
@@ -122,9 +122,9 @@ function HeroSlide({ slide, width, onCtaPress }: IHeroSlideProps) {
         contentFit="cover"
         transition={200}
       />
-      <View className="absolute inset-0 bg-background/55" />
-      <View className="absolute inset-0 justify-between p-4">
-        <View className="items-end pt-1">
+      <View className="absolute inset-0 bg-background/50" />
+      <View className="absolute inset-0 justify-between p-3.5">
+        <View className="items-end pt-0.5">
           <Text
             isUrdu
             variant="h1"
@@ -138,8 +138,8 @@ function HeroSlide({ slide, width, onCtaPress }: IHeroSlideProps) {
             isUrdu
             variant="bodySmall"
             tone="muted"
-            className="mt-2 text-right"
-            numberOfLines={3}
+            className="mt-1.5 text-right"
+            numberOfLines={2}
           >
             {slide.subtitleUrdu}
           </Text>
@@ -149,7 +149,7 @@ function HeroSlide({ slide, width, onCtaPress }: IHeroSlideProps) {
           <Button
             size="sm"
             onPress={onCtaPress}
-            className="flex-row items-center gap-2 self-end px-4"
+            className="flex-row items-center gap-2 self-end px-3.5"
           >
             <Text variant="button" tone="background">
               {slide.ctaLabel}
@@ -160,7 +160,7 @@ function HeroSlide({ slide, width, onCtaPress }: IHeroSlideProps) {
                 android: "arrow_forward",
                 web: "arrow_forward",
               }}
-              size={16}
+              size={15}
               tintColor={palette.background}
             />
           </Button>

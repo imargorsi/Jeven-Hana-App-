@@ -17,7 +17,7 @@ const QUICK_ACCESS_ITEMS = [
       android: "storefront" as const,
       web: "store" as const,
     },
-    route: "/businesses",
+    route: "/(tabs)/explore",
   },
   {
     id: "places",
@@ -27,7 +27,7 @@ const QUICK_ACCESS_ITEMS = [
       android: "place" as const,
       web: "place" as const,
     },
-    route: "/places",
+    route: "/(tabs)/explore",
   },
   {
     id: "events",
@@ -75,26 +75,28 @@ export function HomeQuickAccess({ className }: IHomeQuickAccessProps) {
         actionLabel="View All"
         onActionPress={() => router.push(href("/(tabs)/explore"))}
       />
-      <View className="flex-row gap-2.5">
+      <View className="flex-row gap-2">
         {QUICK_ACCESS_ITEMS.map((item) => (
           <Pressable
             key={item.id}
             accessibilityRole="button"
             accessibilityLabel={item.labelUrdu}
             onPress={() => router.push(href(item.route))}
-            className="min-h-[92px] flex-1 items-center justify-center rounded-card border border-cream/10 bg-surface px-1 py-3 active:opacity-90"
+            className="min-h-[84px] flex-1 items-center justify-center rounded-card bg-surface px-1 py-2.5 active:opacity-90"
           >
-            <SymbolView
-              name={item.icon}
-              size={26}
-              tintColor={palette.primary}
-            />
+            <View className="h-11 w-11 items-center justify-center rounded-2xl bg-primary/15">
+              <SymbolView
+                name={item.icon}
+                size={22}
+                tintColor={palette.primary}
+              />
+            </View>
             <Text
               isUrdu
               variant="caption"
               tone="primary"
               weight="medium"
-              className="mt-2 text-center"
+              className="mt-1.5 text-center"
               numberOfLines={1}
             >
               {item.labelUrdu}

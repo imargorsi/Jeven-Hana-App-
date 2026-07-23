@@ -37,6 +37,20 @@ function formatTime(date: Date): string {
   return `${hour12}:${paddedMinutes} ${period}`;
 }
 
+/** Convert "09:00" / "22:00" style times to 12-hour AM/PM. */
+export function formatHourMinute12h(time: string): string {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(time.trim());
+  if (!match) return time;
+
+  const hours = Number(match[1]);
+  const minutes = match[2];
+  if (Number.isNaN(hours) || hours < 0 || hours > 23) return time;
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const hour12 = hours % 12 || 12;
+  return `${hour12}:${minutes} ${period}`;
+}
+
 export function formatRelativeTime(iso: string): string {
   const date = parseDate(iso);
   if (!date) return "";

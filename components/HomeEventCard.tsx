@@ -36,26 +36,17 @@ export function HomeEventCard({
       accessibilityRole="button"
       onPress={() => router.push(href(`/events/${event.id}`))}
       className={cn(
-        "rounded-card border border-cream/10 bg-surface p-4",
+        "rounded-card border border-cream/10 bg-surface p-3.5 active:opacity-95",
         className,
       )}
     >
-      <View className="flex-row items-start gap-3.5">
-        <View className="w-14 items-center justify-center rounded-card border border-cream/10 bg-background px-1 py-2.5">
-          <SymbolView
-            name={{
-              ios: "calendar",
-              android: "calendar_month",
-              web: "calendar_month",
-            }}
-            size={14}
-            tintColor={palette.primary}
-          />
+      <View className="flex-row items-start gap-3">
+        <View className="w-14 items-center justify-center rounded-card bg-background px-1.5 py-2">
           <Text
             variant="caption"
             weight="semibold"
             tone="muted"
-            className="mt-1.5 tracking-wide"
+            className="tracking-wide"
           >
             {month}
           </Text>
@@ -64,45 +55,49 @@ export function HomeEventCard({
           </Text>
         </View>
 
-        <View className="min-w-0 flex-1 pt-0.5">
-          <Text variant="body" weight="semibold" numberOfLines={2}>
+        <View className="min-w-0 flex-1">
+          <Text variant="bodySmall" weight="semibold" numberOfLines={2}>
             {event.title}
           </Text>
 
-          <View className="mt-2 flex-row items-center gap-1.5">
-            <SymbolView
-              name={{
-                ios: "clock",
-                android: "schedule",
-                web: "schedule",
-              }}
-              size={13}
-              tintColor={palette.muted}
-            />
+          <View className="mt-1.5 flex-row items-center gap-1.5">
+            <View className="h-5 w-5 items-center justify-center rounded-full bg-primary/15">
+              <SymbolView
+                name={{
+                  ios: "clock",
+                  android: "schedule",
+                  web: "schedule",
+                }}
+                size={11}
+                tintColor={palette.primary}
+              />
+            </View>
             <Text
               variant="caption"
               tone="muted"
-              className="shrink"
+              className="min-w-0 flex-1"
               numberOfLines={1}
             >
               {formatEventDate(event.startsAt)}
             </Text>
           </View>
 
-          <View className="mt-1.5 flex-row items-center gap-1.5">
-            <SymbolView
-              name={{
-                ios: "mappin.and.ellipse",
-                android: "location_on",
-                web: "location_on",
-              }}
-              size={13}
-              tintColor={palette.muted}
-            />
+          <View className="mt-1 flex-row items-center gap-1.5">
+            <View className="h-5 w-5 items-center justify-center rounded-full bg-primary/15">
+              <SymbolView
+                name={{
+                  ios: "mappin.and.ellipse",
+                  android: "location_on",
+                  web: "location_on",
+                }}
+                size={11}
+                tintColor={palette.primary}
+              />
+            </View>
             <Text
               variant="caption"
               tone="muted"
-              className="shrink"
+              className="min-w-0 flex-1"
               numberOfLines={1}
             >
               {event.location.address}
@@ -111,11 +106,7 @@ export function HomeEventCard({
         </View>
       </View>
 
-      <Text variant="bodySmall" tone="muted" className="mt-3" numberOfLines={2}>
-        {event.description}
-      </Text>
-
-      <View className="mt-4 flex-row items-center justify-between gap-3 border-t border-cream/10 pt-3">
+      <View className="mt-3 flex-row items-center justify-between gap-3 border-t border-cream/10 pt-2.5">
         <View className="flex-row items-center gap-1.5">
           <SymbolView
             name={{
@@ -123,7 +114,7 @@ export function HomeEventCard({
               android: "group",
               web: "group",
             }}
-            size={14}
+            size={13}
             tintColor={palette.muted}
           />
           <Text variant="caption" tone="muted">
@@ -141,7 +132,7 @@ export function HomeEventCard({
             onToggleInterested();
           }}
           className={cn(
-            "min-h-10 flex-row items-center gap-1.5 rounded-button border border-primary bg-transparent px-3.5 py-2 active:opacity-80",
+            "min-h-9 flex-row items-center gap-1.5 rounded-button border border-primary bg-transparent px-3 py-1.5 active:opacity-80",
             isGoing && "bg-primary/15",
             isToggling && "opacity-60",
           )}
@@ -156,7 +147,7 @@ export function HomeEventCard({
                   android: isGoing ? "check_circle" : "radio_button_unchecked",
                   web: isGoing ? "check_circle" : "radio_button_unchecked",
                 }}
-                size={15}
+                size={14}
                 tintColor={palette.primary}
               />
               <Text variant="caption" weight="semibold" tone="primary">

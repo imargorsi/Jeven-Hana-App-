@@ -6,7 +6,6 @@ import { Pressable, View } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
-import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
 import { formatRelativeTime } from "@/lib/formatter.utils";
 import { shareContent } from "@/lib/linking.utils";
@@ -14,13 +13,20 @@ import { href } from "@/lib/navigation.utils";
 import { hasUrduScript } from "@/lib/text.utils";
 import type { ICommunityPost } from "@/types/community.types";
 
+const CATEGORY_LABEL: Record<ICommunityPost["category"], string> = {
+  announcement: "Announcement",
+  news: "News",
+  "local-update": "Local update",
+  recommendation: "Recommendation",
+  "lost-found": "Lost & found",
+  general: "General",
+};
+
 interface ICommunityUpdateCardProps {
   post: ICommunityPost;
   width: number;
   className?: string;
 }
-
-const THUMB_SIZE = 88;
 
 export function CommunityUpdateCard({
   post,
@@ -30,7 +36,7 @@ export function CommunityUpdateCard({
   const router = useRouter();
   const isUrdu = post.contentIsUrdu ?? hasUrduScript(post.content);
   const reactions = post.reactions ?? [];
-  const image = post.imageUrls[0];
+  const totalReactions = reactions.reduce((sum, item) => sum + item.count, 0);
 
   return (
     <Pressable
@@ -38,20 +44,29 @@ export function CommunityUpdateCard({
       onPress={() => router.push(href(`/community/${post.id}`))}
       style={{ width }}
       className={cn(
-        "rounded-card border border-cream/10 bg-surface p-4",
+        "rounded-card border border-cream/10 bg-surface p-3.5 active:opacity-95",
         className,
       )}
     >
-      <View className="mb-3 flex-row items-center gap-3">
+      <View className="mb-2.5 flex-row items-center justify-between gap-2">
+        <View className="rounded-chip bg-primary/15 px-2 py-0.5">
+          <Text variant="caption" weight="semibold" tone="primary">
+            {CATEGORY_LABEL[post.category]}
+          </Text>
+        </View>
+        <Text variant="caption" tone="muted">
+          {formatRelativeTime(post.createdAt)}
+        </Text>
+      </View>
+
+      <View className="mb-2.5 flex-row items-center gap-2.5">
         {post.user.isAdmin ? (
           <Image
             source={require("@/assets/images/logo.png")}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              borderWidth: 1,
-              borderColor: palette.surface,
+              width: 32,
+              height: 32,
+              borderRadius: 16,
             }}
             className="bg-background"
             contentFit="contain"
@@ -64,69 +79,55 @@ export function CommunityUpdateCard({
             size="sm"
           />
         )}
-        <View className="min-w-0 flex-1">
-          <View className="flex-row items-center gap-1.5">
-            <Text
-              variant="bodySmall"
-              weight="semibold"
-              numberOfLines={1}
-              className="shrink"
-            >
-              {post.user.fullName}
-            </Text>
-            {post.user.isAdmin ? (
-              <SymbolView
-                name={{
-                  ios: "checkmark.seal.fill",
-                  android: "verified",
-                  web: "verified",
-                }}
-                size={14}
-                tintColor={palette.primary}
-              />
-            ) : null}
-          </View>
+        <View className="min-w-0 flex-1 flex-row items-center gap-1.5">
+          <Text
+            variant="bodySmall"
+            weight="semibold"
+            numberOfLines={1}
+            className="shrink"
+          >
+            {post.user.fullName}
+          </Text>
+          {post.user.isAdmin ? (
+            <SymbolView
+              name={{
+                ios: "checkmark.seal.fill",
+                android: "verified",
+                web: "verified",
+              }}
+              size={13}
+              tintColor={palette.primary}
+            />
+          ) : null}
+        </View>
+      </View>
+
+      <Text
+        variant="bodySmall"
+        isUrdu={isUrdu}
+        className={cn(isUrdu ? "text-right" : "text-left")}
+        numberOfLines={3}
+      >
+        {post.content}
+      </Text>
+
+      <View className="mt-3 flex-row items-center justify-between gap-3 border-t border-cream/10 pt-2.5">
+        <View className="flex-row items-center gap-1.5">
+          <SymbolView
+            name={{
+              ios: "heart",
+              android: "favorite_border",
+              web: "favorite",
+            }}
+            size={14}
+            tintColor={palette.muted}
+          />
           <Text variant="caption" tone="muted">
-            {formatRelativeTime(post.createdAt)}
+            {totalReactions > 0 ? totalReactions : post.likeCount}
           </Text>
         </View>
-      </View>
 
-      <View className="mb-3 flex-row gap-3">
-        <Text
-          variant="bodySmall"
-          isUrdu={isUrdu}
-          className={cn("min-w-0 flex-1", isUrdu ? "text-right" : "text-left")}
-          numberOfLines={4}
-        >
-          {post.content}
-        </Text>
-        {image ? (
-          <Image
-            source={toImageSource(image)}
-            style={{ width: THUMB_SIZE, height: THUMB_SIZE }}
-            className="rounded-lg bg-background"
-            contentFit="cover"
-          />
-        ) : null}
-      </View>
-
-      <View className="flex-row items-center justify-between gap-2">
-        <View className="min-w-0 flex-1 flex-row flex-wrap items-center gap-2">
-          {reactions.map((reaction) => (
-            <View
-              key={reaction.emoji}
-              className="flex-row items-center gap-1 rounded-chip border border-cream/10 bg-background/40 px-2 py-1"
-            >
-              <Text variant="caption">{reaction.emoji}</Text>
-              <Text variant="caption" tone="muted">
-                {reaction.count}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        <View className="flex-row items-center gap-3">
+        <View className="flex-row items-center gap-3.5">
           <View className="flex-row items-center gap-1">
             <SymbolView
               name={{
@@ -134,7 +135,7 @@ export function CommunityUpdateCard({
                 android: "chat_bubble_outline",
                 web: "chat",
               }}
-              size={16}
+              size={14}
               tintColor={palette.muted}
             />
             <Text variant="caption" tone="muted">
@@ -149,7 +150,7 @@ export function CommunityUpdateCard({
               e.stopPropagation?.();
               void shareContent(post.content);
             }}
-            className="flex-row items-center gap-1 active:opacity-70"
+            className="active:opacity-70"
           >
             <SymbolView
               name={{
@@ -157,12 +158,9 @@ export function CommunityUpdateCard({
                 android: "share",
                 web: "share",
               }}
-              size={16}
+              size={14}
               tintColor={palette.muted}
             />
-            <Text variant="caption" tone="muted">
-              Share
-            </Text>
           </Pressable>
         </View>
       </View>

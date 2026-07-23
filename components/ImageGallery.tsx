@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
+import { ScrollView, useWindowDimensions, View } from "react-native";
 
 import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
@@ -26,7 +26,7 @@ export function ImageGallery({
   }
 
   return (
-    <View className={className}>
+    <View className={cn("relative", className)}>
       <ScrollView
         horizontal
         pagingEnabled
@@ -48,14 +48,13 @@ export function ImageGallery({
       {images.length > 1 ? (
         <View className="absolute bottom-3 w-full flex-row justify-center gap-1.5">
           {images.map((_, i) => (
-            <Pressable key={`dot-${i}`} onPress={() => setIndex(i)}>
-              <View
-                className={cn(
-                  "h-1.5 w-1.5 rounded-full",
-                  i === index ? "bg-primary" : "bg-cream/40",
-                )}
-              />
-            </Pressable>
+            <View
+              key={`dot-${i}`}
+              className={cn(
+                "h-1.5 rounded-full",
+                i === index ? "w-4 bg-primary" : "w-1.5 bg-cream/45",
+              )}
+            />
           ))}
         </View>
       ) : null}

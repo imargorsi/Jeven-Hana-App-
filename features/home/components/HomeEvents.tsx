@@ -88,7 +88,7 @@ export function HomeEvents({ className }: IHomeEventsProps) {
         onActionPress={() => router.push(href("/(tabs)/events"))}
       />
 
-      <View className="gap-3">
+      <View className="gap-3.5">
         {events.map((event) => (
           <HomeEventCard
             key={event.id}

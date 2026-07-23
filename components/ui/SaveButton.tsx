@@ -11,12 +11,21 @@ interface ISaveButtonProps {
   type: TSavedItemType;
   id: string;
   size?: number;
+  /** Override icon tint (defaults: primary when saved, cream when not). */
+  color?: string;
   className?: string;
 }
 
-export function SaveButton({ type, id, size = 22, className }: ISaveButtonProps) {
+export function SaveButton({
+  type,
+  id,
+  size = 22,
+  color,
+  className,
+}: ISaveButtonProps) {
   const isSaved = useSavedItemsStore((s) => s.isSaved(type, id));
   const toggleSaved = useSavedItemsStore((s) => s.toggleSaved);
+  const tint = color ?? (isSaved ? palette.primary : palette.cream);
 
   return (
     <Pressable
@@ -36,7 +45,7 @@ export function SaveButton({ type, id, size = 22, className }: ISaveButtonProps)
           web: "bookmark",
         }}
         size={size}
-        tintColor={isSaved ? palette.primary : palette.cream}
+        tintColor={tint}
       />
     </Pressable>
   );
@@ -45,10 +54,16 @@ export function SaveButton({ type, id, size = 22, className }: ISaveButtonProps)
 interface IShareButtonProps {
   onPress: () => void;
   size?: number;
+  color?: string;
   className?: string;
 }
 
-export function ShareButton({ onPress, size = 22, className }: IShareButtonProps) {
+export function ShareButton({
+  onPress,
+  size = 22,
+  color = palette.cream,
+  className,
+}: IShareButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -65,7 +80,7 @@ export function ShareButton({ onPress, size = 22, className }: IShareButtonProps
             web: "share",
           }}
           size={size}
-          tintColor={palette.cream}
+          tintColor={color}
         />
       </View>
     </Pressable>

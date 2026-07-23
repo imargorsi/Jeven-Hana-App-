@@ -11,6 +11,8 @@ interface IPageHeadingProps {
   subtitle?: string;
   /** When true, shows a back chevron (stack screens). */
   showBack?: boolean;
+  /** Center the title when there is no back button / right slot. */
+  align?: "start" | "center";
   rightSlot?: React.ReactNode;
   className?: string;
 }
@@ -22,19 +24,27 @@ export function PageHeading({
   title,
   subtitle,
   showBack = false,
+  align = "start",
   rightSlot,
   className,
 }: IPageHeadingProps) {
   const router = useRouter();
+  const isCentered = align === "center" && !showBack && !rightSlot;
 
   return (
     <View
       className={cn(
-        "mb-3 flex-row items-center justify-between gap-3",
+        "mb-3 flex-row items-center gap-3",
+        isCentered ? "justify-center" : "justify-between",
         className,
       )}
     >
-      <View className="min-w-0 flex-1 flex-row items-center gap-2">
+      <View
+        className={cn(
+          "min-w-0 flex-row items-center gap-2",
+          isCentered ? "justify-center" : "flex-1",
+        )}
+      >
         {showBack ? (
           <Pressable
             accessibilityRole="button"
@@ -54,15 +64,19 @@ export function PageHeading({
             />
           </Pressable>
         ) : null}
-        <View className="min-w-0 flex-1">
-          <Text variant="h3" numberOfLines={1}>
+        <View className={cn("min-w-0", isCentered ? "items-center" : "flex-1")}>
+          <Text
+            variant="h3"
+            numberOfLines={1}
+            className={isCentered ? "text-center" : undefined}
+          >
             {title}
           </Text>
           {subtitle ? (
             <Text
               variant="caption"
               tone="muted"
-              className="mt-0.5"
+              className={cn("mt-0.5", isCentered && "text-center")}
               numberOfLines={1}
               isUrdu={/[؀-ۿ]/.test(subtitle)}
             >

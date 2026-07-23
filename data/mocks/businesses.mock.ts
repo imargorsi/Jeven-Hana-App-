@@ -77,7 +77,29 @@ export const businesses: IBusiness[] = [
     isKaBest: true,
     isTopRated: true,
     tags: ["Chai", "Snacks"],
-    reviews: [],
+    reviews: [
+      {
+        id: "rev-chai-1",
+        authorName: "Sara Ahmed",
+        rating: 5,
+        comment: "Best doodh patti in the neighbourhood. Always fresh.",
+        createdAt: "2026-07-10T18:20:00Z",
+      },
+      {
+        id: "rev-chai-2",
+        authorName: "Hamza Iqbal",
+        rating: 4,
+        comment: "Quiet spot for evening chai. Parking can be tight.",
+        createdAt: "2026-07-02T20:05:00Z",
+      },
+      {
+        id: "rev-chai-3",
+        authorName: "Nida Fatima",
+        rating: 5,
+        comment: "Friendly staff and great snacks with the chai.",
+        createdAt: "2026-06-21T16:40:00Z",
+      },
+    ],
   },
   {
     id: "biz-3",

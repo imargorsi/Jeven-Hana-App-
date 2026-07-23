@@ -96,7 +96,7 @@ export function HomeNearbyHighlights({ className }: IHomeNearbyHighlightsProps) 
         <SectionHeader
           title="Nearby Highlights"
           actionLabel="View All"
-          onActionPress={() => router.push(href("/businesses"))}
+          onActionPress={() => router.push(href("/(tabs)/explore"))}
         />
         <HomeSectionEmpty message="No nearby businesses yet." />
       </View>
@@ -107,8 +107,9 @@ export function HomeNearbyHighlights({ className }: IHomeNearbyHighlightsProps) 
     <View className={cn("mb-6", className)}>
       <SectionHeader
         title="Nearby Highlights"
+        subtitle={`${businesses.length} ${businesses.length === 1 ? "place" : "places"} nearby`}
         actionLabel="View All"
-        onActionPress={() => router.push(href("/businesses"))}
+        onActionPress={() => router.push(href("/(tabs)/explore"))}
       />
 
       <Pressable onHoverIn={pause} onHoverOut={resume}>

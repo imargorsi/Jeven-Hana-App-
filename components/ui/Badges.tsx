@@ -57,11 +57,31 @@ export function RankBadge({
 /**
  * Curated Jevan Hana Ka Best badge — solid primary gold, clean & modern.
  */
-export function KaBestBadge({ className }: { className?: string }) {
+export function KaBestBadge({
+  className,
+  size = "md",
+}: {
+  className?: string;
+  size?: "sm" | "md";
+}) {
+  const isSmall = size === "sm";
+
   return (
-    <View className={cn("rounded-chip bg-primary px-2.5 py-1", className)}>
-      <Text variant="caption" tone="background" weight="bold" numberOfLines={1}>
-        Jevan Hana Ka Best
+    <View
+      className={cn(
+        "self-start rounded-chip bg-primary",
+        isSmall ? "px-2 py-0.5" : "px-2.5 py-1",
+        className,
+      )}
+    >
+      <Text
+        variant="caption"
+        tone="background"
+        weight="bold"
+        numberOfLines={1}
+        style={isSmall ? { fontSize: 10, lineHeight: 14 } : undefined}
+      >
+        {isSmall ? "Ka Best" : "Jevan Hana Ka Best"}
       </Text>
     </View>
   );
