@@ -61,6 +61,16 @@ Implemented with **mock data** (no backend yet):
 
 **Next:** replace `lib/services/*` mocks with real REST APIs; wire Clerk `admin` role + create/moderation UI per `scope.md`.
 
+## Distribution (v1)
+
+| Phase | Channel | Notes |
+| ----- | ------- | ----- |
+| **1 — Now** | **Firebase App Distribution** | Controlled testers (friends / close community); WhatsApp & Facebook OK if keep group small |
+| **2** | Google Play **Closed Testing** | Better for real town users ($25 Play Console) — normal install, auto-updates |
+| **3** | Play **Production** | Open launch |
+
+Firebase works short-term but is **not** ideal for months of whole-town public use (unknown-app warnings, manual updates, trust). Details: local `doc/modules/distribution.md`.
+
 ## Getting started
 
 ```bash
