@@ -49,3 +49,9 @@ export async function getBusinessById(id: string): Promise<IBusiness | null> {
   await delay();
   return businesses.find((b) => b.id === id) ?? null;
 }
+
+export function getBusinessCategoryLabel(
+  slug: TBusinessCategorySlug,
+): string {
+  return businessCategories.find((c) => c.slug === slug)?.name ?? "Business";
+}

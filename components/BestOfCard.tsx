@@ -6,6 +6,7 @@ import { RankBadge } from "@/components/ui/Badges";
 import { RatingDisplay } from "@/components/ui/RatingDisplay";
 import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
+import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import type { IBestOfListing } from "@/types/best-of.types";
@@ -35,7 +36,7 @@ export function BestOfCard({
     >
       <View>
         <Image
-          source={{ uri: listing.imageUrls[0] }}
+          source={toImageSource(listing.imageUrls[0])}
           className={cn("w-full bg-background", isHorizontal ? "h-36" : "h-44")}
           contentFit="cover"
         />

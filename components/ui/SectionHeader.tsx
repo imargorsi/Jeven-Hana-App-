@@ -14,7 +14,7 @@ interface ISectionHeaderProps {
 export function SectionHeader({
   title,
   subtitle,
-  actionLabel = "View all",
+  actionLabel = "View All",
   onActionPress,
   className,
 }: ISectionHeaderProps) {

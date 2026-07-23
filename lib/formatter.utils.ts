@@ -96,3 +96,17 @@ export function formatShortDate(iso: string): string {
   const year = date.getFullYear();
   return `${day} ${month} ${year}`;
 }
+
+/** Uppercase month for event date badges (e.g. "DEC"). */
+export function formatEventMonthAbbrev(iso: string): string {
+  const date = parseDate(iso);
+  if (!date) return "";
+  return MONTHS[date.getMonth()].toUpperCase();
+}
+
+/** Day-of-month number for event date badges (e.g. "24"). */
+export function formatEventDay(iso: string): string {
+  const date = parseDate(iso);
+  if (!date) return "";
+  return String(date.getDate());
+}

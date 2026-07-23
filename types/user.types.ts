@@ -1,3 +1,5 @@
+import type { TAppImage } from "@/types/common.types";
+
 export interface IAppUser {
   id: string;
   username: string;
@@ -6,7 +8,7 @@ export interface IAppUser {
   fullName: string;
   email?: string;
   bio?: string;
-  avatarUrl?: string;
+  avatarUrl?: TAppImage;
   isAdmin?: boolean;
   createdAt: string;
 }

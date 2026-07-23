@@ -1,11 +1,13 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import { ScrollView, Pressable, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 
+import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
+import type { TAppImage } from "@/types/common.types";
 
 interface IImageGalleryProps {
-  urls: string[];
+  urls: TAppImage[];
   className?: string;
   height?: number;
 }
@@ -34,10 +36,10 @@ export function ImageGallery({
           setIndex(next);
         }}
       >
-        {images.map((uri) => (
+        {images.map((image, i) => (
           <Image
-            key={uri}
-            source={{ uri }}
+            key={`gallery-${i}`}
+            source={toImageSource(image)}
             style={{ width, height }}
             contentFit="cover"
           />
@@ -45,8 +47,8 @@ export function ImageGallery({
       </ScrollView>
       {images.length > 1 ? (
         <View className="absolute bottom-3 w-full flex-row justify-center gap-1.5">
-          {images.map((uri, i) => (
-            <Pressable key={uri} onPress={() => setIndex(i)}>
+          {images.map((_, i) => (
+            <Pressable key={`dot-${i}`} onPress={() => setIndex(i)}>
               <View
                 className={cn(
                   "h-1.5 w-1.5 rounded-full",

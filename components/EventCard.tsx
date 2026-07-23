@@ -2,8 +2,9 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 
-import { SaveButton , ShareButton } from "@/components/ui/SaveButton";
+import { SaveButton, ShareButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
+import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
 import { formatEventDate } from "@/lib/formatter.utils";
 import { shareContent } from "@/lib/linking.utils";
@@ -34,7 +35,7 @@ export function EventCard({
       )}
     >
       <Image
-        source={{ uri: event.imageUrls[0] }}
+        source={toImageSource(event.imageUrls[0])}
         className={cn("w-full bg-background", isHorizontal ? "h-36" : "h-40")}
         contentFit="cover"
       />

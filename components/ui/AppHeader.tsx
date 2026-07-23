@@ -57,7 +57,7 @@ export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
           <SearchInput
             value=""
             onChangeText={() => undefined}
-            placeholder="Search…"
+            placeholder="Search businesses, places, events…"
             onPress={() => router.push(href("/search"))}
             className="min-h-10 rounded-chip border-cream/20 bg-surface/80 px-2.5"
           />

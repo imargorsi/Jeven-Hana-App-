@@ -2,10 +2,12 @@ import { Image } from "expo-image";
 import { View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
+import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
+import type { TAppImage } from "@/types/common.types";
 
 interface IAvatarProps {
-  uri?: string | null;
+  uri?: TAppImage | null;
   name?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
@@ -29,7 +31,7 @@ export function Avatar({ uri, name, size = "md", className }: IAvatarProps) {
   if (uri) {
     return (
       <Image
-        source={{ uri }}
+        source={toImageSource(uri)}
         className={cn("rounded-full bg-surface", sizeClass[size], className)}
         contentFit="cover"
       />

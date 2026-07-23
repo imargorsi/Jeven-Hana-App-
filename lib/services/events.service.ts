@@ -63,16 +63,16 @@ export async function toggleEventInterested(id: string): Promise<IEvent | null> 
   if (!event) return null;
   if (interestedIds.has(id)) {
     interestedIds.delete(id);
+    event.interestedCount = Math.max(0, event.interestedCount - 1);
     return {
       ...event,
-      interestedCount: Math.max(0, event.interestedCount - 1),
       isInterestedByMe: false,
     };
   }
   interestedIds.add(id);
+  event.interestedCount += 1;
   return {
     ...event,
-    interestedCount: event.interestedCount + 1,
     isInterestedByMe: true,
   };
 }

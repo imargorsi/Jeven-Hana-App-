@@ -5,6 +5,7 @@ import { Pressable, View } from "react-native";
 import { RatingDisplay } from "@/components/ui/RatingDisplay";
 import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
+import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import type { IBusiness } from "@/types/business.types";
@@ -35,9 +36,10 @@ export function BusinessCard({
     >
       {!isCompact ? (
         <Image
-          source={{ uri: business.imageUrls[0] }}
-          className={cn("w-full bg-background", isHorizontal ? "h-36" : "h-40")}
+          source={toImageSource(business.imageUrls[0])}
+          style={{ width: "100%", height: 160 }}
           contentFit="cover"
+          transition={200}
         />
       ) : null}
       <View className="flex-row p-3">

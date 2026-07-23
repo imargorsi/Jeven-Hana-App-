@@ -47,6 +47,7 @@ export const businesses: IBusiness[] = [
     location: { ...jevanLoc, address: "Block A, Jevan Hana, Garden Town" },
     hours,
     isFeatured: true,
+    isKaBest: true,
     isTopRated: true,
     tags: ["BBQ", "Family"],
     reviews: [
@@ -73,6 +74,7 @@ export const businesses: IBusiness[] = [
     location: { ...jevanLoc, address: "Main Boulevard, Jevan Hana" },
     hours,
     isFeatured: true,
+    isKaBest: true,
     isTopRated: true,
     tags: ["Chai", "Snacks"],
     reviews: [],
@@ -90,6 +92,7 @@ export const businesses: IBusiness[] = [
     location: { ...jevanLoc, address: "Shop 12, Jevan Hana Market" },
     hours,
     isFeatured: true,
+    isKaBest: true,
     tags: ["Grocery"],
     reviews: [],
   },

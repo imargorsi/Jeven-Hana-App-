@@ -53,3 +53,16 @@ export function RankBadge({
     </View>
   );
 }
+
+/**
+ * Curated Jevan Hana Ka Best badge — solid primary gold, clean & modern.
+ */
+export function KaBestBadge({ className }: { className?: string }) {
+  return (
+    <View className={cn("rounded-chip bg-primary px-2.5 py-1", className)}>
+      <Text variant="caption" tone="background" weight="bold" numberOfLines={1}>
+        Jevan Hana Ka Best
+      </Text>
+    </View>
+  );
+}

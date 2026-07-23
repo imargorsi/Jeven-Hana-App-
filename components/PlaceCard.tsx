@@ -4,6 +4,7 @@ import { Pressable, View } from "react-native";
 
 import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
+import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import type { IPlace } from "@/types/place.types";
@@ -32,7 +33,7 @@ export function PlaceCard({
       )}
     >
       <Image
-        source={{ uri: place.imageUrls[0] }}
+        source={toImageSource(place.imageUrls[0])}
         className={cn("w-full bg-background", isHorizontal ? "h-36" : "h-40")}
         contentFit="cover"
       />

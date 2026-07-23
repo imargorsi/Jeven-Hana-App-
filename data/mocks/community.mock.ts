@@ -7,9 +7,9 @@ export const mockUsers: IAppUser[] = [
     id: "user-admin",
     username: "jevanhana_admin",
     firstName: "Jevan",
-    lastName: "Admin",
-    fullName: "Jevan Hana Admin",
-    avatarUrl: IMG.avatar,
+    lastName: "Hana",
+    fullName: "Jevan Hana Community",
+    avatarUrl: IMG.logo,
     isAdmin: true,
     createdAt: "2025-01-01T00:00:00Z",
   },
@@ -32,7 +32,68 @@ export const mockUsers: IAppUser[] = [
   },
 ];
 
+const admin = mockUsers[0];
+
 export let communityPosts: ICommunityPost[] = [
+  {
+    id: "post-admin-1",
+    content:
+      "آج محلے کی صفائی مہم کامیابی سے مکمل ہوئی۔ سب پڑوسیوں کا شکریہ جو آئے!",
+    contentIsUrdu: true,
+    imageUrls: [IMG.community],
+    category: "announcement",
+    createdAt: "2026-07-23T10:00:00Z",
+    user: admin,
+    likeCount: 124,
+    commentCount: 12,
+    isPinned: true,
+    isAnnouncement: true,
+    likedByIds: [],
+    reactions: [
+      { emoji: "👍", count: 48 },
+      { emoji: "❤️", count: 52 },
+      { emoji: "🎉", count: 24 },
+    ],
+  },
+  {
+    id: "post-admin-2",
+    content:
+      "Water supply maintenance this Friday, 10am–2pm in Block A & B. Please store water in advance.",
+    contentIsUrdu: false,
+    imageUrls: [IMG.street],
+    category: "announcement",
+    createdAt: "2026-07-22T14:30:00Z",
+    user: admin,
+    likeCount: 89,
+    commentCount: 18,
+    isPinned: true,
+    isAnnouncement: true,
+    likedByIds: [],
+    reactions: [
+      { emoji: "👍", count: 61 },
+      { emoji: "🔥", count: 18 },
+      { emoji: "👏", count: 10 },
+    ],
+  },
+  {
+    id: "post-admin-3",
+    content:
+      "جمعہ بازار اس ہفتے کمیونٹی ہال میں ہوگا — بچوں کے لیے کتابوں کا اسٹال بھی لگے گا۔",
+    contentIsUrdu: true,
+    imageUrls: [IMG.event],
+    category: "news",
+    createdAt: "2026-07-21T09:00:00Z",
+    user: admin,
+    likeCount: 76,
+    commentCount: 9,
+    isAnnouncement: true,
+    likedByIds: [],
+    reactions: [
+      { emoji: "❤️", count: 34 },
+      { emoji: "🎉", count: 28 },
+      { emoji: "👍", count: 14 },
+    ],
+  },
   {
     id: "post-1",
     content:
@@ -40,16 +101,21 @@ export let communityPosts: ICommunityPost[] = [
     imageUrls: [],
     category: "announcement",
     createdAt: "2026-07-20T08:00:00Z",
-    user: mockUsers[0],
+    user: admin,
     likeCount: 42,
     commentCount: 8,
     isPinned: true,
     isAnnouncement: true,
     likedByIds: [],
+    reactions: [
+      { emoji: "👍", count: 30 },
+      { emoji: "👏", count: 12 },
+    ],
   },
   {
     id: "post-2",
-    content: "Lost golden retriever near Hana Family Park. Please DM if seen. Collar has a blue tag.",
+    content:
+      "Lost golden retriever near Hana Family Park. Please DM if seen. Collar has a blue tag.",
     imageUrls: [IMG.park],
     category: "lost-found",
     createdAt: "2026-07-19T16:30:00Z",
@@ -57,10 +123,15 @@ export let communityPosts: ICommunityPost[] = [
     likeCount: 18,
     commentCount: 5,
     likedByIds: [],
+    reactions: [
+      { emoji: "❤️", count: 12 },
+      { emoji: "👍", count: 6 },
+    ],
   },
   {
     id: "post-3",
-    content: "Strongly recommend Garden Town Grill for family dinner — great karahi and parking nearby.",
+    content:
+      "Strongly recommend Garden Town Grill for family dinner — great karahi and parking nearby.",
     imageUrls: [IMG.restaurant],
     category: "recommendation",
     createdAt: "2026-07-18T19:00:00Z",
@@ -68,10 +139,15 @@ export let communityPosts: ICommunityPost[] = [
     likeCount: 31,
     commentCount: 4,
     likedByIds: [],
+    reactions: [
+      { emoji: "🔥", count: 20 },
+      { emoji: "👍", count: 11 },
+    ],
   },
   {
     id: "post-4",
-    content: "Local update: new street lights installed on Lane 3. Looking cleaner at night!",
+    content:
+      "Local update: new street lights installed on Lane 3. Looking cleaner at night!",
     imageUrls: [],
     category: "local-update",
     createdAt: "2026-07-17T12:00:00Z",
@@ -82,15 +158,20 @@ export let communityPosts: ICommunityPost[] = [
   },
   {
     id: "post-5",
-    content: "Friday bazaar this week will include a book stall for kids. See you at the community hall.",
+    content:
+      "Friday bazaar this week will include a book stall for kids. See you at the community hall.",
     imageUrls: [IMG.event],
     category: "news",
     createdAt: "2026-07-16T09:00:00Z",
-    user: mockUsers[0],
+    user: admin,
     likeCount: 55,
     commentCount: 11,
     isAnnouncement: true,
     likedByIds: [],
+    reactions: [
+      { emoji: "🎉", count: 33 },
+      { emoji: "👍", count: 22 },
+    ],
   },
 ];
 

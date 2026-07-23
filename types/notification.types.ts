@@ -1,3 +1,5 @@
+import type { TAppImage } from "@/types/common.types";
+
 export type TNotificationType =
   | "admin_announcement"
   | "community_post"
@@ -15,7 +17,7 @@ export interface INotification {
   createdAt: string;
   isRead: boolean;
   actorName?: string;
-  actorAvatarUrl?: string;
+  actorAvatarUrl?: TAppImage;
   /** Optional deep-link target */
   targetType?: "post" | "event" | "business" | "place" | "best-of";
   targetId?: string;

@@ -7,6 +7,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { AdminBadge, PinnedBadge } from "@/components/ui/Badges";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
+import { toImageSource } from "@/data/mocks/mock.utils";
 import { cn } from "@/lib/cn.utils";
 import { formatRelativeTime } from "@/lib/formatter.utils";
 import { shareContent } from "@/lib/linking.utils";
@@ -65,7 +66,7 @@ export function CommunityPostCard({
 
       {post.imageUrls[0] ? (
         <Image
-          source={{ uri: post.imageUrls[0] }}
+          source={toImageSource(post.imageUrls[0])}
           className="mb-3 h-48 w-full rounded-lg bg-background"
           contentFit="cover"
         />

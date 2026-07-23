@@ -1,4 +1,4 @@
-import type { IGeoLocation } from "@/types/common.types";
+import type { IGeoLocation, TAppImage } from "@/types/common.types";
 
 export type TEventCategorySlug =
   | "community"
@@ -22,7 +22,7 @@ export interface IEvent {
   titleUrdu?: string;
   description: string;
   categorySlug: TEventCategorySlug;
-  imageUrls: string[];
+  imageUrls: TAppImage[];
   startsAt: string;
   endsAt: string;
   location: IGeoLocation;

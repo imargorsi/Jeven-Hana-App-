@@ -1,3 +1,5 @@
+import type { TAppImage } from "@/types/common.types";
+
 export type TBestOfCategorySlug =
   | "best-restaurant"
   | "best-cafe"
@@ -24,7 +26,7 @@ export interface IBestOfListing {
   rank: number;
   rating: number;
   reviewSnippet: string;
-  imageUrls: string[];
+  imageUrls: TAppImage[];
   /** Linked business or place id for detail navigation */
   linkedType: "business" | "place";
   linkedId: string;

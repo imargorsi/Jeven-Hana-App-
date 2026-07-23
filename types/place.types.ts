@@ -1,4 +1,4 @@
-import type { IGeoLocation, IOpeningHours } from "@/types/common.types";
+import type { IGeoLocation, IOpeningHours, TAppImage } from "@/types/common.types";
 
 export type TPlaceCategorySlug =
   | "mosques"
@@ -25,7 +25,7 @@ export interface IPlace {
   nameUrdu?: string;
   categorySlug: TPlaceCategorySlug;
   description: string;
-  imageUrls: string[];
+  imageUrls: TAppImage[];
   phone?: string;
   location: IGeoLocation;
   hours?: IOpeningHours[];

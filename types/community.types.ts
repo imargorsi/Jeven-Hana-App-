@@ -1,3 +1,4 @@
+import type { TAppImage } from "@/types/common.types";
 import type { IAppUser } from "@/types/user.types";
 
 export type TPostCategory =
@@ -7,6 +8,14 @@ export type TPostCategory =
   | "recommendation"
   | "lost-found"
   | "general";
+
+/** Top reaction emojis residents can use on admin community posts. */
+export type TReactionEmoji = "👍" | "❤️" | "🎉" | "👏" | "🔥";
+
+export interface IPostReaction {
+  emoji: TReactionEmoji;
+  count: number;
+}
 
 export interface IPostComment {
   id: string;
@@ -22,7 +31,9 @@ export interface IPostComment {
 export interface ICommunityPost {
   id: string;
   content: string;
-  imageUrls: string[];
+  /** When true, render content RTL with Urdu font. */
+  contentIsUrdu?: boolean;
+  imageUrls: TAppImage[];
   category: TPostCategory;
   createdAt: string;
   updatedAt?: string;
@@ -33,4 +44,6 @@ export interface ICommunityPost {
   isPinned?: boolean;
   isAnnouncement?: boolean;
   likedByIds?: string[];
+  /** Per-emoji reaction counts. */
+  reactions?: IPostReaction[];
 }

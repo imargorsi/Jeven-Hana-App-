@@ -4,6 +4,9 @@ export interface IPaginatedResult<T> {
   total: number;
 }
 
+/** Local `require()` asset id or remote URI. */
+export type TAppImage = number | string;
+
 export interface IOpeningHours {
   day: string;
   open: string;

@@ -1,4 +1,4 @@
-import type { IGeoLocation, IOpeningHours, IReview } from "@/types/common.types";
+import type { IGeoLocation, IOpeningHours, IReview, TAppImage } from "@/types/common.types";
 
 export type TBusinessCategorySlug =
   | "restaurants"
@@ -28,7 +28,7 @@ export interface IBusiness {
   nameUrdu?: string;
   categorySlug: TBusinessCategorySlug;
   description: string;
-  imageUrls: string[];
+  imageUrls: TAppImage[];
   rating: number;
   reviewCount: number;
   phone?: string;
@@ -37,6 +37,8 @@ export interface IBusiness {
   hours: IOpeningHours[];
   isFeatured?: boolean;
   isTopRated?: boolean;
+  /** Curated Jevan Hana Ka Best listing */
+  isKaBest?: boolean;
   reviews: IReview[];
   tags?: string[];
 }

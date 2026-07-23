@@ -14,6 +14,8 @@ module.exports = {
         background: palette.background,
         surface: palette.surface,
         primary: palette.primary,
+        "primary-soft": palette.primarySoft,
+        "primary-deep": palette.primaryDeep,
         cream: palette.cream,
         success: palette.success,
         error: palette.error,
