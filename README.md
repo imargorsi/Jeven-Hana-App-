@@ -15,23 +15,30 @@ Community app for residents of **Jevan Hana, Garden Town, Lahore** — local dis
 
 Full tables live in local `doc/modules/scope.md` (gitignored). Summary:
 
+### Roles
+
+- **User** — create businesses, places (seeded categories), community posts, events, reviews; edit/delete **own** content only.
+- **Admin** (you only) — same as user + delete any content, toggle Ka Best. Same app, elevated controls. No separate dashboard in v1.
+- **No approval queues in v1** — content goes live; admin cleans up.
+- **Comments = v2.** Delete users = Clerk Dashboard only for now (no in-app module).
+
 ### v1 — anyone (guest OK)
 
-Onboarding → **Home**. Browse Home, Explore, Search, Community, Events. Open business / place detail (Ka Best is a **badge** on those listings, not a separate module). Call, WhatsApp, directions, share.
+Onboarding → **Home**. Browse Home, Explore, Search, Community, Events. Open business / place detail (Ka Best = **badge**). Call, WhatsApp, directions, share.
 
-### v1 — signed-in only
+### v1 — signed-in
 
-Like posts · Going on events · Save listings · Write business reviews · Notifications · Edit profile · My posts / Saved / Going · Log out.
+Like · Going · Save · Reviews · **Create posts / businesses / places (seeded cats) / events** · Edit/delete own · Notifications · Profile · Log out.
 
-Guests who try these go to **Create account**.
+Guests who try account actions go to **Create account**.
 
 ### v1 — not allowed
 
-Create community posts · Host / create events · Add or claim businesses · Post detail / comments · Event detail · Settings screen · Stories / chat / followers.
+Comments · Approval workflows · Separate admin web dashboard · In-app delete user · Settings screen · Stories / chat / followers · Separate Ka Best module · User self-toggling Ka Best.
 
 ### v2 — planned
 
-Resident **create posts** · **Add / claim businesses** · **Host events** · optional comments · push prefs · real API sync.
+**Comments** · Optional approval/claim if spam · push prefs · light admin dashboard / in-app delete-user if needed · real API sync.
 
 ## Current status (frontend MVP)
 
@@ -44,15 +51,15 @@ Implemented with **mock data** (no backend yet):
 | Tabs | Public browse (Home, Explore, Community, Events, Profile) |
 | Home | Hero, Quick Access, Nearby, Community list (5) |
 | Explore / Search | **Public** discovery |
-| Businesses | Detail; review + save need account; call/share free |
-| Places | Detail; save needs account; browse → Explore |
-| Ka Best | **Badge only** on business/place (`isKaBest`) — not a separate module |
-| Community | Public feed; like needs account; **no create / detail** |
-| Events | Public list; Going needs account; **no detail / host** |
+| Businesses | Detail; review + save need account; **add listing = product intent (UI TBD)** |
+| Places | Detail; save needs account; browse → Explore; **add place (seeded cats) = product intent (UI TBD)** |
+| Ka Best | **Badge only** — **admin-only** toggle later |
+| Community | Public feed; like needs account; **create = product intent (UI TBD)**; **comments = v2** |
+| Events | Public list; Going needs account; **create = product intent (UI TBD)** |
 | Notifications | Account |
 | Saved / Profile | Account (guest Profile = Sign up / Log in) |
 
-**Next:** replace `lib/services/*` mocks with real REST APIs.
+**Next:** replace `lib/services/*` mocks with real REST APIs; wire Clerk `admin` role + create/moderation UI per `scope.md`.
 
 ## Getting started
 
