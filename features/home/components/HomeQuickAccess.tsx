@@ -69,12 +69,8 @@ export function HomeQuickAccess({ className }: IHomeQuickAccessProps) {
   const router = useRouter();
 
   return (
-    <View className={cn("mb-6", className)}>
-      <SectionHeader
-        title="Quick Access"
-        actionLabel="View All"
-        onActionPress={() => router.push(href("/(tabs)/explore"))}
-      />
+    <View className={cn(className)}>
+      <SectionHeader title="Quick Access" />
       <View className="flex-row gap-2">
         {QUICK_ACCESS_ITEMS.map((item) => (
           <Pressable

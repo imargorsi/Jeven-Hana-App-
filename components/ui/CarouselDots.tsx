@@ -24,7 +24,7 @@ export function CarouselDots({
   return (
     <View
       className={cn(
-        "mt-3 flex-row items-center justify-center gap-2",
+        "mt-4 flex-row items-center justify-center gap-2",
         className,
       )}
     >

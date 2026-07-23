@@ -74,7 +74,7 @@ export function HomeHeroSlider({ className }: IHomeHeroSliderProps) {
   );
 
   return (
-    <View className={cn("mb-6", className)}>
+    <View className={cn(className)}>
       <ScrollView
         ref={scrollRef}
         horizontal

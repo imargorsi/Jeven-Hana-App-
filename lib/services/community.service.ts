@@ -44,23 +44,21 @@ export async function getCommunityPosts(params?: {
   return paginate(list, params?.cursor, params?.limit ?? 20);
 }
 
-/** Admin community posts for Home auto-slider (image + text). */
+/** Admin / pinned community posts for the Home feed list. */
 export async function getAdminCommunityHighlights(
-  limit = 3,
+  limit = 5,
 ): Promise<ICommunityPost[]> {
   await delay();
-  return sortFeed(communityPosts)
-    .filter(
-      (p) =>
-        p.user.isAdmin &&
-        p.imageUrls.length > 0 &&
-        (p.isAnnouncement || p.isPinned),
-    )
-    .slice(0, limit)
-    .map((p) => ({
-      ...p,
-      isLikedByMe: p.likedByIds?.includes(CURRENT_USER_ID) ?? false,
-    }));
+  const preferred = sortFeed(communityPosts).filter(
+    (p) => p.user.isAdmin && (p.isAnnouncement || p.isPinned),
+  );
+  const fallback = sortFeed(communityPosts).filter(
+    (p) => !preferred.some((item) => item.id === p.id),
+  );
+  return [...preferred, ...fallback].slice(0, limit).map((p) => ({
+    ...p,
+    isLikedByMe: p.likedByIds?.includes(CURRENT_USER_ID) ?? false,
+  }));
 }
 
 export async function getPostById(id: string): Promise<ICommunityPost | null> {

@@ -20,17 +20,21 @@ Implemented with **mock data** (no backend yet):
 | Onboarding | `app/onboarding.tsx` |
 | Auth | Login, register, email verification, Google/Facebook SSO |
 | Tabs | Home, Explore, Community, Events, Profile |
-| Businesses | Categories, listing, detail (call / WhatsApp / directions) |
-| Places | Categories, listing, detail |
+| Home | Hero, Quick Access, Nearby Highlights, Community list (5) |
+| Explore | Business category filters + compact listings |
+| Businesses | Detail (call / WhatsApp / directions, reviews); index → Explore |
+| Places | Detail; listing/category routes redirect → Explore for v1 |
 | Jevan Hana Ka Best | Curated recommendations |
-| Community | Chronological feed, create post, comments, like, edit/delete own |
-| Events | Upcoming / past / featured, interested toggle, detail |
+| Community | Feed, create post, comments, like, edit/delete own |
+| Events | Sectioned list (Today → This Month) + Going; **no detail page** |
 | Search | Debounced multi-entity search + recent / trending |
-| Notifications | Grouped list, mark read |
+| Notifications | Grouped list, mark read; event taps → Events tab |
 | Saved | Businesses, places, events, Ka Best |
 | Profile | Overview, edit, my posts, settings, logout |
 
-**Not in scope:** stories, reels, chat, followers, reshares, feed ranking, i18n translation files (mixed English/Urdu strings inline via `Text` `isUrdu`).
+**Not in scope:** stories, reels, chat, followers, reshares, feed ranking, event detail (v1), i18n translation files (mixed English/Urdu strings inline via `Text` `isUrdu`).
+
+**Next:** replace `lib/services/*` mocks with real REST APIs.
 
 ## Getting started
 

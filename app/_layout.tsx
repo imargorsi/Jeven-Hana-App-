@@ -87,7 +87,6 @@ export default function RootLayout() {
         <Stack.Screen name="places" options={{ headerShown: false }} />
         <Stack.Screen name="best-of" options={{ headerShown: false }} />
         <Stack.Screen name="community" options={{ headerShown: false }} />
-        <Stack.Screen name="events" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>

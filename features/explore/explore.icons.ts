@@ -1,15 +1,14 @@
+import type { SymbolView } from "expo-symbols";
+import type { ComponentProps } from "react";
+
 import type { TBusinessCategorySlug } from "@/types/business.types";
 
 export type TExploreCategoryKey = "all" | TBusinessCategorySlug;
 
-type TSymbolName = {
-  ios: string;
-  android: string;
-  web: string;
-};
+type TSymbolName = NonNullable<ComponentProps<typeof SymbolView>["name"]>;
 
 /** SF / Material icon map for Explore category tiles. */
-export const EXPLORE_CATEGORY_ICONS: Record<TExploreCategoryKey, TSymbolName> = {
+export const EXPLORE_CATEGORY_ICONS = {
   all: {
     ios: "square.grid.2x2",
     android: "grid_view",
@@ -75,7 +74,7 @@ export const EXPLORE_CATEGORY_ICONS: Record<TExploreCategoryKey, TSymbolName> = 
     android: "home_repair_service",
     web: "home_repair_service",
   },
-};
+} as const satisfies Record<TExploreCategoryKey, TSymbolName>;
 
 export function getExploreCategoryIcon(
   key: TExploreCategoryKey,

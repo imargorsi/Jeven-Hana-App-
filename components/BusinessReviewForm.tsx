@@ -127,8 +127,6 @@ export function BusinessReviewForm({
             padding: 0,
             margin: 0,
             borderWidth: 0,
-            outlineWidth: 0,
-            outlineStyle: "none",
           }}
         />
       </View>

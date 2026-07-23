@@ -19,7 +19,7 @@ export function SectionHeader({
   className,
 }: ISectionHeaderProps) {
   return (
-    <View className={cn("mb-3 flex-row items-end justify-between", className)}>
+    <View className={cn("mb-4 flex-row items-end justify-between", className)}>
       <View className="flex-1 pr-3">
         <Text variant="h3">{title}</Text>
         {subtitle ? (

@@ -1,72 +1,166 @@
-import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import { Pressable, View } from "react-native";
+import { SymbolView } from "expo-symbols";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { SaveButton, ShareButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
-import { toImageSource } from "@/data/mocks/mock.utils";
+import { palette } from "@/constants/Colors";
 import { cn } from "@/lib/cn.utils";
-import { formatEventDate } from "@/lib/formatter.utils";
-import { shareContent } from "@/lib/linking.utils";
-import { href } from "@/lib/navigation.utils";
+import {
+  formatEventDate,
+  formatEventDay,
+  formatEventMonthAbbrev,
+} from "@/lib/formatter.utils";
 import type { IEvent } from "@/types/event.types";
 
 interface IEventCardProps {
   event: IEvent;
-  variant?: "horizontal" | "vertical";
+  isToggling?: boolean;
+  onToggleInterested?: () => void;
   className?: string;
 }
 
+/** Shared list card used on Events (no detail screen in v1). */
 export function EventCard({
   event,
-  variant = "vertical",
+  isToggling = false,
+  onToggleInterested,
   className,
 }: IEventCardProps) {
-  const router = useRouter();
-  const isHorizontal = variant === "horizontal";
+  const month = formatEventMonthAbbrev(event.startsAt);
+  const day = formatEventDay(event.startsAt);
+  const isGoing = Boolean(event.isInterestedByMe);
 
   return (
-    <Pressable
-      onPress={() => router.push(href(`/events/${event.id}`))}
+    <View
       className={cn(
-        "overflow-hidden rounded-card border border-cream/10 bg-surface",
-        isHorizontal ? "w-72" : "w-full",
+        "rounded-card border border-cream/10 bg-surface p-3.5",
         className,
       )}
     >
-      <Image
-        source={toImageSource(event.imageUrls[0])}
-        className={cn("w-full bg-background", isHorizontal ? "h-36" : "h-40")}
-        contentFit="cover"
-      />
-      <View className="p-3">
-        <View className="flex-row items-start justify-between">
-          <View className="flex-1 pr-2">
-            <Text variant="bodySmall" weight="semibold" numberOfLines={2}>
+      <View className="flex-row items-start gap-3">
+        <View className="w-12 items-center justify-center rounded-xl bg-background px-1 py-2">
+          <Text
+            variant="caption"
+            weight="semibold"
+            tone="primary"
+            className="tracking-wide"
+            style={{ fontSize: 10, lineHeight: 12 }}
+          >
+            {month}
+          </Text>
+          <Text variant="h3" weight="bold" className="mt-0.5 text-cream">
+            {day}
+          </Text>
+        </View>
+
+        <View className="min-w-0 flex-1">
+          <View className="flex-row items-start gap-2">
+            <Text
+              variant="bodySmall"
+              weight="semibold"
+              className="min-w-0 flex-1"
+              numberOfLines={2}
+            >
               {event.title}
             </Text>
-            {event.titleUrdu ? (
-              <Text variant="caption" tone="muted" isUrdu numberOfLines={1}>
-                {event.titleUrdu}
-              </Text>
+
+            {onToggleInterested ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={isGoing ? "Cancel going" : "Mark as going"}
+                accessibilityState={{ selected: isGoing }}
+                disabled={isToggling}
+                hitSlop={6}
+                onPress={onToggleInterested}
+                className={cn(
+                  "h-8 min-w-8 items-center justify-center rounded-full px-2.5 active:opacity-80",
+                  isGoing ? "bg-primary" : "bg-primary/15",
+                  isToggling && "opacity-60",
+                )}
+              >
+                {isToggling ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={isGoing ? palette.background : palette.primary}
+                  />
+                ) : (
+                  <View className="flex-row items-center gap-1">
+                    <SymbolView
+                      name={{
+                        ios: isGoing
+                          ? "checkmark.circle.fill"
+                          : "plus.circle",
+                        android: isGoing ? "check_circle" : "add_circle",
+                        web: isGoing ? "check_circle" : "add_circle",
+                      }}
+                      size={14}
+                      tintColor={
+                        isGoing ? palette.background : palette.primary
+                      }
+                    />
+                    <Text
+                      variant="caption"
+                      weight="bold"
+                      tone={isGoing ? "background" : "primary"}
+                    >
+                      {isGoing ? "Going" : "Go"}
+                    </Text>
+                  </View>
+                )}
+              </Pressable>
             ) : null}
           </View>
-          <View className="flex-row">
-            <SaveButton type="event" id={event.id} />
-            <ShareButton
-              onPress={() =>
-                void shareContent(`${event.title} — ${formatEventDate(event.startsAt)}`)
-              }
+
+          <View className="mt-1.5 flex-row items-center gap-1.5">
+            <SymbolView
+              name={{
+                ios: "clock",
+                android: "schedule",
+                web: "schedule",
+              }}
+              size={12}
+              tintColor={palette.muted}
             />
+            <Text
+              variant="caption"
+              tone="muted"
+              className="min-w-0 flex-1"
+              numberOfLines={1}
+            >
+              {formatEventDate(event.startsAt)}
+            </Text>
+          </View>
+
+          <View className="mt-1 flex-row items-center gap-1.5">
+            <SymbolView
+              name={{
+                ios: "mappin.and.ellipse",
+                android: "location_on",
+                web: "location_on",
+              }}
+              size={12}
+              tintColor={palette.muted}
+            />
+            <Text
+              variant="caption"
+              tone="muted"
+              className="min-w-0 flex-1"
+              numberOfLines={1}
+            >
+              {event.location.address}
+            </Text>
           </View>
         </View>
-        <Text variant="caption" tone="primary" className="mt-2">
-          {formatEventDate(event.startsAt)}
+      </View>
+
+      <View className="mt-3 flex-row items-center gap-1.5 border-t border-cream/10 pt-2.5">
+        <Text variant="caption" tone="muted">
+          Interested
         </Text>
-        <Text variant="caption" tone="muted" className="mt-1" numberOfLines={1}>
-          {event.location.address}
+        <View className="h-1 w-1 rounded-full bg-muted" />
+        <Text variant="caption" weight="medium" tone="muted">
+          {event.interestedCount}
         </Text>
       </View>
-    </Pressable>
+    </View>
   );
 }

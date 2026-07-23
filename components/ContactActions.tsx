@@ -1,4 +1,5 @@
 import { SymbolView } from "expo-symbols";
+import type { ComponentProps } from "react";
 import { Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
@@ -9,6 +10,8 @@ import {
   openPhone,
   openWhatsApp,
 } from "@/lib/linking.utils";
+
+type TSymbolName = NonNullable<ComponentProps<typeof SymbolView>["name"]>;
 
 interface IContactActionsProps {
   phone?: string;
@@ -23,11 +26,7 @@ interface IContactActionsProps {
 interface IActionTileProps {
   label: string;
   onPress: () => void;
-  icon: {
-    ios: string;
-    android: string;
-    web: string;
-  };
+  icon: TSymbolName;
   tint: string;
 }
 

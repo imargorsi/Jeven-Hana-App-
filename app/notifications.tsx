@@ -27,7 +27,7 @@ function navigateForNotification(
 ) {
   if (!n.targetType || !n.targetId) return;
   if (n.targetType === "post") router.push(href(`/community/${n.targetId}`));
-  if (n.targetType === "event") router.push(href(`/events/${n.targetId}`));
+  if (n.targetType === "event") router.push(href("/(tabs)/events"));
   if (n.targetType === "business") router.push(href(`/businesses/${n.targetId}`));
   if (n.targetType === "place") router.push(href(`/places/${n.targetId}`));
   if (n.targetType === "best-of") router.push(href(`/best-of/${n.targetId}`));

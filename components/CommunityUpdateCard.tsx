@@ -24,13 +24,11 @@ const CATEGORY_LABEL: Record<ICommunityPost["category"], string> = {
 
 interface ICommunityUpdateCardProps {
   post: ICommunityPost;
-  width: number;
   className?: string;
 }
 
 export function CommunityUpdateCard({
   post,
-  width,
   className,
 }: ICommunityUpdateCardProps) {
   const router = useRouter();
@@ -42,7 +40,6 @@ export function CommunityUpdateCard({
     <Pressable
       accessibilityRole="button"
       onPress={() => router.push(href(`/community/${post.id}`))}
-      style={{ width }}
       className={cn(
         "rounded-card border border-cream/10 bg-surface p-3.5 active:opacity-95",
         className,

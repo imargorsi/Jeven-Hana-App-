@@ -71,7 +71,7 @@ export function HomeNearbyHighlights({ className }: IHomeNearbyHighlightsProps) 
 
   if (highlightsQuery.isLoading) {
     return (
-      <View className={cn("mb-6", className)}>
+      <View className={cn(className)}>
         <SectionHeader title="Nearby Highlights" />
         <LoadingBlock className="py-10" />
       </View>
@@ -80,7 +80,7 @@ export function HomeNearbyHighlights({ className }: IHomeNearbyHighlightsProps) 
 
   if (highlightsQuery.isError) {
     return (
-      <View className={cn("mb-6", className)}>
+      <View className={cn(className)}>
         <SectionHeader title="Nearby Highlights" />
         <ErrorState
           className="px-2 py-8"
@@ -92,7 +92,7 @@ export function HomeNearbyHighlights({ className }: IHomeNearbyHighlightsProps) 
 
   if (businesses.length === 0) {
     return (
-      <View className={cn("mb-6", className)}>
+      <View className={cn(className)}>
         <SectionHeader
           title="Nearby Highlights"
           actionLabel="View All"
@@ -104,7 +104,7 @@ export function HomeNearbyHighlights({ className }: IHomeNearbyHighlightsProps) 
   }
 
   return (
-    <View className={cn("mb-6", className)}>
+    <View className={cn(className)}>
       <SectionHeader
         title="Nearby Highlights"
         subtitle={`${businesses.length} ${businesses.length === 1 ? "place" : "places"} nearby`}
