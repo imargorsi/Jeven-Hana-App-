@@ -124,3 +124,17 @@ export function formatEventDay(iso: string): string {
   if (!date) return "";
   return String(date.getDate());
 }
+
+/** Uppercase weekday for event date badges (e.g. "WED"). */
+export function formatEventWeekdayAbbrev(iso: string): string {
+  const date = parseDate(iso);
+  if (!date) return "";
+  return WEEKDAYS[date.getDay()].toUpperCase();
+}
+
+/** Time only (e.g. "6:00 PM"). */
+export function formatEventTime(iso: string): string {
+  const date = parseDate(iso);
+  if (!date) return "";
+  return formatTime(date);
+}

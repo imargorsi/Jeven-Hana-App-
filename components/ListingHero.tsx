@@ -1,11 +1,16 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ImageGallery } from "@/components/ImageGallery";
-import { SaveButton, ShareButton } from "@/components/ui";
+import {
+  ACTION_PILL_SIZE,
+  ACTION_PILL_STYLE,
+  SaveButton,
+  ShareButton,
+} from "@/components/ui/SaveButton";
 import { palette } from "@/constants/Colors";
 import { withAlpha } from "@/lib/color.utils";
 import type { TAppImage } from "@/types/common.types";
@@ -17,10 +22,15 @@ interface IListingHeroProps {
   saveId: string;
   onShare: () => void;
   height?: number;
+  /** Owner/admin — same glass pills as Explore cards. */
+  canManage?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  isDeleting?: boolean;
 }
 
 /**
- * Full-bleed listing hero — gallery with back / share / save overlaid (no title bar).
+ * Full-bleed listing hero — gallery with back / manage / share / save overlaid.
  */
 export function ListingHero({
   urls,
@@ -28,6 +38,10 @@ export function ListingHero({
   saveId,
   onShare,
   height = 340,
+  canManage = false,
+  onEdit,
+  onDelete,
+  isDeleting = false,
 }: IListingHeroProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -68,9 +82,14 @@ export function ListingHero({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Go Back"
-          hitSlop={10}
+          hitSlop={6}
           onPress={() => router.back()}
-          className="h-10 w-10 items-center justify-center rounded-full border border-cream/15 bg-background/45 active:opacity-80"
+          className="items-center justify-center rounded-full active:opacity-80"
+          style={{
+            width: ACTION_PILL_SIZE,
+            height: ACTION_PILL_SIZE,
+            ...ACTION_PILL_STYLE,
+          }}
         >
           <SymbolView
             name={{
@@ -78,19 +97,70 @@ export function ListingHero({
               android: "arrow_back",
               web: "arrow_back",
             }}
-            size={20}
+            size={18}
             tintColor={palette.cream}
           />
         </Pressable>
 
-        <View className="flex-row items-center gap-0.5 rounded-full border border-cream/15 bg-background/45 px-1.5 py-0.5">
-          <ShareButton onPress={onShare} size={20} color={palette.primary} />
-          <SaveButton
-            type={saveType}
-            id={saveId}
-            size={20}
-            color={palette.primary}
-          />
+        <View className="flex-row items-center gap-1.5">
+          {canManage && onEdit ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Edit Listing"
+              disabled={isDeleting}
+              hitSlop={6}
+              onPress={onEdit}
+              className="items-center justify-center rounded-full active:opacity-80"
+              style={{
+                width: ACTION_PILL_SIZE,
+                height: ACTION_PILL_SIZE,
+                ...ACTION_PILL_STYLE,
+              }}
+            >
+              <SymbolView
+                name={{
+                  ios: "pencil",
+                  android: "edit",
+                  web: "edit",
+                }}
+                size={16}
+                tintColor={palette.cream}
+              />
+            </Pressable>
+          ) : null}
+          {canManage && onDelete ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Delete Listing"
+              disabled={isDeleting}
+              hitSlop={6}
+              onPress={onDelete}
+              className="items-center justify-center rounded-full active:opacity-80"
+              style={{
+                width: ACTION_PILL_SIZE,
+                height: ACTION_PILL_SIZE,
+                backgroundColor: withAlpha(palette.error, 0.12),
+                borderWidth: 1,
+                borderColor: withAlpha(palette.error, 0.35),
+              }}
+            >
+              {isDeleting ? (
+                <ActivityIndicator size="small" color={palette.error} />
+              ) : (
+                <SymbolView
+                  name={{
+                    ios: "trash",
+                    android: "delete",
+                    web: "delete",
+                  }}
+                  size={16}
+                  tintColor={palette.error}
+                />
+              )}
+            </Pressable>
+          ) : null}
+          <ShareButton onPress={onShare} size={16} color={palette.cream} />
+          <SaveButton type={saveType} id={saveId} size={16} />
         </View>
       </View>
     </View>

@@ -21,14 +21,14 @@ const QUICK_ACCESS_ITEMS = [
     route: "/(tabs)/explore",
   },
   {
-    id: "places",
-    labelUrdu: "مقامات",
+    id: "about",
+    labelUrdu: "متعلق",
     icon: {
-      ios: "mappin.and.ellipse" as const,
-      android: "place" as const,
-      web: "place" as const,
+      ios: "info.circle" as const,
+      android: "info" as const,
+      web: "info" as const,
     },
-    route: "/(tabs)/explore",
+    route: "/about",
   },
   {
     id: "events",

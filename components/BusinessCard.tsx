@@ -12,6 +12,7 @@ import { toImageSource } from "@/data/mocks/mock.utils";
 import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
 import { getExploreCategoryIcon } from "@/features/explore/explore.icons";
 import { cn } from "@/lib/cn.utils";
+import { withAlpha } from "@/lib/color.utils";
 import { href } from "@/lib/navigation.utils";
 import { getBusinessCategoryLabel } from "@/lib/services/businesses.service";
 import type { IBusiness } from "@/types/business.types";
@@ -89,19 +90,25 @@ export function BusinessCard({
             </Text>
           </View>
 
-          <View
-            className="absolute right-2.5 top-2.5 flex-row items-center gap-0.5 rounded-full border border-cream/15 bg-background/55 px-1 py-0.5"
-            onStartShouldSetResponder={() => true}
-            onTouchEnd={(e) => e.stopPropagation()}
-          >
+          <View className="absolute right-2.5 top-2.5 flex-row items-center gap-1.5">
             {showManage && onEdit ? (
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Edit Listing"
                 disabled={isDeleting}
                 hitSlop={6}
-                onPress={onEdit}
-                className="h-8 w-8 items-center justify-center rounded-full active:opacity-80"
+                onPress={(e) => {
+                  e.stopPropagation?.();
+                  onEdit();
+                }}
+                className="items-center justify-center rounded-full active:opacity-80"
+                style={{
+                  width: 34,
+                  height: 34,
+                  backgroundColor: withAlpha(palette.cream, 0.1),
+                  borderWidth: 1,
+                  borderColor: withAlpha(palette.cream, 0.2),
+                }}
               >
                 <SymbolView
                   name={{
@@ -120,8 +127,18 @@ export function BusinessCard({
                 accessibilityLabel="Delete Listing"
                 disabled={isDeleting}
                 hitSlop={6}
-                onPress={onDelete}
-                className="h-8 w-8 items-center justify-center rounded-full active:opacity-80"
+                onPress={(e) => {
+                  e.stopPropagation?.();
+                  onDelete?.();
+                }}
+                className="items-center justify-center rounded-full active:opacity-80"
+                style={{
+                  width: 34,
+                  height: 34,
+                  backgroundColor: withAlpha(palette.error, 0.12),
+                  borderWidth: 1,
+                  borderColor: withAlpha(palette.error, 0.35),
+                }}
               >
                 {isDeleting ? (
                   <ActivityIndicator size="small" color={palette.error} />
@@ -138,12 +155,7 @@ export function BusinessCard({
                 )}
               </Pressable>
             ) : null}
-            <SaveButton
-              type="business"
-              id={business.id}
-              size={18}
-              color={palette.primary}
-            />
+            <SaveButton type="business" id={business.id} size={16} />
           </View>
 
           {openStatus.hasHours ? (
@@ -258,7 +270,7 @@ export function BusinessCard({
             </Text>
             {business.isFeatured ? <FeaturedIcon size={16} /> : null}
           </View>
-          <SaveButton type="business" id={business.id} color={palette.primary} />
+          <SaveButton type="business" id={business.id} />
         </View>
         <Text variant="caption" tone="muted" numberOfLines={1}>
           {business.address}

@@ -104,15 +104,24 @@ export const useSavedItemsStore = create<ISavedItemsState>()(
       },
       toggleSaved: (type, id) => {
         const { byUserId, currentUserId } = get();
-        if (!currentUserId) return;
+        if (!currentUserId) {
+          // Caller should setCurrentUserId first (SaveButton does). Fail loud in dev.
+          if (__DEV__) {
+            console.warn(
+              "[saved] toggleSaved skipped — no currentUserId. Sign in and retry.",
+            );
+          }
+          return;
+        }
 
         const key = keyFor(type);
         const bucket = readBucket(byUserId, currentUserId);
         const list = bucket[key];
-        const isCurrentlySaved = list.includes(id);
+        const normalizedId = String(id);
+        const isCurrentlySaved = list.includes(normalizedId);
         const nextList = isCurrentlySaved
-          ? list.filter((x) => x !== id)
-          : [...list, id];
+          ? list.filter((x) => x !== normalizedId)
+          : [...list, normalizedId];
         const nextBucket: ISavedBucket = { ...bucket, [key]: nextList };
         const nextByUser = { ...byUserId, [currentUserId]: nextBucket };
 
@@ -120,17 +129,18 @@ export const useSavedItemsStore = create<ISavedItemsState>()(
           byUserId: nextByUser,
           ...withDerivedLists(nextByUser, currentUserId),
         });
-        void syncSavedItem(type, id, !isCurrentlySaved);
+        void syncSavedItem(type, normalizedId, !isCurrentlySaved);
       },
       removeSaved: (type, id) => {
         const { byUserId, currentUserId } = get();
         if (!currentUserId) return;
 
         const key = keyFor(type);
+        const normalizedId = String(id);
         const bucket = readBucket(byUserId, currentUserId);
         const nextBucket: ISavedBucket = {
           ...bucket,
-          [key]: bucket[key].filter((x) => x !== id),
+          [key]: bucket[key].filter((x) => x !== normalizedId),
         };
         const nextByUser = { ...byUserId, [currentUserId]: nextBucket };
 
@@ -138,7 +148,7 @@ export const useSavedItemsStore = create<ISavedItemsState>()(
           byUserId: nextByUser,
           ...withDerivedLists(nextByUser, currentUserId),
         });
-        void syncSavedItem(type, id, false);
+        void syncSavedItem(type, normalizedId, false);
       },
     }),
     {

@@ -6,7 +6,12 @@ export { EmptyState, ErrorState, LoadingBlock } from "@/components/ui/EmptyState
 export { Avatar } from "@/components/ui/Avatar";
 export { SectionHeader } from "@/components/ui/SectionHeader";
 export { RatingDisplay } from "@/components/ui/RatingDisplay";
-export { SaveButton, ShareButton } from "@/components/ui/SaveButton";
+export {
+  ACTION_PILL_SIZE,
+  ACTION_PILL_STYLE,
+  SaveButton,
+  ShareButton,
+} from "@/components/ui/SaveButton";
 export { FeaturedIcon } from "@/components/ui/Badges";
 export { SearchInput } from "@/components/ui/SearchInput";
 export { AppHeader } from "@/components/ui/AppHeader";

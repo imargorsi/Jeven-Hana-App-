@@ -15,7 +15,6 @@ import {
 } from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
-import { BusinessManageActions } from "@/features/businesses/components/BusinessManageActions";
 import { useBusinessDetail } from "@/features/businesses/useBusinessDetail.hook";
 import { useBusinessManage } from "@/features/businesses/useBusinessManage.hook";
 import { shareAppLink } from "@/lib/linking.utils";
@@ -63,6 +62,20 @@ export default function BusinessDetailScreen() {
           saveType="business"
           saveId={business.id}
           onShare={() => void shareAppLink(sharePath, business.name)}
+          canManage={showManage}
+          onEdit={() => openEdit(business.id)}
+          onDelete={() =>
+            confirmDelete(business, {
+              onDeleted: () => {
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  router.replace(href("/(tabs)/explore"));
+                }
+              },
+            })
+          }
+          isDeleting={deletingId === business.id}
         />
 
         <View className="px-4 pt-2">
@@ -119,25 +132,6 @@ export default function BusinessDetailScreen() {
             label={business.name}
             onShare={() => void shareAppLink(sharePath, business.name)}
           />
-
-          {showManage ? (
-            <BusinessManageActions
-              className="mt-3"
-              isDeleting={deletingId === business.id}
-              onEdit={() => openEdit(business.id)}
-              onDelete={() =>
-                confirmDelete(business, {
-                  onDeleted: () => {
-                    if (router.canGoBack()) {
-                      router.back();
-                    } else {
-                      router.replace(href("/(tabs)/explore"));
-                    }
-                  },
-                })
-              }
-            />
-          ) : null}
 
           {business.description ? (
             <View className="mt-8">
