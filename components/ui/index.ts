@@ -7,7 +7,7 @@ export { Avatar } from "@/components/ui/Avatar";
 export { SectionHeader } from "@/components/ui/SectionHeader";
 export { RatingDisplay } from "@/components/ui/RatingDisplay";
 export { SaveButton, ShareButton } from "@/components/ui/SaveButton";
-export { KaBestBadge } from "@/components/ui/Badges";
+export { FeaturedIcon } from "@/components/ui/Badges";
 export { SearchInput } from "@/components/ui/SearchInput";
 export { AppHeader } from "@/components/ui/AppHeader";
 export { AppTabBar } from "@/components/ui/AppTabBar";

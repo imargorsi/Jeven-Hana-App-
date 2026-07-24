@@ -30,7 +30,7 @@ export const places: IPlace[] = [
     phone: "+92421234567",
     location: { ...jevanLoc, address: "Central Square, Jevan Hana" },
     isNearby: true,
-    isKaBest: true,
+    isFeatured: true,
     tags: ["Jummah"],
   },
   {
@@ -42,7 +42,7 @@ export const places: IPlace[] = [
     imageUrls: [IMG.park],
     location: { ...jevanLoc, address: "Block C, Jevan Hana" },
     isNearby: true,
-    isKaBest: true,
+    isFeatured: true,
     tags: ["Family", "Walks"],
   },
   {

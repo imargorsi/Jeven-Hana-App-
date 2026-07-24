@@ -7,7 +7,7 @@ import { ContactActions } from "@/components/ContactActions";
 import { ListingHero } from "@/components/ListingHero";
 import {
   ErrorState,
-  KaBestBadge,
+  FeaturedIcon,
   LoadingBlock,
   RatingDisplay,
   Screen,
@@ -66,11 +66,11 @@ export default function BusinessDetailScreen() {
         />
 
         <View className="px-4 pt-2">
-          <View className="min-w-0 gap-2">
-            <Text variant="h2" numberOfLines={2}>
+          <View className="min-w-0 flex-row items-center gap-2">
+            <Text variant="h2" className="shrink" numberOfLines={2}>
               {business.name}
             </Text>
-            {business.isKaBest ? <KaBestBadge size="sm" /> : null}
+            {business.isFeatured ? <FeaturedIcon size={22} /> : null}
           </View>
 
           <View className="mt-3 flex-row items-center gap-2">

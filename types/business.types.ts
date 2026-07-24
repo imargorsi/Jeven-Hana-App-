@@ -32,7 +32,7 @@ export interface IBusiness {
   /** From API `ratingAvg` — reviews write is part 2. */
   rating: number;
   reviewCount: number;
-  isKaBest: boolean;
+  isFeatured: boolean;
   createdByUserId: number;
   /** Always empty in part 1 — reviews API is part 2. */
   reviews: IReview[];

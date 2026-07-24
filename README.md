@@ -24,13 +24,13 @@ Summary:
 ### Roles
 
 - **User** — create businesses, places (seeded categories), community posts, events, reviews; edit/delete **own** content only.
-- **Admin** (you only) — same as user + delete any content, toggle Ka Best. Same app, elevated controls. No separate dashboard in v1.
+- **Admin** (you only) — same as user + delete any content, toggle Featured. Same app, elevated controls. No separate dashboard in v1.
 - **No approval queues in v1** — content goes live; admin cleans up.
 - **Comments = v2.** Delete users = Clerk Dashboard only for now (no in-app module).
 
 ### v1 — anyone (guest OK)
 
-Onboarding → **Home**. Browse Home, Explore, Search, Community, Events. Open business / place detail (Ka Best = **badge**). Call, WhatsApp, directions, share.
+Onboarding → **Home**. Browse Home, Explore, Search, Community, Events. Open business / place detail (Featured = **badge**). Call, WhatsApp, directions, share.
 
 ### v1 — signed-in
 
@@ -40,7 +40,7 @@ Guests who try account actions go to **Create account**.
 
 ### v1 — not allowed
 
-Comments · Approval workflows · Separate admin web dashboard · In-app delete user · Settings screen · Stories / chat / followers · Separate Ka Best module · User self-toggling Ka Best.
+Comments · Approval workflows · Separate admin web dashboard · In-app delete user · Settings screen · Stories / chat / followers · Separate Featured module · User self-toggling Featured.
 
 ### v2 — planned
 
@@ -59,7 +59,7 @@ UI implemented; **most domains still mock**. Auth/user sync to the Express API i
 | Explore / Search | **Public** discovery |
 | Businesses | Detail; review + save need account; **add listing = product intent (UI TBD)** |
 | Places | Detail; save needs account; browse → Explore; **add place (seeded cats) = product intent (UI TBD)** |
-| Ka Best | **Badge only** — **admin-only** toggle later |
+| Featured | **Badge only** — **admin-only** toggle (`isFeatured`) |
 | Community | Public feed; like needs account; **create = product intent (UI TBD)**; **comments = v2** |
 | Events | Public list; Going needs account; **create = product intent (UI TBD)** |
 | Notifications | Account |

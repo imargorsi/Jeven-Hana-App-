@@ -3,13 +3,14 @@ import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { KaBestBadge } from "@/components/ui/Badges";
+import { FeaturedIcon } from "@/components/ui/Badges";
 import { RatingDisplay } from "@/components/ui/RatingDisplay";
 import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
 import { toImageSource } from "@/data/mocks/mock.utils";
 import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
+import { getExploreCategoryIcon } from "@/features/explore/explore.icons";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import { getBusinessCategoryLabel } from "@/lib/services/businesses.service";
@@ -17,7 +18,8 @@ import type { IBusiness } from "@/types/business.types";
 
 interface IBusinessCardProps {
   business: IBusiness;
-  variant?: "horizontal" | "vertical" | "compact";
+  /** `list` = Explore full-bleed card; `horizontal` = narrow carousel. */
+  variant?: "list" | "horizontal" | "vertical" | "compact";
   className?: string;
   canManage?: boolean;
   isDeleting?: boolean;
@@ -25,11 +27,12 @@ interface IBusinessCardProps {
   onDelete?: () => void;
 }
 
-const LIST_THUMB_WIDTH = 118;
+const LIST_IMAGE_HEIGHT = 152;
+const HORIZONTAL_IMAGE_HEIGHT = 140;
 
 export function BusinessCard({
   business,
-  variant = "vertical",
+  variant = "list",
   className,
   canManage = false,
   isDeleting = false,
@@ -38,97 +41,116 @@ export function BusinessCard({
 }: IBusinessCardProps) {
   const router = useRouter();
   const isHorizontal = variant === "horizontal";
-  const isCompact = variant === "compact";
+  /** Explore + saved list: full image on top. */
+  const isList =
+    variant === "list" || variant === "compact" || variant === "vertical";
   const categoryLabel = getBusinessCategoryLabel(business.category);
+  const categoryIcon = getExploreCategoryIcon(business.category);
   const image = business.imageUrls[0];
   const openStatus = getBusinessOpenStatus(business.hours);
+  const phone = business.phone?.trim() || null;
+  const showManage = canManage && Boolean(onEdit || onDelete);
 
-  const manageFooter =
-    canManage && (onEdit || onDelete) ? (
-      <View
-        className="mt-2 flex-row items-center justify-end gap-0.5 border-t border-cream/10 pt-2"
-        onStartShouldSetResponder={() => true}
-      >
-        {onEdit ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Edit listing"
-            disabled={isDeleting}
-            hitSlop={8}
-            onPress={onEdit}
-            className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
-          >
-            <SymbolView
-              name={{
-                ios: "pencil",
-                android: "edit",
-                web: "edit",
-              }}
-              size={16}
-              tintColor={palette.cream}
-            />
-          </Pressable>
-        ) : null}
-        {onDelete ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Delete listing"
-            disabled={isDeleting}
-            hitSlop={8}
-            onPress={onDelete}
-            className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
-          >
-            {isDeleting ? (
-              <ActivityIndicator size="small" color={palette.error} />
-            ) : (
-              <SymbolView
-                name={{
-                  ios: "trash",
-                  android: "delete",
-                  web: "delete",
-                }}
-                size={16}
-                tintColor={palette.error}
-              />
-            )}
-          </Pressable>
-        ) : null}
-      </View>
-    ) : null;
-
-  if (isCompact) {
+  if (isList) {
     return (
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={business.name}
         onPress={() => router.push(href(`/businesses/${business.id}`))}
         className={cn(
-          "flex-row overflow-hidden rounded-card border border-cream/10 bg-surface active:opacity-95",
+          "overflow-hidden rounded-card border border-cream/10 bg-surface active:opacity-95",
           className,
         )}
       >
         <View
-          className="relative self-stretch overflow-hidden"
-          style={{ width: LIST_THUMB_WIDTH }}
+          className="relative w-full overflow-hidden"
+          style={{ height: LIST_IMAGE_HEIGHT }}
         >
           <Image
             source={toImageSource(image)}
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-            }}
+            style={{ width: "100%", height: LIST_IMAGE_HEIGHT }}
             contentFit="cover"
             transition={200}
           />
+
+          <View className="absolute left-2.5 top-2.5 flex-row items-center gap-1.5 rounded-full border border-primary/35 bg-background/50 px-2.5 py-1.5">
+            <SymbolView
+              name={categoryIcon}
+              size={13}
+              tintColor={palette.primary}
+            />
+            <Text
+              variant="caption"
+              weight="semibold"
+              tone="primary"
+              style={{ fontSize: 11, lineHeight: 14 }}
+            >
+              {categoryLabel}
+            </Text>
+          </View>
+
+          <View
+            className="absolute right-2.5 top-2.5 flex-row items-center gap-0.5 rounded-full border border-cream/15 bg-background/55 px-1 py-0.5"
+            onStartShouldSetResponder={() => true}
+          >
+            {showManage && onEdit ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Edit listing"
+                disabled={isDeleting}
+                hitSlop={6}
+                onPress={onEdit}
+                className="h-8 w-8 items-center justify-center rounded-full active:opacity-80"
+              >
+                <SymbolView
+                  name={{
+                    ios: "pencil",
+                    android: "edit",
+                    web: "edit",
+                  }}
+                  size={16}
+                  tintColor={palette.cream}
+                />
+              </Pressable>
+            ) : null}
+            {showManage && onDelete ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Delete listing"
+                disabled={isDeleting}
+                hitSlop={6}
+                onPress={onDelete}
+                className="h-8 w-8 items-center justify-center rounded-full active:opacity-80"
+              >
+                {isDeleting ? (
+                  <ActivityIndicator size="small" color={palette.error} />
+                ) : (
+                  <SymbolView
+                    name={{
+                      ios: "trash",
+                      android: "delete",
+                      web: "delete",
+                    }}
+                    size={16}
+                    tintColor={palette.error}
+                  />
+                )}
+              </Pressable>
+            ) : null}
+            <SaveButton
+              type="business"
+              id={business.id}
+              size={18}
+              color={palette.primary}
+            />
+          </View>
+
           {openStatus.hasHours ? (
-            <View className="absolute bottom-1.5 left-1.5 rounded-chip bg-background/75 px-1.5 py-0.5">
+            <View className="absolute bottom-2.5 left-2.5 rounded-chip bg-background/75 px-2 py-0.5">
               <Text
                 variant="caption"
                 weight="semibold"
                 tone={openStatus.isOpen ? "success" : "muted"}
-                style={{ fontSize: 10, lineHeight: 12 }}
               >
                 {openStatus.isOpen ? "Open" : "Closed"}
               </Text>
@@ -136,40 +158,29 @@ export function BusinessCard({
           ) : null}
         </View>
 
-        <View className="min-w-0 flex-1 justify-center gap-1.5 px-3.5 py-2.5">
-          <View className="flex-row items-start gap-2">
-            <Text
-              variant="bodySmall"
-              weight="semibold"
-              className="min-w-0 flex-1"
-              numberOfLines={1}
-            >
-              {business.name}
-            </Text>
-            <View className="rounded-full bg-background/50 p-1">
-              <SaveButton
-                type="business"
-                id={business.id}
-                size={17}
-                color={palette.primary}
+        <View className="gap-1.5 px-3.5 py-2.5">
+          <View className="flex-row items-center gap-2">
+            <View className="min-w-0 flex-1 flex-row items-center gap-1">
+              <Text
+                variant="bodySmall"
+                weight="semibold"
+                className="shrink"
+                numberOfLines={1}
+              >
+                {business.name}
+              </Text>
+              {business.isFeatured ? <FeaturedIcon size={16} /> : null}
+            </View>
+            <View className="shrink-0">
+              <RatingDisplay
+                rating={business.rating}
+                reviewCount={business.reviewCount}
               />
             </View>
           </View>
 
-          <View className="flex-row flex-wrap items-center gap-2">
-            {business.isKaBest ? <KaBestBadge size="sm" /> : null}
-            <RatingDisplay
-              rating={business.rating}
-              reviewCount={business.reviewCount}
-            />
-          </View>
-
-          <Text variant="caption" tone="muted" numberOfLines={1}>
-            {categoryLabel}
-          </Text>
-
-          <View className="flex-row items-center gap-1.5">
-            <View className="h-5 w-5 items-center justify-center rounded-full bg-primary/15">
+          <View className="gap-1">
+            <View className="flex-row items-center gap-1">
               <SymbolView
                 name={{
                   ios: "mappin.and.ellipse",
@@ -179,18 +190,37 @@ export function BusinessCard({
                 size={11}
                 tintColor={palette.primary}
               />
+              <Text
+                variant="caption"
+                tone="muted"
+                className="min-w-0 flex-1"
+                numberOfLines={1}
+              >
+                {business.address}
+              </Text>
             </View>
-            <Text
-              variant="caption"
-              tone="muted"
-              className="min-w-0 flex-1"
-              numberOfLines={1}
-            >
-              {business.address}
-            </Text>
+            {phone ? (
+              <View className="flex-row items-center gap-1">
+                <SymbolView
+                  name={{
+                    ios: "phone.fill",
+                    android: "call",
+                    web: "call",
+                  }}
+                  size={11}
+                  tintColor={palette.primary}
+                />
+                <Text
+                  variant="caption"
+                  tone="muted"
+                  className="min-w-0 flex-1"
+                  numberOfLines={1}
+                >
+                  {phone}
+                </Text>
+              </View>
+            ) : null}
           </View>
-
-          {manageFooter}
         </View>
       </Pressable>
     );
@@ -207,29 +237,35 @@ export function BusinessCard({
     >
       <Image
         source={toImageSource(image)}
-        style={{ width: "100%", height: isHorizontal ? 140 : 160 }}
+        style={{
+          width: "100%",
+          height: isHorizontal ? HORIZONTAL_IMAGE_HEIGHT : LIST_IMAGE_HEIGHT,
+        }}
         contentFit="cover"
         transition={200}
       />
-      <View className="p-3.5">
-        <View className="flex-row">
-          <View className="flex-1 gap-1.5 pr-2">
-            <Text variant="bodySmall" weight="semibold" numberOfLines={1}>
+      <View className="gap-1.5 p-3.5">
+        <View className="flex-row items-start gap-2">
+          <View className="min-w-0 flex-1 flex-row items-center gap-1">
+            <Text
+              variant="bodySmall"
+              weight="semibold"
+              className="shrink"
+              numberOfLines={1}
+            >
               {business.name}
             </Text>
-            {business.isKaBest ? <KaBestBadge size="sm" /> : null}
-            <Text variant="caption" tone="muted" numberOfLines={1}>
-              {business.address}
-            </Text>
-            <RatingDisplay
-              rating={business.rating}
-              reviewCount={business.reviewCount}
-              className="mt-0.5"
-            />
+            {business.isFeatured ? <FeaturedIcon size={16} /> : null}
           </View>
           <SaveButton type="business" id={business.id} color={palette.primary} />
         </View>
-        {manageFooter}
+        <Text variant="caption" tone="muted" numberOfLines={1}>
+          {business.address}
+        </Text>
+        <RatingDisplay
+          rating={business.rating}
+          reviewCount={business.reviewCount}
+        />
       </View>
     </Pressable>
   );

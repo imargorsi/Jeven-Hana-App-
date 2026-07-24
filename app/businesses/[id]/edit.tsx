@@ -19,7 +19,7 @@ import { invalidateBusinessQueries } from "@/features/businesses/useBusinessMana
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
   getBusinessById,
-  toggleBusinessKaBest,
+  toggleBusinessFeatured,
   updateBusiness,
 } from "@/lib/services/businesses.service";
 import type { IBusiness } from "@/types/business.types";
@@ -32,7 +32,7 @@ function EditBusinessForm({ business }: { business: IBusiness }) {
   const [values, setValues] = useState<IBusinessFormValues>(() =>
     businessToFormValues(business),
   );
-  const [isKaBest, setIsKaBest] = useState(business.isKaBest);
+  const [isFeatured, setIsFeatured] = useState(business.isFeatured);
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -54,17 +54,17 @@ function EditBusinessForm({ business }: { business: IBusiness }) {
     },
   });
 
-  const kaBestMutation = useMutation({
-    mutationFn: () => toggleBusinessKaBest(business.id, getToken),
+  const featuredMutation = useMutation({
+    mutationFn: () => toggleBusinessFeatured(business.id, getToken),
     onSuccess: (updated) => {
-      setIsKaBest(updated.isKaBest);
+      setIsFeatured(updated.isFeatured);
       invalidateBusinessQueries(queryClient);
       void queryClient.invalidateQueries({
         queryKey: ["business", business.id],
       });
     },
     onError: (error) => {
-      Alert.alert("Could not update Ka Best", getApiErrorMessage(error));
+      Alert.alert("Could not update Featured", getApiErrorMessage(error));
     },
   });
 
@@ -86,10 +86,10 @@ function EditBusinessForm({ business }: { business: IBusiness }) {
       onSubmit={onSubmit}
       isSubmitting={mutation.isPending}
       submitLabel="Save changes"
-      showKaBest={isAdmin}
-      isKaBest={isKaBest}
-      onKaBestToggle={() => kaBestMutation.mutate()}
-      isTogglingKaBest={kaBestMutation.isPending}
+      showFeatured={isAdmin}
+      isFeatured={isFeatured}
+      onFeaturedToggle={() => featuredMutation.mutate()}
+      isTogglingFeatured={featuredMutation.isPending}
     />
   );
 }

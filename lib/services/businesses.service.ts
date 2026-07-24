@@ -22,7 +22,7 @@ interface IApiBusiness {
   phone: string | null;
   whatsapp: string | null;
   coverImageUrl: string | null;
-  isKaBest: boolean;
+  isFeatured: boolean;
   ratingAvg: number;
   reviewCount: number;
   createdByUserId: number;
@@ -52,7 +52,7 @@ function mapBusiness(api: IApiBusiness): IBusiness {
     imageUrls: cover ? [cover] : [IMG.businessFallback],
     rating: Number(api.ratingAvg) || 0,
     reviewCount: api.reviewCount || 0,
-    isKaBest: Boolean(api.isKaBest),
+    isFeatured: Boolean(api.isFeatured),
     createdByUserId: api.createdByUserId,
     reviews: [],
     hours: [],
@@ -211,8 +211,8 @@ export async function deleteBusiness(
   return mapBusiness(data.data.business);
 }
 
-/** POST /api/v1/businesses/:id/ka-best — admin only. */
-export async function toggleBusinessKaBest(
+/** POST /api/v1/businesses/:id/featured — admin only. */
+export async function toggleBusinessFeatured(
   id: string,
   getToken: TGetToken,
 ): Promise<IBusiness> {
@@ -220,10 +220,10 @@ export async function toggleBusinessKaBest(
   const client = createApiClient(getToken);
   const { data } = await client.post<
     IApiEnvelope<{ business: IApiBusiness }>
-  >(`/api/v1/businesses/${id}/ka-best`);
+  >(`/api/v1/businesses/${id}/featured`);
 
   if (!data.success || !data.data?.business) {
-    throw new Error(data.message || "Failed to update Ka Best");
+    throw new Error(data.message || "Failed to update Featured");
   }
 
   return mapBusiness(data.data.business);

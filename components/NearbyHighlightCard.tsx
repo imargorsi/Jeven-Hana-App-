@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Pressable, View } from "react-native";
 
-import { KaBestBadge } from "@/components/ui/Badges";
+import { FeaturedIcon } from "@/components/ui/Badges";
 import { RatingDisplay } from "@/components/ui/RatingDisplay";
 import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
@@ -35,6 +35,7 @@ export function NearbyHighlightCard({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={business.name}
       onPress={() => router.push(href(`/businesses/${business.id}`))}
       className={cn(
         "overflow-hidden rounded-card border border-cream/10 bg-surface active:opacity-95",
@@ -78,17 +79,22 @@ export function NearbyHighlightCard({
       </View>
 
       <View className="gap-1.5 px-3.5 py-2.5">
-        <Text variant="bodySmall" weight="semibold" numberOfLines={1}>
-          {business.name}
-        </Text>
-
-        <View className="flex-row flex-wrap items-center gap-2">
-          {business.isKaBest ? <KaBestBadge size="sm" /> : null}
-          <RatingDisplay
-            rating={business.rating}
-            reviewCount={business.reviewCount}
-          />
+        <View className="flex-row items-center gap-1">
+          <Text
+            variant="bodySmall"
+            weight="semibold"
+            className="shrink"
+            numberOfLines={1}
+          >
+            {business.name}
+          </Text>
+          {business.isFeatured ? <FeaturedIcon size={15} /> : null}
         </View>
+
+        <RatingDisplay
+          rating={business.rating}
+          reviewCount={business.reviewCount}
+        />
 
         <Text variant="caption" tone="muted" numberOfLines={1}>
           {categoryLabel}

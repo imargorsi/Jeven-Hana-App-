@@ -62,11 +62,11 @@ export default function ExploreScreen() {
             </View>
           </View>
         }
-        ItemSeparatorComponent={() => <View className="h-5" />}
+        ItemSeparatorComponent={() => <View className="h-4" />}
         renderItem={({ item }) => (
           <BusinessCard
             business={item}
-            variant="compact"
+            variant="list"
             canManage={canManage(item)}
             isDeleting={deletingId === item.id}
             onEdit={() => openEdit(item.id)}

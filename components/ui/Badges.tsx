@@ -1,38 +1,34 @@
+import { SymbolView } from "expo-symbols";
 import { View } from "react-native";
 
-import { Text } from "@/components/ui/Text";
+import { palette } from "@/constants/Colors";
 import { cn } from "@/lib/cn.utils";
 
-/**
- * Curated Jevan Hana Ka Best badge — solid primary gold, clean & modern.
- * Badge only — not a separate listing module.
- */
-export function KaBestBadge({
-  className,
-  size = "md",
-}: {
-  className?: string;
-  size?: "sm" | "md";
-}) {
-  const isSmall = size === "sm";
+const FEATURED_ICON = {
+  ios: "checkmark.seal.fill",
+  android: "verified_user",
+  web: "verified_user",
+} as const;
 
+/**
+ * Featured listing — verified icon beside the name (not a text pill).
+ * Admin-curated flag only — not a separate listing module.
+ */
+export function FeaturedIcon({
+  size = 16,
+  className,
+}: {
+  size?: number;
+  className?: string;
+}) {
   return (
-    <View
-      className={cn(
-        "self-start rounded-chip bg-primary",
-        isSmall ? "px-2 py-0.5" : "px-2.5 py-1",
-        className,
-      )}
-    >
-      <Text
-        variant="caption"
-        tone="background"
-        weight="bold"
-        numberOfLines={1}
-        style={isSmall ? { fontSize: 10, lineHeight: 14 } : undefined}
-      >
-        {isSmall ? "Ka Best" : "Jevan Hana Ka Best"}
-      </Text>
+    <View className={cn("shrink-0", className)}>
+      <SymbolView
+        name={FEATURED_ICON}
+        size={size}
+        tintColor={palette.primary}
+        accessibilityLabel="Featured"
+      />
     </View>
   );
 }

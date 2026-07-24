@@ -24,8 +24,8 @@ export const EXPLORE_CATEGORY_ICONS = {
   },
   masjid: {
     ios: "building.columns.fill",
-    android: "account_balance",
-    web: "account_balance",
+    android: "mosque",
+    web: "mosque",
   },
   shops: {
     ios: "bag.fill",

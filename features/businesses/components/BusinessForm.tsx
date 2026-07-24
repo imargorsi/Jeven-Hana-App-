@@ -16,11 +16,11 @@ interface IBusinessFormProps {
   onSubmit: () => void;
   isSubmitting: boolean;
   submitLabel: string;
-  /** Admin-only Ka Best control (edit). */
-  showKaBest?: boolean;
-  isKaBest?: boolean;
-  onKaBestToggle?: () => void;
-  isTogglingKaBest?: boolean;
+  /** Admin-only Featured control (edit). */
+  showFeatured?: boolean;
+  isFeatured?: boolean;
+  onFeaturedToggle?: () => void;
+  isTogglingFeatured?: boolean;
 }
 
 export function BusinessForm({
@@ -29,10 +29,10 @@ export function BusinessForm({
   onSubmit,
   isSubmitting,
   submitLabel,
-  showKaBest = false,
-  isKaBest = false,
-  onKaBestToggle,
-  isTogglingKaBest = false,
+  showFeatured = false,
+  isFeatured = false,
+  onFeaturedToggle,
+  isTogglingFeatured = false,
 }: IBusinessFormProps) {
   return (
     <ScrollView
@@ -141,23 +141,23 @@ export function BusinessForm({
         </Text>
       </View>
 
-      {showKaBest ? (
+      {showFeatured ? (
         <Pressable
           accessibilityRole="checkbox"
-          accessibilityState={{ checked: isKaBest }}
-          disabled={isTogglingKaBest}
-          onPress={onKaBestToggle}
+          accessibilityState={{ checked: isFeatured }}
+          disabled={isTogglingFeatured}
+          onPress={onFeaturedToggle}
           className="flex-row items-center gap-3 rounded-card border border-cream/15 bg-surface px-4 py-3.5 active:opacity-90"
         >
           <View
             className={cn(
               "h-5 w-5 items-center justify-center rounded border",
-              isKaBest
+              isFeatured
                 ? "border-primary bg-primary"
                 : "border-cream/30 bg-background",
             )}
           >
-            {isKaBest ? (
+            {isFeatured ? (
               <SymbolView
                 name={{
                   ios: "checkmark",
@@ -171,10 +171,10 @@ export function BusinessForm({
           </View>
           <View className="min-w-0 flex-1">
             <Text variant="bodySmall" weight="semibold">
-              Jevan Hana Ka Best
+              Featured
             </Text>
             <Text variant="caption" tone="muted" className="mt-0.5">
-              Admin only — feature this listing with the Ka Best badge
+              Admin only — feature this listing with the Featured badge
             </Text>
           </View>
         </Pressable>
