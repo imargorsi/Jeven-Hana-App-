@@ -160,6 +160,17 @@ export function EventCard({
               {event.location}
             </Text>
           </View>
+
+          {event.description?.trim() ? (
+            <Text
+              variant="caption"
+              tone="muted"
+              className="mt-1.5"
+              numberOfLines={2}
+            >
+              {event.description.trim()}
+            </Text>
+          ) : null}
         </View>
       </View>
 
