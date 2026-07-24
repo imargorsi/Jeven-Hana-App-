@@ -1,38 +1,56 @@
-import type { TAppImage } from "@/types/common.types";
-import type { IAppUser } from "@/types/user.types";
-
 export type TPostCategory =
-  | "announcement"
+  | "announcements"
   | "news"
-  | "local-update"
-  | "recommendation"
+  | "alerts"
   | "lost-found"
-  | "general";
+  | "recommendations"
+  | "help"
+  | "buy-sell"
+  | "talk";
 
-/** Top reaction emojis residents can use on admin community posts. */
-export type TReactionEmoji = "👍" | "❤️" | "🎉" | "👏" | "🔥";
+/** Fixed v1 labels — matches API enums. */
+export const POST_CATEGORY_LABELS: Record<TPostCategory, string> = {
+  announcements: "Announcements",
+  news: "News",
+  alerts: "Alerts",
+  "lost-found": "Lost & Found",
+  recommendations: "Recommendations",
+  help: "Looking for help",
+  "buy-sell": "Buy / Sell",
+  talk: "Talk",
+};
 
-export interface IPostReaction {
-  emoji: TReactionEmoji;
-  count: number;
+export const POST_CATEGORIES: TPostCategory[] = [
+  "announcements",
+  "news",
+  "alerts",
+  "lost-found",
+  "recommendations",
+  "help",
+  "buy-sell",
+  "talk",
+];
+
+export interface ICommunityPostAuthor {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  fullName: string;
+  avatarUrl?: string;
+  isAdmin: boolean;
 }
 
+/** Slim v1 community post (live API shape). */
 export interface ICommunityPost {
   id: string;
   content: string;
-  /** When true, render content RTL with Urdu font. */
   contentIsUrdu?: boolean;
-  imageUrls: TAppImage[];
   category: TPostCategory;
   createdAt: string;
   updatedAt?: string;
-  user: IAppUser;
+  user: ICommunityPostAuthor;
   likeCount: number;
-  commentCount: number;
   isLikedByMe?: boolean;
   isPinned?: boolean;
-  isAnnouncement?: boolean;
-  likedByIds?: string[];
-  /** Per-emoji reaction counts. */
-  reactions?: IPostReaction[];
+  createdByUserId?: number;
 }

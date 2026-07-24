@@ -1,10 +1,13 @@
+import { useAuth } from "@clerk/expo";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 
 import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
 import { ErrorState, LoadingBlock, SectionHeader } from "@/components/ui";
+import { useCommunityManage } from "@/features/community/useCommunityManage.hook";
 import { HomeSectionEmpty } from "@/features/home/components/HomeSectionEmpty";
+import { getApiErrorMessage } from "@/lib/apiError.utils";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
 import {
@@ -19,16 +22,19 @@ interface IHomeCommunityUpdatesProps {
 }
 
 export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) {
+  const { getToken } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { canManage, openEdit, confirmDelete, deletingId } =
+    useCommunityManage();
 
   const postsQuery = useQuery({
     queryKey: ["home-community-updates", POST_LIMIT],
-    queryFn: () => getAdminCommunityHighlights(POST_LIMIT),
+    queryFn: () => getAdminCommunityHighlights(POST_LIMIT, getToken),
   });
 
   const likeMutation = useMutation({
-    mutationFn: toggleLikePost,
+    mutationFn: (id: string) => toggleLikePost(id, getToken),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: ["home-community-updates"],
@@ -36,6 +42,9 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
       void queryClient.invalidateQueries({ queryKey: ["community-posts"] });
       void queryClient.invalidateQueries({ queryKey: ["search"] });
       void queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    },
+    onError: (error) => {
+      Alert.alert("Could not update", getApiErrorMessage(error));
     },
   });
 
@@ -57,6 +66,7 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
         <SectionHeader title="Community Updates" />
         <ErrorState
           className="px-2 py-8"
+          description={getApiErrorMessage(postsQuery.error)}
           onRetry={() => void postsQuery.refetch()}
         />
       </View>
@@ -90,6 +100,10 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
             key={post.id}
             post={post}
             onLike={(id) => likeMutation.mutate(id)}
+            canManage={canManage(post)}
+            onEdit={() => openEdit(post.id)}
+            onDelete={() => confirmDelete(post)}
+            isDeleting={deletingId === post.id}
           />
         ))}
       </View>

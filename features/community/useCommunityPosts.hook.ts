@@ -1,9 +1,8 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useAuth } from "@clerk/expo";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Alert } from "react-native";
 
+import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
   getCommunityPosts,
   toggleLikePost,
@@ -11,23 +10,21 @@ import {
 import type { ICommunityPost, TPostCategory } from "@/types/community.types";
 
 export function useCommunityPosts(category?: TPostCategory) {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const queryKey = ["community-posts", category ?? "all"] as const;
 
-  const feedQuery = useInfiniteQuery({
+  const feedQuery = useQuery({
     queryKey,
-    initialPageParam: null as string | null,
-    queryFn: ({ pageParam }) =>
+    queryFn: () =>
       getCommunityPosts({
         category,
-        cursor: pageParam,
-        limit: 10,
+        getToken,
       }),
-    getNextPageParam: (last) => last.nextCursor,
   });
 
   const likeMutation = useMutation({
-    mutationFn: toggleLikePost,
+    mutationFn: (id: string) => toggleLikePost(id, getToken),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["community-posts"] });
       void queryClient.invalidateQueries({ queryKey: ["search"] });
@@ -36,10 +33,12 @@ export function useCommunityPosts(category?: TPostCategory) {
         queryKey: ["home-community-updates"],
       });
     },
+    onError: (error) => {
+      Alert.alert("Could not update", getApiErrorMessage(error));
+    },
   });
 
-  const posts: ICommunityPost[] =
-    feedQuery.data?.pages.flatMap((p) => p.items) ?? [];
+  const posts: ICommunityPost[] = feedQuery.data?.items ?? [];
 
   return {
     posts,

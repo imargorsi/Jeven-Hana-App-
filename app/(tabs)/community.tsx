@@ -13,24 +13,36 @@ import {
   CommunityFilterRow,
   type TCommunityFilterKey,
 } from "@/features/community/components/CommunityFilterRow";
+import { CreatePostActionCard } from "@/features/community/components/CreatePostActionCard";
+import { useCommunityManage } from "@/features/community/useCommunityManage.hook";
 import { useCommunityPosts } from "@/features/community/useCommunityPosts.hook";
+import { getApiErrorMessage } from "@/lib/apiError.utils";
 
 export default function CommunityTabScreen() {
   const [filter, setFilter] = useState<TCommunityFilterKey>("all");
   const { posts, feedQuery, likePost } = useCommunityPosts(
     filter === "all" ? undefined : filter,
   );
+  const { canManage, openCreate, openEdit, confirmDelete, deletingId } =
+    useCommunityManage();
 
   return (
     <Screen>
-      <View className="mb-4 mt-2">
+      <View className="mb-3 mt-2 px-4">
+        <CreatePostActionCard onPress={openCreate} />
+      </View>
+
+      <View className="mb-4">
         <CommunityFilterRow selected={filter} onSelect={setFilter} />
       </View>
 
       {feedQuery.isLoading ? (
         <LoadingBlock className="py-16" />
       ) : feedQuery.isError ? (
-        <ErrorState onRetry={() => void feedQuery.refetch()} />
+        <ErrorState
+          description={getApiErrorMessage(feedQuery.error)}
+          onRetry={() => void feedQuery.refetch()}
+        />
       ) : (
         <FlatList
           data={posts}
@@ -44,20 +56,21 @@ export default function CommunityTabScreen() {
               tintColor={palette.primary}
             />
           }
-          onEndReached={() => {
-            if (feedQuery.hasNextPage && !feedQuery.isFetchingNextPage) {
-              void feedQuery.fetchNextPage();
-            }
-          }}
-          onEndReachedThreshold={0.4}
           renderItem={({ item }) => (
-            <CommunityUpdateCard post={item} onLike={likePost} />
+            <CommunityUpdateCard
+              post={item}
+              onLike={likePost}
+              canManage={canManage(item)}
+              onEdit={() => openEdit(item.id)}
+              onDelete={() => confirmDelete(item)}
+              isDeleting={deletingId === item.id}
+            />
           )}
           ListFooterComponent={<View style={{ height: 24 }} />}
           ListEmptyComponent={
             <EmptyState
               title="No updates yet"
-              description="Admin announcements and neighbourhood news will show up here."
+              description="Create a post to share something with the neighbourhood."
             />
           }
           showsVerticalScrollIndicator={false}

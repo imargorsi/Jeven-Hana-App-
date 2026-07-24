@@ -33,7 +33,7 @@ export async function searchAll(
   const [businesses, places, posts, events] = await Promise.all([
     getBusinesses({ query: q, limit: 10 }),
     getPlaces({ query: q, limit: 10 }),
-    getCommunityPosts({ limit: 20 }),
+    getCommunityPosts({ limit: 20, getToken }),
     getEvents(getToken),
   ]);
 

@@ -47,3 +47,7 @@ yarn-error.*
 /Mobile/
 README 2.md
 zero-to-deploy.md
+
+# Local agent / product docs (keep on disk; do not commit)
+AGENTS.md
+doc/

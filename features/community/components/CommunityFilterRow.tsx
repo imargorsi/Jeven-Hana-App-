@@ -2,7 +2,11 @@ import { Pressable, ScrollView, View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
 import { cn } from "@/lib/cn.utils";
-import type { TPostCategory } from "@/types/community.types";
+import {
+  POST_CATEGORIES,
+  POST_CATEGORY_LABELS,
+  type TPostCategory,
+} from "@/types/community.types";
 
 export type TCommunityFilterKey = TPostCategory | "all";
 
@@ -11,11 +15,10 @@ export const COMMUNITY_FILTERS: {
   label: string;
 }[] = [
   { key: "all", label: "All" },
-  { key: "announcement", label: "Announcements" },
-  { key: "news", label: "News" },
-  { key: "local-update", label: "Updates" },
-  { key: "recommendation", label: "Tips" },
-  { key: "lost-found", label: "Lost & found" },
+  ...POST_CATEGORIES.map((key) => ({
+    key,
+    label: POST_CATEGORY_LABELS[key],
+  })),
 ];
 
 interface ICommunityFilterRowProps {
@@ -24,7 +27,7 @@ interface ICommunityFilterRowProps {
   className?: string;
 }
 
-/** Soft filter pills for the Community feed (v1). */
+/** Soft filter pills for the Community feed (v1 fixed enums). */
 export function CommunityFilterRow({
   selected,
   onSelect,

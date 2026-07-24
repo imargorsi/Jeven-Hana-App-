@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { SymbolView } from "expo-symbols";
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Avatar } from "@/components/ui/Avatar";
 import { Text } from "@/components/ui/Text";
@@ -10,27 +10,29 @@ import { cn } from "@/lib/cn.utils";
 import { formatRelativeTime } from "@/lib/formatter.utils";
 import { shareContent } from "@/lib/linking.utils";
 import { hasUrduScript } from "@/lib/text.utils";
-import type { ICommunityPost } from "@/types/community.types";
-
-const CATEGORY_LABEL: Record<ICommunityPost["category"], string> = {
-  announcement: "Announcement",
-  news: "News",
-  "local-update": "Local update",
-  recommendation: "Recommendation",
-  "lost-found": "Lost & found",
-  general: "General",
-};
+import {
+  POST_CATEGORY_LABELS,
+  type ICommunityPost,
+} from "@/types/community.types";
 
 interface ICommunityUpdateCardProps {
   post: ICommunityPost;
   onLike?: (id: string) => void;
+  canManage?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  isDeleting?: boolean;
   className?: string;
 }
 
-/** Feed card for v1 — like + share only (no post detail screen). */
+/** Feed card for v1 — like + share; owner/admin edit/delete (no detail screen). */
 export function CommunityUpdateCard({
   post,
   onLike,
+  canManage = false,
+  onEdit,
+  onDelete,
+  isDeleting = false,
   className,
 }: ICommunityUpdateCardProps) {
   const { requireAuth } = useRequireAuth();
@@ -47,7 +49,7 @@ export function CommunityUpdateCard({
       <View className="mb-2.5 flex-row items-center justify-between gap-2">
         <View className="rounded-chip bg-primary/15 px-2 py-0.5">
           <Text variant="caption" weight="semibold" tone="primary">
-            {CATEGORY_LABEL[post.category]}
+            {POST_CATEGORY_LABELS[post.category]}
           </Text>
         </View>
         <Text variant="caption" tone="muted">
@@ -95,6 +97,11 @@ export function CommunityUpdateCard({
               tintColor={palette.primary}
             />
           ) : null}
+          {post.isPinned ? (
+            <Text variant="caption" tone="primary" weight="semibold">
+              Pinned
+            </Text>
+          ) : null}
         </View>
       </View>
 
@@ -107,7 +114,7 @@ export function CommunityUpdateCard({
         {post.content}
       </Text>
 
-      <View className="mt-3 flex-row items-center justify-between gap-3 border-t border-cream/10 pt-2.5">
+      <View className="mt-3 flex-row items-center border-t border-cream/10 pt-2.5">
         <Pressable
           hitSlop={8}
           accessibilityRole="button"
@@ -134,6 +141,8 @@ export function CommunityUpdateCard({
           </Text>
         </Pressable>
 
+        <View className="mx-3 h-1 w-1 rounded-full bg-muted" />
+
         <Pressable
           hitSlop={8}
           accessibilityRole="button"
@@ -154,6 +163,53 @@ export function CommunityUpdateCard({
             Share
           </Text>
         </Pressable>
+
+        <View className="flex-1" />
+
+        {canManage ? (
+          <View className="flex-row items-center gap-0.5">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Edit post"
+              disabled={isDeleting}
+              hitSlop={8}
+              onPress={onEdit}
+              className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
+            >
+              <SymbolView
+                name={{
+                  ios: "pencil",
+                  android: "edit",
+                  web: "edit",
+                }}
+                size={16}
+                tintColor={palette.cream}
+              />
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Delete post"
+              disabled={isDeleting}
+              hitSlop={8}
+              onPress={onDelete}
+              className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
+            >
+              {isDeleting ? (
+                <ActivityIndicator size="small" color={palette.error} />
+              ) : (
+                <SymbolView
+                  name={{
+                    ios: "trash",
+                    android: "delete",
+                    web: "delete",
+                  }}
+                  size={16}
+                  tintColor={palette.error}
+                />
+              )}
+            </Pressable>
+          </View>
+        ) : null}
       </View>
     </View>
   );
