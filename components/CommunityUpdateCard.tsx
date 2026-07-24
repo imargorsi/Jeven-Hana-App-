@@ -8,7 +8,7 @@ import { palette } from "@/constants/Colors";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { formatRelativeTime } from "@/lib/formatter.utils";
-import { shareContent } from "@/lib/linking.utils";
+import { shareAppLink } from "@/lib/linking.utils";
 import { hasUrduScript } from "@/lib/text.utils";
 import {
   POST_CATEGORY_LABELS,
@@ -147,7 +147,7 @@ export function CommunityUpdateCard({
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Share"
-          onPress={() => void shareContent(post.content)}
+          onPress={() => void shareAppLink("/community", "Jevan Hana Community")}
           className="flex-row items-center gap-1.5 active:opacity-70"
         >
           <SymbolView
@@ -170,7 +170,7 @@ export function CommunityUpdateCard({
           <View className="flex-row items-center gap-0.5">
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Edit post"
+              accessibilityLabel="Edit Post"
               disabled={isDeleting}
               hitSlop={8}
               onPress={onEdit}
@@ -188,7 +188,7 @@ export function CommunityUpdateCard({
             </Pressable>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Delete post"
+              accessibilityLabel="Delete Post"
               disabled={isDeleting}
               hitSlop={8}
               onPress={onDelete}

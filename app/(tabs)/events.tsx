@@ -64,7 +64,7 @@ export default function EventsTabScreen() {
 
         {!hasEvents ? (
           <EmptyState
-            title="No upcoming events"
+            title="No Upcoming Events"
             description="Create an event to share something with the neighbourhood."
           />
         ) : (

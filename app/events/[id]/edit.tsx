@@ -64,7 +64,7 @@ function EditEventForm({ event }: { event: IEvent }) {
       onChange={(patch) => setValues((prev) => ({ ...prev, ...patch }))}
       onSubmit={onSubmit}
       isSubmitting={mutation.isPending}
-      submitLabel="Save changes"
+      submitLabel="Save Changes"
     />
   );
 }

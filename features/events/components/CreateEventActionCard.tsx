@@ -18,7 +18,7 @@ export function CreateEventActionCard({ onPress }: ICreateEventActionCardProps) 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Create event"
+      accessibilityLabel="Create Event"
       onPress={onPress}
       className="relative mb-6 overflow-hidden rounded-card border border-cream/15 bg-surface active:opacity-90"
       style={{
@@ -69,7 +69,7 @@ export function CreateEventActionCard({ onPress }: ICreateEventActionCardProps) 
 
         <View className="min-w-0 flex-1">
           <Text variant="body" weight="bold">
-            Create event
+            Create Event
           </Text>
           <Text variant="caption" tone="muted" className="mt-1">
             Host something for the neighbourhood

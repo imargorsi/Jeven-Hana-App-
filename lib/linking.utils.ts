@@ -1,3 +1,4 @@
+import * as ExpoLinking from "expo-linking";
 import { Linking, Platform, Share } from "react-native";
 
 export async function openPhone(phone: string) {
@@ -22,8 +23,32 @@ export async function openDirections(lat: number, lng: number, label?: string) {
   if (url) await Linking.openURL(url);
 }
 
-export async function shareContent(message: string, url?: string) {
-  await Share.share({
-    message: url ? `${message}\n${url}` : message,
-  });
+/** Deep link into this app (`scheme` from app.config → e.g. `jevan-hana://…`). */
+export function createAppUrl(path: string): string {
+  const normalized = path.replace(/^\//, "");
+  return ExpoLinking.createURL(normalized);
+}
+
+/**
+ * Share an in-app deep link via the system sheet (Copy / WhatsApp / etc.).
+ * Android ignores `url` — the link must live in `message` so recipients get the app link.
+ */
+export async function shareAppLink(path: string, title?: string) {
+  const url = createAppUrl(path);
+
+  try {
+    if (Platform.OS === "ios") {
+      await Share.share({
+        url,
+        ...(title ? { message: title } : {}),
+      });
+    } else {
+      await Share.share({
+        message: url,
+        ...(title ? { title } : {}),
+      });
+    }
+  } catch {
+    // User dismissed the sheet or share is unavailable.
+  }
 }

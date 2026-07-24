@@ -33,8 +33,8 @@ export default function BusinessesLayout() {
           name="[id]/index"
           options={{ headerShown: false, title: "Business" }}
         />
-        <Stack.Screen name="create" options={{ title: "Create listing" }} />
-        <Stack.Screen name="[id]/edit" options={{ title: "Edit listing" }} />
+        <Stack.Screen name="create" options={{ title: "Create Listing" }} />
+        <Stack.Screen name="[id]/edit" options={{ title: "Edit Listing" }} />
       </Stack>
     </View>
   );

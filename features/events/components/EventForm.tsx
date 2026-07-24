@@ -97,8 +97,8 @@ export function EventForm({
               mode="date"
               value={values.startsDate}
               companionValue={values.startsTime}
-              placeholder="Pick a date"
-              accessibilityLabel="Start date"
+              placeholder="Pick a Date"
+              accessibilityLabel="Start Date"
               onChange={(startsDate) => onChange({ startsDate })}
               containerClassName="flex-1"
             />
@@ -107,7 +107,7 @@ export function EventForm({
               value={values.startsTime}
               companionValue={values.startsDate}
               placeholder="Time"
-              accessibilityLabel="Start time"
+              accessibilityLabel="Start Time"
               onChange={(startsTime) => onChange({ startsTime })}
               containerClassName="w-[42%]"
             />
@@ -122,12 +122,12 @@ export function EventForm({
               weight="medium"
               className="opacity-70"
             >
-              Ends (optional)
+              Ends (Optional)
             </Text>
             {hasEnd ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Clear end time"
+                accessibilityLabel="Clear End Time"
                 onPress={clearEnd}
                 hitSlop={8}
               >
@@ -144,8 +144,8 @@ export function EventForm({
                 mode="date"
                 value={values.endsDate}
                 companionValue={values.endsTime || values.startsTime}
-                placeholder="Pick a date"
-                accessibilityLabel="End date"
+                placeholder="Pick a Date"
+                accessibilityLabel="End Date"
                 onChange={(endsDate) => onChange({ endsDate })}
                 containerClassName="flex-1"
               />
@@ -154,7 +154,7 @@ export function EventForm({
                 value={values.endsTime}
                 companionValue={values.endsDate || values.startsDate}
                 placeholder="Time"
-                accessibilityLabel="End time"
+                accessibilityLabel="End Time"
                 onChange={(endsTime) => onChange({ endsTime })}
                 containerClassName="w-[42%]"
               />
@@ -162,7 +162,7 @@ export function EventForm({
           ) : (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Add end date and time"
+              accessibilityLabel="Add End Date and Time"
               onPress={addEnd}
               className="min-h-14 flex-row items-center justify-center gap-2 rounded-button border border-dashed border-cream/20 bg-surface/60 px-4 active:opacity-90"
             >
@@ -176,14 +176,14 @@ export function EventForm({
                 tintColor={palette.primary}
               />
               <Text variant="bodySmall" weight="semibold" tone="primary">
-                Add end date & time
+                Add End Date & Time
               </Text>
             </Pressable>
           )}
         </View>
 
         <TextField
-          label="Description (optional)"
+          label="Description (Optional)"
           value={values.description}
           onChangeText={(description) => onChange({ description })}
           placeholder="Short note for neighbours"

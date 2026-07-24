@@ -68,6 +68,7 @@ export function NearbyHighlightCard({
         <View
           className="absolute right-1.5 top-1.5 rounded-full bg-background/55 p-1"
           onStartShouldSetResponder={() => true}
+          onTouchEnd={(e) => e.stopPropagation()}
         >
           <SaveButton
             type="business"

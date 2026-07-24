@@ -103,7 +103,7 @@ export function BusinessForm({
       />
 
       <TextField
-        label="Phone (optional)"
+        label="Phone (Optional)"
         value={values.phone}
         onChangeText={(phone) => onChange({ phone })}
         placeholder="03XX XXXXXXX"
@@ -112,7 +112,7 @@ export function BusinessForm({
       />
 
       <TextField
-        label="WhatsApp (optional)"
+        label="WhatsApp (Optional)"
         value={values.whatsapp}
         onChangeText={(whatsapp) => onChange({ whatsapp })}
         placeholder="03XX XXXXXXX"
@@ -121,7 +121,7 @@ export function BusinessForm({
       />
 
       <TextField
-        label="Description (optional)"
+        label="Description (Optional)"
         value={values.description}
         onChangeText={(description) => onChange({ description })}
         placeholder="Short note for neighbours"

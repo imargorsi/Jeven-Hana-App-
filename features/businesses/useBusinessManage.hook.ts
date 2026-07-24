@@ -65,7 +65,7 @@ export function useBusinessManage() {
     options?: { onDeleted?: () => void },
   ) => {
     Alert.alert(
-      "Delete listing?",
+      "Delete Listing?",
       `"${business.name}" will be removed for everyone.`,
       [
         { text: "Cancel", style: "cancel" },

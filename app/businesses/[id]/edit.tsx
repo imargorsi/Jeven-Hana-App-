@@ -85,7 +85,7 @@ function EditBusinessForm({ business }: { business: IBusiness }) {
       onChange={(patch) => setValues((prev) => ({ ...prev, ...patch }))}
       onSubmit={onSubmit}
       isSubmitting={mutation.isPending}
-      submitLabel="Save changes"
+      submitLabel="Save Changes"
       showFeatured={isAdmin}
       isFeatured={isFeatured}
       onFeaturedToggle={() => featuredMutation.mutate()}

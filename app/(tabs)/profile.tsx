@@ -25,7 +25,7 @@ interface IProfileLink {
 
 const PROFILE_LINKS: IProfileLink[] = [
   {
-    title: "Edit profile",
+    title: "Edit Profile",
     subtitle: "Name, photo & account details",
     icon: {
       ios: "pencil",
@@ -35,7 +35,7 @@ const PROFILE_LINKS: IProfileLink[] = [
     route: "/profile/edit",
   },
   {
-    title: "My posts",
+    title: "My Posts",
     subtitle: "Updates you've shared",
     icon: {
       ios: "doc.text",
@@ -45,8 +45,8 @@ const PROFILE_LINKS: IProfileLink[] = [
     route: "/profile/posts",
   },
   {
-    title: "Saved places",
-                subtitle: "Businesses, places & events",
+    title: "Saved Places",
+    subtitle: "Businesses & events you've bookmarked",
     icon: {
       ios: "bookmark",
       android: "bookmark_border",
@@ -55,7 +55,7 @@ const PROFILE_LINKS: IProfileLink[] = [
     route: "/profile/saved",
   },
   {
-    title: "Events going",
+    title: "Events Going",
     subtitle: "Neighbourhood events you're attending",
     icon: {
       ios: "calendar",
@@ -96,7 +96,7 @@ function GuestProfile() {
             className="mt-6"
             onPress={() => router.push(href("/register"))}
           >
-            Create account
+            Create Account
           </Button>
           <Button
             isFullWidth
@@ -105,7 +105,7 @@ function GuestProfile() {
             className="mt-3"
             onPress={() => router.push(href("/login"))}
           >
-            Log in
+            Log In
           </Button>
         </View>
 
@@ -249,12 +249,12 @@ export default function ProfileTabScreen() {
 
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Log out"
+          accessibilityLabel="Log Out"
           onPress={() => {
-            Alert.alert("Log out?", "You can sign back in anytime.", [
+            Alert.alert("Log Out?", "You can sign back in anytime.", [
               { text: "Cancel", style: "cancel" },
               {
-                text: "Log out",
+                text: "Log Out",
                 style: "destructive",
                 onPress: () => void signOut(),
               },
@@ -272,7 +272,7 @@ export default function ProfileTabScreen() {
             tintColor={palette.muted}
           />
           <Text variant="bodySmall" weight="medium" tone="muted">
-            Log out
+            Log Out
           </Text>
         </Pressable>
       </ScrollView>

@@ -54,7 +54,7 @@ export default function CreateEventScreen() {
         onChange={(patch) => setValues((prev) => ({ ...prev, ...patch }))}
         onSubmit={onSubmit}
         isSubmitting={mutation.isPending}
-        submitLabel="Create event"
+        submitLabel="Create Event"
       />
     </Screen>
   );

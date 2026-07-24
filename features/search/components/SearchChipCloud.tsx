@@ -56,7 +56,7 @@ export function SearchChipCloud({
         {onClear ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Clear recent searches"
+            accessibilityLabel="Clear Recent Searches"
             onPress={onClear}
             hitSlop={8}
             className="active:opacity-70"

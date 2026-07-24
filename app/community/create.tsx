@@ -66,7 +66,7 @@ export default function CreateCommunityPostScreen() {
         onChange={(patch) => setValues((prev) => ({ ...prev, ...patch }))}
         onSubmit={onSubmit}
         isSubmitting={mutation.isPending}
-        submitLabel="Create post"
+        submitLabel="Create Post"
         showPin={isAdmin}
         isPinned={isPinned}
         onPinnedChange={setIsPinned}

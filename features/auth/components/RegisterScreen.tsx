@@ -76,7 +76,7 @@ function ClerkRegisterForm() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Create your account"
+        title="Create Your Account"
         subtitle="Welcome! Please fill in the details to get started."
       />
 
@@ -106,7 +106,7 @@ function ClerkRegisterForm() {
         ) : null}
 
         <TextField
-          label="Email address"
+          label="Email Address"
           value={email}
           onChangeText={setEmail}
           placeholder="Enter your email address"
@@ -189,7 +189,7 @@ function PreviewRegisterContent() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Create your account"
+        title="Create Your Account"
         subtitle="Welcome! Please fill in the details to get started."
       />
       <PreviewRegisterActions />

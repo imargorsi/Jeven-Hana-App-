@@ -77,42 +77,30 @@ export function EventCard({
             {onToggleInterested ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={isGoing ? "Cancel going" : "Mark as going"}
+                accessibilityLabel={isGoing ? "Cancel Going" : "Mark as Going"}
                 accessibilityState={{ selected: isGoing }}
                 disabled={isToggling}
                 hitSlop={6}
                 onPress={() => requireAuth(() => onToggleInterested?.())}
                 className={cn(
-                  "h-8 min-w-8 items-center justify-center rounded-full px-2.5 active:opacity-80",
-                  isGoing ? "bg-primary" : "bg-primary/15",
+                  "h-8 min-w-8 items-center justify-center rounded-full border border-primary/35 bg-primary/15 px-2.5 active:opacity-80",
                   isToggling && "opacity-60",
                 )}
               >
                 {isToggling ? (
-                  <ActivityIndicator
-                    size="small"
-                    color={isGoing ? palette.background : palette.primary}
-                  />
+                  <ActivityIndicator size="small" color={palette.primary} />
                 ) : (
                   <View className="flex-row items-center gap-1">
                     <SymbolView
                       name={{
-                        ios: isGoing
-                          ? "checkmark.circle.fill"
-                          : "plus.circle",
-                        android: isGoing ? "check_circle" : "add_circle",
-                        web: isGoing ? "check_circle" : "add_circle",
+                        ios: isGoing ? "tag.fill" : "tag",
+                        android: "label_important",
+                        web: "label_important",
                       }}
                       size={14}
-                      tintColor={
-                        isGoing ? palette.background : palette.primary
-                      }
+                      tintColor={palette.primary}
                     />
-                    <Text
-                      variant="caption"
-                      weight="bold"
-                      tone={isGoing ? "background" : "primary"}
-                    >
+                    <Text variant="caption" weight="bold" tone="primary">
                       {isGoing ? "Going" : "Go"}
                     </Text>
                   </View>
@@ -189,7 +177,7 @@ export function EventCard({
           <View className="flex-row items-center gap-0.5">
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Edit event"
+              accessibilityLabel="Edit Event"
               disabled={isDeleting}
               hitSlop={8}
               onPress={onEdit}
@@ -207,7 +195,7 @@ export function EventCard({
             </Pressable>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Delete event"
+              accessibilityLabel="Delete Event"
               disabled={isDeleting}
               hitSlop={8}
               onPress={onDelete}

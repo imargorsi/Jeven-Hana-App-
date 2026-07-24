@@ -80,7 +80,7 @@ function ClerkLoginForm() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Sign in to Jevan Hana"
+        title="Sign In to Jevan Hana"
         subtitle="Welcome back! Please sign in to continue"
       />
 
@@ -97,7 +97,7 @@ function ClerkLoginForm() {
 
           <View className="gap-4">
             <TextField
-              label="Email address"
+              label="Email Address"
               value={email}
               onChangeText={setEmail}
               placeholder="Enter your email address"
@@ -202,7 +202,7 @@ function PreviewLoginContent() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Sign in to Jevan Hana"
+        title="Sign In to Jevan Hana"
         subtitle="Welcome back! Please sign in to continue"
       />
       <PreviewLoginActions />

@@ -12,19 +12,20 @@ import {
 } from "@/lib/services/events.service";
 
 export default function EventsGoingScreen() {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
   const { canManage, openEdit, confirmDelete, deletingId } = useEventManage();
 
   const query = useQuery({
-    queryKey: ["events-going"],
+    queryKey: ["events-going", userId],
     queryFn: () => getGoingEvents(getToken),
+    enabled: Boolean(userId),
   });
 
   const goingMutation = useMutation({
     mutationFn: (id: string) => toggleEventGoing(id, getToken),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["events-going"] });
+      void queryClient.invalidateQueries({ queryKey: ["events-going", userId] });
       void queryClient.invalidateQueries({ queryKey: ["events"] });
     },
     onError: (error) => {
@@ -72,7 +73,7 @@ export default function EventsGoingScreen() {
         )}
         ListEmptyComponent={
           <EmptyState
-            title="No events yet"
+            title="No Events Yet"
             description="Tap Going on an event to keep it here."
           />
         }

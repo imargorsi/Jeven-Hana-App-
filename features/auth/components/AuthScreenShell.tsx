@@ -42,7 +42,7 @@ export function AuthScreenShell({
         {showBack ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel="Go Back"
             onPress={() => router.back()}
             className="mb-2 h-10 w-10 items-center justify-center"
             hitSlop={8}

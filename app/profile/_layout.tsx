@@ -24,10 +24,10 @@ function ProfileStack() {
         contentStyle: { backgroundColor: palette.background },
       }}
     >
-      <Stack.Screen name="edit" options={{ title: "Edit profile" }} />
-      <Stack.Screen name="posts" options={{ title: "My posts" }} />
-      <Stack.Screen name="saved" options={{ title: "Saved places" }} />
-      <Stack.Screen name="going" options={{ title: "Events going" }} />
+      <Stack.Screen name="edit" options={{ title: "Edit Profile" }} />
+      <Stack.Screen name="posts" options={{ title: "My Posts" }} />
+      <Stack.Screen name="saved" options={{ title: "Saved Places" }} />
+      <Stack.Screen name="going" options={{ title: "Events Going" }} />
     </Stack>
   );
 }

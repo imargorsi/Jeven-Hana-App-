@@ -69,7 +69,7 @@ export default function CommunityTabScreen() {
           ListFooterComponent={<View style={{ height: 24 }} />}
           ListEmptyComponent={
             <EmptyState
-              title="No updates yet"
+              title="No Updates Yet"
               description="Create a post to share something with the neighbourhood."
             />
           }

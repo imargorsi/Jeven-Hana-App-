@@ -184,7 +184,7 @@ export default function SearchScreen() {
         <ErrorState onRetry={() => void resultsQuery.refetch()} />
       ) : visibleCount === 0 ? (
         <EmptyState
-          title="No results"
+          title="No Results"
           description={`Nothing matched “${debounced}”. Try another word or filter.`}
         />
       ) : (

@@ -18,7 +18,7 @@ import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
 import { BusinessManageActions } from "@/features/businesses/components/BusinessManageActions";
 import { useBusinessDetail } from "@/features/businesses/useBusinessDetail.hook";
 import { useBusinessManage } from "@/features/businesses/useBusinessManage.hook";
-import { shareContent } from "@/lib/linking.utils";
+import { shareAppLink } from "@/lib/linking.utils";
 import { href } from "@/lib/navigation.utils";
 import { getBusinessCategoryLabel } from "@/lib/services/businesses.service";
 
@@ -47,7 +47,7 @@ export default function BusinessDetailScreen() {
 
   const categoryLabel = getBusinessCategoryLabel(business.category);
   const openStatus = getBusinessOpenStatus(business.hours);
-  const shareMessage = `${business.name} — ${business.address}`;
+  const sharePath = `/businesses/${business.id}`;
   const showManage = canManage(business);
 
   return (
@@ -62,7 +62,7 @@ export default function BusinessDetailScreen() {
           urls={business.imageUrls}
           saveType="business"
           saveId={business.id}
-          onShare={() => void shareContent(shareMessage)}
+          onShare={() => void shareAppLink(sharePath, business.name)}
         />
 
         <View className="px-4 pt-2">
@@ -117,7 +117,7 @@ export default function BusinessDetailScreen() {
             phone={business.phone ?? undefined}
             whatsapp={business.whatsapp ?? undefined}
             label={business.name}
-            onShare={() => void shareContent(shareMessage)}
+            onShare={() => void shareAppLink(sharePath, business.name)}
           />
 
           {showManage ? (

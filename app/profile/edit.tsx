@@ -124,7 +124,7 @@ export default function EditProfileScreen() {
           <View className="mb-7 items-center">
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Change photo"
+              accessibilityLabel="Change Photo"
               onPress={() => void pickImage()}
               className="relative active:opacity-90"
             >
@@ -160,7 +160,7 @@ export default function EditProfileScreen() {
 
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Change photo"
+              accessibilityLabel="Change Photo"
               onPress={() => void pickImage()}
               className="mt-3 active:opacity-70"
             >
@@ -192,7 +192,7 @@ export default function EditProfileScreen() {
           </View>
 
           <TextField
-            label="First name"
+            label="First Name"
             value={firstName}
             onChangeText={setFirstName}
             autoCapitalize="words"
@@ -201,7 +201,7 @@ export default function EditProfileScreen() {
             containerClassName="mb-4"
           />
           <TextField
-            label="Last name"
+            label="Last Name"
             value={lastName}
             onChangeText={setLastName}
             autoCapitalize="words"
@@ -217,7 +217,7 @@ export default function EditProfileScreen() {
             isLoading={isSaving}
             onPress={() => void save()}
           >
-            Save changes
+            Save Changes
           </Button>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -24,8 +24,8 @@ function EventsStack() {
         contentStyle: { backgroundColor: palette.background },
       }}
     >
-      <Stack.Screen name="create" options={{ title: "Create event" }} />
-      <Stack.Screen name="[id]/edit" options={{ title: "Edit event" }} />
+      <Stack.Screen name="create" options={{ title: "Create Event" }} />
+      <Stack.Screen name="[id]/edit" options={{ title: "Edit Event" }} />
     </Stack>
   );
 }

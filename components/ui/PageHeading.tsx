@@ -48,7 +48,7 @@ export function PageHeading({
         {showBack ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel="Go Back"
             hitSlop={8}
             className="h-9 w-9 items-center justify-center rounded-full active:opacity-70"
             onPress={() => router.back()}

@@ -24,8 +24,8 @@ function CommunityStack() {
         contentStyle: { backgroundColor: palette.background },
       }}
     >
-      <Stack.Screen name="create" options={{ title: "Create post" }} />
-      <Stack.Screen name="[id]/edit" options={{ title: "Edit post" }} />
+      <Stack.Screen name="create" options={{ title: "Create Post" }} />
+      <Stack.Screen name="[id]/edit" options={{ title: "Edit Post" }} />
     </Stack>
   );
 }

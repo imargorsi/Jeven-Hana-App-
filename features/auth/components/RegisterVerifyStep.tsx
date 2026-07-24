@@ -34,7 +34,7 @@ export function RegisterVerifyStep({
 
       <View className="gap-4">
         <TextField
-          label="Verification code"
+          label="Verification Code"
           value={code}
           onChangeText={setCode}
           placeholder="Enter your verification code"

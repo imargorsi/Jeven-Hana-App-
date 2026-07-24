@@ -67,7 +67,7 @@ export function ListingHero({
       >
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel="Go Back"
           hitSlop={10}
           onPress={() => router.back()}
           className="h-10 w-10 items-center justify-center rounded-full border border-cream/15 bg-background/45 active:opacity-80"

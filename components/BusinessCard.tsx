@@ -92,11 +92,12 @@ export function BusinessCard({
           <View
             className="absolute right-2.5 top-2.5 flex-row items-center gap-0.5 rounded-full border border-cream/15 bg-background/55 px-1 py-0.5"
             onStartShouldSetResponder={() => true}
+            onTouchEnd={(e) => e.stopPropagation()}
           >
             {showManage && onEdit ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Edit listing"
+                accessibilityLabel="Edit Listing"
                 disabled={isDeleting}
                 hitSlop={6}
                 onPress={onEdit}
@@ -116,7 +117,7 @@ export function BusinessCard({
             {showManage && onDelete ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Delete listing"
+                accessibilityLabel="Delete Listing"
                 disabled={isDeleting}
                 hitSlop={6}
                 onPress={onDelete}

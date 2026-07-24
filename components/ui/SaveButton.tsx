@@ -1,5 +1,6 @@
 import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
+import type { GestureResponderEvent } from "react-native";
 import { Pressable, View } from "react-native";
 
 import { palette } from "@/constants/Colors";
@@ -17,6 +18,14 @@ interface ISaveButtonProps {
   className?: string;
 }
 
+function useIsSaved(type: TSavedItemType, id: string): boolean {
+  return useSavedItemsStore((s) => {
+    if (type === "business") return s.businesses.includes(id);
+    if (type === "place") return s.places.includes(id);
+    return s.events.includes(id);
+  });
+}
+
 export function SaveButton({
   type,
   id,
@@ -25,22 +34,26 @@ export function SaveButton({
   className,
 }: ISaveButtonProps) {
   const { requireAuth } = useRequireAuth();
-  const isSaved = useSavedItemsStore((s) => s.isSaved(type, id));
+  const isSaved = useIsSaved(type, id);
   const toggleSaved = useSavedItemsStore((s) => s.toggleSaved);
   const tint = color ?? (isSaved ? palette.primary : palette.cream);
+
+  const onPress = (event: GestureResponderEvent) => {
+    // Nested inside listing cards — stop the parent Pressable from navigating.
+    event.stopPropagation?.();
+    requireAuth(() => {
+      void Haptics.selectionAsync();
+      toggleSaved(type, id);
+    });
+  };
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={isSaved ? "Remove from saved" : "Save"}
+      accessibilityLabel={isSaved ? "Remove from Saved" : "Save"}
       hitSlop={8}
       className={cn("p-1 active:opacity-70", className)}
-      onPress={() => {
-        requireAuth(() => {
-          void Haptics.selectionAsync();
-          toggleSaved(type, id);
-        });
-      }}
+      onPress={onPress}
     >
       <SymbolView
         name={{

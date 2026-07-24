@@ -4,17 +4,14 @@ import { FlatList, View } from "react-native";
 
 import { BusinessCard } from "@/components/BusinessCard";
 import { EventCard } from "@/components/EventCard";
-import { PlaceCard } from "@/components/PlaceCard";
 import { EmptyState, LoadingBlock, Screen } from "@/components/ui";
 import { getBusinessById } from "@/lib/services/businesses.service";
 import { getEventById } from "@/lib/services/events.service";
-import { getPlaceById } from "@/lib/services/places.service";
 import { useSavedItemsStore } from "@/stores/useSavedItemsStore";
 import type { IBusiness } from "@/types/business.types";
 import type { IEvent } from "@/types/event.types";
-import type { IPlace } from "@/types/place.types";
 
-type TSavedKind = "business" | "place" | "event";
+type TSavedKind = "business" | "event";
 
 interface ISavedRef {
   kind: TSavedKind;
@@ -23,27 +20,25 @@ interface ISavedRef {
 
 type TSavedRow =
   | { kind: "business"; id: string; data: IBusiness }
-  | { kind: "place"; id: string; data: IPlace }
   | { kind: "event"; id: string; data: IEvent };
 
 export default function SavedPlacesScreen() {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const businesses = useSavedItemsStore((s) => s.businesses);
-  const places = useSavedItemsStore((s) => s.places);
   const events = useSavedItemsStore((s) => s.events);
 
+  // Places are folded into Business in part 1 — only businesses + events.
   const refs: ISavedRef[] = [
     ...businesses.map((id) => ({ kind: "business" as const, id })),
-    ...places.map((id) => ({ kind: "place" as const, id })),
     ...events.map((id) => ({ kind: "event" as const, id })),
   ];
 
   const queries = useQueries({
     queries: refs.map((ref) => ({
-      queryKey: ["saved-item", ref.kind, ref.id],
+      queryKey: ["saved-item", userId, ref.kind, ref.id],
+      enabled: Boolean(userId),
       queryFn: async () => {
         if (ref.kind === "business") return getBusinessById(ref.id);
-        if (ref.kind === "place") return getPlaceById(ref.id);
         return getEventById(ref.id, getToken);
       },
     })),
@@ -76,15 +71,12 @@ export default function SavedPlacesScreen() {
           if (item.kind === "business") {
             return <BusinessCard business={item.data} />;
           }
-          if (item.kind === "place") {
-            return <PlaceCard place={item.data} />;
-          }
           return <EventCard event={item.data} />;
         }}
         ListEmptyComponent={
           <EmptyState
-            title="Nothing saved"
-            description="Bookmark businesses, places, or events to see them here."
+            title="Nothing Saved"
+            description="Bookmark businesses or events to see them here."
           />
         }
         ItemSeparatorComponent={() => <View className="h-0" />}

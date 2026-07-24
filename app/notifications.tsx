@@ -139,7 +139,7 @@ export default function NotificationsScreen() {
         }}
         ListEmptyComponent={
           <EmptyState
-            title="No notifications"
+            title="No Notifications"
             description="You're all caught up."
           />
         }

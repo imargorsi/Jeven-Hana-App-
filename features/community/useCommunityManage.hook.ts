@@ -64,7 +64,7 @@ export function useCommunityManage() {
       post.content.length > 80
         ? `${post.content.slice(0, 80).trim()}…`
         : post.content;
-    Alert.alert("Delete post?", `"${preview}" will be removed for everyone.`, [
+    Alert.alert("Delete Post?", `"${preview}" will be removed for everyone.`, [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",

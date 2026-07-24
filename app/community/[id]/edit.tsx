@@ -78,7 +78,7 @@ function EditPostForm({
       onChange={(patch) => setValues((prev) => ({ ...prev, ...patch }))}
       onSubmit={onSubmit}
       isSubmitting={mutation.isPending}
-      submitLabel="Save changes"
+      submitLabel="Save Changes"
       showPin={isAdmin}
       isPinned={isPinned}
       onPinnedChange={setIsPinned}

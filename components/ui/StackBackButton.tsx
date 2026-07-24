@@ -17,7 +17,7 @@ export function StackBackButton({ className }: IStackBackButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Go back"
+      accessibilityLabel="Go Back"
       hitSlop={8}
       onPress={() => router.back()}
       className={cn(

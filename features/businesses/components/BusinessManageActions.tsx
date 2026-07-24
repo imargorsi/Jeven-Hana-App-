@@ -26,7 +26,7 @@ export function BusinessManageActions({
     <View className={cn("flex-row gap-2.5", className)}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Edit listing"
+        accessibilityLabel="Edit Listing"
         disabled={isDeleting}
         onPress={onEdit}
         className="min-h-[56px] flex-1 flex-row items-center justify-center gap-2 rounded-2xl border border-cream/10 bg-surface px-3 py-3 active:opacity-80"
@@ -47,7 +47,7 @@ export function BusinessManageActions({
 
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Delete listing"
+        accessibilityLabel="Delete Listing"
         disabled={isDeleting}
         onPress={onDelete}
         className="min-h-[56px] flex-1 flex-row items-center justify-center gap-2 rounded-2xl border border-error/25 bg-error/10 px-3 py-3 active:opacity-80"

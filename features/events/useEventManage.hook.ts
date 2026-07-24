@@ -58,7 +58,7 @@ export function useEventManage() {
 
   const confirmDelete = (event: IEvent) => {
     Alert.alert(
-      "Delete event?",
+      "Delete Event?",
       `"${event.title}" will be removed for everyone.`,
       [
         { text: "Cancel", style: "cancel" },

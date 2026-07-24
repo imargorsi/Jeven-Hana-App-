@@ -12,20 +12,21 @@ import {
 } from "@/lib/services/community.service";
 
 export default function MyPostsScreen() {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
   const { canManage, openEdit, confirmDelete, deletingId } =
     useCommunityManage();
 
   const query = useQuery({
-    queryKey: ["my-posts"],
+    queryKey: ["my-posts", userId],
     queryFn: () => getMyCommunityPosts(getToken),
+    enabled: Boolean(userId),
   });
 
   const likeMutation = useMutation({
     mutationFn: (id: string) => toggleLikePost(id, getToken),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+      void queryClient.invalidateQueries({ queryKey: ["my-posts", userId] });
       void queryClient.invalidateQueries({ queryKey: ["community-posts"] });
       void queryClient.invalidateQueries({ queryKey: ["search"] });
       void queryClient.invalidateQueries({
@@ -74,7 +75,7 @@ export default function MyPostsScreen() {
         )}
         ListEmptyComponent={
           <EmptyState
-            title="No posts yet"
+            title="No Posts Yet"
             description="Your community updates will show up here."
           />
         }
