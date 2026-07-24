@@ -87,6 +87,7 @@ export default function RootLayout() {
         <Stack.Screen name="businesses" options={{ headerShown: false }} />
         <Stack.Screen name="places" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
+        <Stack.Screen name="events" options={{ headerShown: false }} />
       </Stack>
     </>
   );

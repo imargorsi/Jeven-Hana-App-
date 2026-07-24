@@ -16,6 +16,11 @@ interface IEventCardProps {
   event: IEvent;
   isToggling?: boolean;
   onToggleInterested?: () => void;
+  /** Owner or admin — shows edit/delete on the Interested row. */
+  canManage?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  isDeleting?: boolean;
   className?: string;
 }
 
@@ -24,12 +29,16 @@ export function EventCard({
   event,
   isToggling = false,
   onToggleInterested,
+  canManage = false,
+  onEdit,
+  onDelete,
+  isDeleting = false,
   className,
 }: IEventCardProps) {
   const { requireAuth } = useRequireAuth();
   const month = formatEventMonthAbbrev(event.startsAt);
   const day = formatEventDay(event.startsAt);
-  const isGoing = Boolean(event.isInterestedByMe);
+  const isGoing = Boolean(event.isGoingByMe);
 
   return (
     <View
@@ -148,20 +157,67 @@ export function EventCard({
               className="min-w-0 flex-1"
               numberOfLines={1}
             >
-              {event.location.address}
+              {event.location}
             </Text>
           </View>
         </View>
       </View>
 
-      <View className="mt-3 flex-row items-center gap-1.5 border-t border-cream/10 pt-2.5">
+      <View className="mt-3 flex-row items-center border-t border-cream/10 pt-2.5">
         <Text variant="caption" tone="muted">
           Interested
         </Text>
-        <View className="h-1 w-1 rounded-full bg-muted" />
+        <View className="mx-1.5 h-1 w-1 rounded-full bg-muted" />
         <Text variant="caption" weight="medium" tone="muted">
           {event.interestedCount}
         </Text>
+
+        <View className="flex-1" />
+
+        {canManage ? (
+          <View className="flex-row items-center gap-0.5">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Edit event"
+              disabled={isDeleting}
+              hitSlop={8}
+              onPress={onEdit}
+              className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
+            >
+              <SymbolView
+                name={{
+                  ios: "pencil",
+                  android: "edit",
+                  web: "edit",
+                }}
+                size={16}
+                tintColor={palette.cream}
+              />
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Delete event"
+              disabled={isDeleting}
+              hitSlop={8}
+              onPress={onDelete}
+              className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
+            >
+              {isDeleting ? (
+                <ActivityIndicator size="small" color={palette.error} />
+              ) : (
+                <SymbolView
+                  name={{
+                    ios: "trash",
+                    android: "delete",
+                    web: "delete",
+                  }}
+                  size={16}
+                  tintColor={palette.error}
+                />
+              )}
+            </Pressable>
+          </View>
+        ) : null}
       </View>
     </View>
   );

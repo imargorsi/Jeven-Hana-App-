@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/expo";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -30,6 +31,7 @@ import { useSearchStore } from "@/stores/useSearchStore";
 import type { TSearchTab } from "@/types/search.types";
 
 export default function SearchScreen() {
+  const { getToken } = useAuth();
   const [input, setInput] = useState("");
   const [debounced, setDebounced] = useState("");
   const [tab, setTab] = useState<TSearchTab>("all");
@@ -57,7 +59,7 @@ export default function SearchScreen() {
 
   const resultsQuery = useQuery({
     queryKey: ["search", debounced],
-    queryFn: () => searchAll(debounced),
+    queryFn: () => searchAll(debounced, getToken),
     enabled: debounced.length > 0,
   });
 

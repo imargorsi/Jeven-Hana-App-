@@ -9,7 +9,7 @@ export const USE_MOCK_API = true;
 
 /**
  * Prefer EXPO_PUBLIC_API_URL. In Expo Go /dev, fall back to the Metro host
- * on port 3000 so a physical device can reach the local Express API.
+ * on port 3001 so a physical device can reach the local Express API.
  */
 export function getApiBaseUrl(): string | null {
   const fromEnv = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "");
@@ -27,7 +27,7 @@ export function getApiBaseUrl(): string | null {
     return null;
   }
 
-  return `http://${host}:3000`;
+  return `http://${host}:3001`;
 }
 
 export function isApiConfigured(): boolean {

@@ -5,6 +5,8 @@ import { getEvents } from "@/lib/services/events.service";
 import { getPlaces } from "@/lib/services/places.service";
 import type { ISearchResults } from "@/types/search.types";
 
+type TGetToken = () => Promise<string | null>;
+
 const TRENDING = [
   "Chai Corner",
   "Friday Bazaar",
@@ -13,7 +15,10 @@ const TRENDING = [
   "karahi",
 ];
 
-export async function searchAll(query: string): Promise<ISearchResults> {
+export async function searchAll(
+  query: string,
+  getToken: TGetToken,
+): Promise<ISearchResults> {
   await delay(250);
   const q = query.trim();
   if (!q) {
@@ -29,7 +34,7 @@ export async function searchAll(query: string): Promise<ISearchResults> {
     getBusinesses({ query: q, limit: 10 }),
     getPlaces({ query: q, limit: 10 }),
     getCommunityPosts({ limit: 20 }),
-    getEvents({ limit: 20 }),
+    getEvents(getToken),
   ]);
 
   const lower = q.toLowerCase();
@@ -37,10 +42,11 @@ export async function searchAll(query: string): Promise<ISearchResults> {
     businesses: businesses.items,
     places: places.items,
     posts: posts.items.filter((p) => p.content.toLowerCase().includes(lower)),
-    events: events.items.filter(
+    events: events.filter(
       (e) =>
         e.title.toLowerCase().includes(lower) ||
-        e.description.toLowerCase().includes(lower),
+        (e.description?.toLowerCase().includes(lower) ?? false) ||
+        e.location.toLowerCase().includes(lower),
     ),
   };
 }

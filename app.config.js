@@ -47,6 +47,7 @@ module.exports = {
     "expo-font",
     "expo-secure-store",
     "expo-image",
+    "@react-native-community/datetimepicker",
   ],
   experiments: {
     typedRoutes: true,

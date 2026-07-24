@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/expo";
 import { useQueries } from "@tanstack/react-query";
 import { FlatList, View } from "react-native";
 
@@ -26,6 +27,7 @@ type TSavedRow =
   | { kind: "event"; id: string; data: IEvent };
 
 export default function SavedPlacesScreen() {
+  const { getToken } = useAuth();
   const businesses = useSavedItemsStore((s) => s.businesses);
   const places = useSavedItemsStore((s) => s.places);
   const events = useSavedItemsStore((s) => s.events);
@@ -42,7 +44,7 @@ export default function SavedPlacesScreen() {
       queryFn: async () => {
         if (ref.kind === "business") return getBusinessById(ref.id);
         if (ref.kind === "place") return getPlaceById(ref.id);
-        return getEventById(ref.id);
+        return getEventById(ref.id, getToken);
       },
     })),
   });

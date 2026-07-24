@@ -8,6 +8,8 @@ import {
   Screen,
   Text,
 } from "@/components/ui";
+import { CreateEventActionCard } from "@/features/events/components/CreateEventActionCard";
+import { useEventManage } from "@/features/events/useEventManage.hook";
 import { useEventsBySection } from "@/features/events/useEventsBySection.hook";
 
 export default function EventsTabScreen() {
@@ -15,11 +17,14 @@ export default function EventsTabScreen() {
     sections,
     isLoading,
     isError,
+    errorMessage,
     isRefetching,
     refetch,
     togglingId,
     toggleInterested,
   } = useEventsBySection();
+  const { canManage, openCreate, openEdit, confirmDelete, deletingId } =
+    useEventManage();
 
   if (isLoading) {
     return (
@@ -32,7 +37,10 @@ export default function EventsTabScreen() {
   if (isError) {
     return (
       <Screen>
-        <ErrorState onRetry={() => void refetch()} />
+        <ErrorState
+          description={errorMessage}
+          onRetry={() => void refetch()}
+        />
       </Screen>
     );
   }
@@ -43,7 +51,7 @@ export default function EventsTabScreen() {
     <Screen>
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 pb-28 pt-3"
+        contentContainerClassName="px-4 pb-10 pt-3"
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -52,10 +60,12 @@ export default function EventsTabScreen() {
           />
         }
       >
+        <CreateEventActionCard onPress={openCreate} />
+
         {!hasEvents ? (
           <EmptyState
             title="No upcoming events"
-            description="Check back soon for neighbourhood gatherings."
+            description="Create an event to share something with the neighbourhood."
           />
         ) : (
           sections.map((section) => (
@@ -70,6 +80,10 @@ export default function EventsTabScreen() {
                     event={event}
                     isToggling={togglingId === event.id}
                     onToggleInterested={() => toggleInterested(event.id)}
+                    canManage={canManage(event)}
+                    onEdit={() => openEdit(event.id)}
+                    onDelete={() => confirmDelete(event)}
+                    isDeleting={deletingId === event.id}
                   />
                 ))}
               </View>

@@ -1,36 +1,41 @@
+import { useAuth } from "@clerk/expo";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { Alert } from "react-native";
 
 import { groupEventsBySection } from "@/features/events/event.sections.utils";
+import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
   getEvents,
-  toggleEventInterested,
+  toggleEventGoing,
 } from "@/lib/services/events.service";
 
 export function useEventsBySection() {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const eventsQuery = useQuery({
     queryKey: ["events", "upcoming-sections"],
-    queryFn: () => getEvents({ upcomingOnly: true, limit: 60 }),
+    queryFn: () => getEvents(getToken),
   });
 
   const sections = useMemo(
-    () => groupEventsBySection(eventsQuery.data?.items ?? []),
-    [eventsQuery.data?.items],
+    () => groupEventsBySection(eventsQuery.data ?? []),
+    [eventsQuery.data],
   );
 
-  const interestedMutation = useMutation({
-    mutationFn: (id: string) => toggleEventInterested(id),
+  const goingMutation = useMutation({
+    mutationFn: (id: string) => toggleEventGoing(id, getToken),
     onMutate: (id) => {
       setTogglingId(id);
     },
-    onSuccess: (_data, id) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["events"] });
-      void queryClient.invalidateQueries({ queryKey: ["home-events"] });
       void queryClient.invalidateQueries({ queryKey: ["events-going"] });
-      void queryClient.invalidateQueries({ queryKey: ["event", id] });
+    },
+    onError: (error) => {
+      Alert.alert("Could not update", getApiErrorMessage(error));
     },
     onSettled: () => {
       setTogglingId(null);
@@ -41,9 +46,12 @@ export function useEventsBySection() {
     sections,
     isLoading: eventsQuery.isLoading,
     isError: eventsQuery.isError,
+    errorMessage: eventsQuery.error
+      ? getApiErrorMessage(eventsQuery.error)
+      : undefined,
     isRefetching: eventsQuery.isRefetching,
     refetch: eventsQuery.refetch,
     togglingId,
-    toggleInterested: (id: string) => interestedMutation.mutate(id),
+    toggleInterested: (id: string) => goingMutation.mutate(id),
   };
 }

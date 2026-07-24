@@ -48,7 +48,7 @@ Path alias: `@/*` → project root.
 - Profile edit: Clerk `user.update` + `setProfileImage` (base64 data URL — see `features/auth/clerkProfileImage.utils.ts`)
 - Publishable key only (`EXPO_PUBLIC_*` / `NEXT_PUBLIC_*` via `app.config.js`)
 - **Never** store `CLERK_SECRET_KEY` in this app
-- API base: `EXPO_PUBLIC_API_URL` or Metro host `:3000` in `__DEV__`
+- API base: `EXPO_PUBLIC_API_URL` or Metro host `:3001` in `__DEV__`
 
 ---
 
@@ -71,7 +71,7 @@ Path alias: `@/*` → project root.
 - Shared cards in `components/`
 - Server lists in TanStack Query — **not** Zustand
 - Zustand: onboarding, saved IDs, recent searches only
-- Domain `lib/services/*` stay mock until that API exists; auth uses `lib/services/auth.service.ts`
+- Domain `lib/services/*` stay mock until that API exists; **events + auth** use the live API
 
 ---
 

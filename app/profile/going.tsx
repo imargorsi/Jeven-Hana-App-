@@ -1,26 +1,34 @@
+import { useAuth } from "@clerk/expo";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FlatList, View } from "react-native";
+import { Alert, FlatList, View } from "react-native";
 
 import { EventCard } from "@/components/EventCard";
 import { EmptyState, ErrorState, LoadingBlock, Screen } from "@/components/ui";
+import { useEventManage } from "@/features/events/useEventManage.hook";
+import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
   getGoingEvents,
-  toggleEventInterested,
+  toggleEventGoing,
 } from "@/lib/services/events.service";
 
 export default function EventsGoingScreen() {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
+  const { canManage, openEdit, confirmDelete, deletingId } = useEventManage();
 
   const query = useQuery({
     queryKey: ["events-going"],
-    queryFn: getGoingEvents,
+    queryFn: () => getGoingEvents(getToken),
   });
 
-  const interestedMutation = useMutation({
-    mutationFn: toggleEventInterested,
+  const goingMutation = useMutation({
+    mutationFn: (id: string) => toggleEventGoing(id, getToken),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["events-going"] });
       void queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
+    onError: (error) => {
+      Alert.alert("Could not update", getApiErrorMessage(error));
     },
   });
 
@@ -35,7 +43,10 @@ export default function EventsGoingScreen() {
   if (query.isError) {
     return (
       <Screen withSafeArea={false} withAppHeader={false} className="px-4">
-        <ErrorState onRetry={() => void query.refetch()} />
+        <ErrorState
+          description={getApiErrorMessage(query.error)}
+          onRetry={() => void query.refetch()}
+        />
       </Screen>
     );
   }
@@ -49,11 +60,14 @@ export default function EventsGoingScreen() {
         renderItem={({ item }) => (
           <EventCard
             event={item}
-            onToggleInterested={() => interestedMutation.mutate(item.id)}
+            onToggleInterested={() => goingMutation.mutate(item.id)}
             isToggling={
-              interestedMutation.isPending &&
-              interestedMutation.variables === item.id
+              goingMutation.isPending && goingMutation.variables === item.id
             }
+            canManage={canManage(item)}
+            onEdit={() => openEdit(item.id)}
+            onDelete={() => confirmDelete(item)}
+            isDeleting={deletingId === item.id}
           />
         )}
         ListEmptyComponent={
