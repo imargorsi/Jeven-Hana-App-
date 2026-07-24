@@ -2,7 +2,6 @@ import { delay } from "@/data/mocks/mock.utils";
 import { getBusinesses } from "@/lib/services/businesses.service";
 import { getCommunityPosts } from "@/lib/services/community.service";
 import { getEvents } from "@/lib/services/events.service";
-import { getPlaces } from "@/lib/services/places.service";
 import type { ISearchResults } from "@/types/search.types";
 
 type TGetToken = () => Promise<string | null>;
@@ -30,9 +29,9 @@ export async function searchAll(
     };
   }
 
-  const [businesses, places, posts, events] = await Promise.all([
+  // Part 1: places folded into businesses — no separate places search results.
+  const [businesses, posts, events] = await Promise.all([
     getBusinesses({ query: q, limit: 10 }),
-    getPlaces({ query: q, limit: 10 }),
     getCommunityPosts({ limit: 20, getToken }),
     getEvents(getToken),
   ]);
@@ -40,7 +39,7 @@ export async function searchAll(
   const lower = q.toLowerCase();
   return {
     businesses: businesses.items,
-    places: places.items,
+    places: [],
     posts: posts.items.filter((p) => p.content.toLowerCase().includes(lower)),
     events: events.filter(
       (e) =>

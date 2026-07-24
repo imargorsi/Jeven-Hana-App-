@@ -25,7 +25,7 @@ export function BusinessReviewList({
         )}
       >
         <Text variant="bodySmall" tone="muted" className="text-center">
-          No reviews yet. Be the first to share your experience.
+          No reviews yet. Writing reviews comes in part 2.
         </Text>
       </View>
     );

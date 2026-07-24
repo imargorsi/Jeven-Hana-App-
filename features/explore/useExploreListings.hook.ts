@@ -9,7 +9,7 @@ export function useExploreListings() {
   const [selectedCategory, setSelectedCategory] =
     useState<TExploreCategoryKey>("all");
 
-  const categorySlug =
+  const category =
     selectedCategory === "all"
       ? undefined
       : (selectedCategory as TBusinessCategorySlug);
@@ -18,7 +18,7 @@ export function useExploreListings() {
     queryKey: ["explore-businesses", selectedCategory],
     queryFn: () =>
       getBusinesses({
-        categorySlug,
+        category,
         limit: 40,
       }),
   });

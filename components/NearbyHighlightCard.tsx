@@ -29,10 +29,7 @@ export function NearbyHighlightCard({
   className,
 }: INearbyHighlightCardProps) {
   const router = useRouter();
-  const categoryLabel = getBusinessCategoryLabel(business.categorySlug);
-  const metaLine = [categoryLabel, business.tags?.[0]]
-    .filter(Boolean)
-    .join(" · ");
+  const categoryLabel = getBusinessCategoryLabel(business.category);
   const openStatus = getBusinessOpenStatus(business.hours);
 
   return (
@@ -55,16 +52,18 @@ export function NearbyHighlightCard({
           contentFit="cover"
           transition={200}
         />
-        <View className="absolute bottom-1.5 left-1.5 rounded-chip bg-background/75 px-1.5 py-0.5">
-          <Text
-            variant="caption"
-            weight="semibold"
-            tone={openStatus.isOpen ? "success" : "muted"}
-            style={{ fontSize: 10, lineHeight: 12 }}
-          >
-            {openStatus.isOpen ? "Open" : "Closed"}
-          </Text>
-        </View>
+        {openStatus.hasHours ? (
+          <View className="absolute bottom-1.5 left-1.5 rounded-chip bg-background/75 px-1.5 py-0.5">
+            <Text
+              variant="caption"
+              weight="semibold"
+              tone={openStatus.isOpen ? "success" : "muted"}
+              style={{ fontSize: 10, lineHeight: 12 }}
+            >
+              {openStatus.isOpen ? "Open" : "Closed"}
+            </Text>
+          </View>
+        ) : null}
         <View
           className="absolute right-1.5 top-1.5 rounded-full bg-background/55 p-1"
           onStartShouldSetResponder={() => true}
@@ -91,11 +90,9 @@ export function NearbyHighlightCard({
           />
         </View>
 
-        {metaLine ? (
-          <Text variant="caption" tone="muted" numberOfLines={1}>
-            {metaLine}
-          </Text>
-        ) : null}
+        <Text variant="caption" tone="muted" numberOfLines={1}>
+          {categoryLabel}
+        </Text>
 
         <View className="flex-row items-center gap-1.5">
           <View className="h-5 w-5 items-center justify-center rounded-full bg-primary/15">
@@ -115,7 +112,7 @@ export function NearbyHighlightCard({
             className="min-w-0 flex-1"
             numberOfLines={1}
           >
-            {business.location.address}
+            {business.address}
           </Text>
         </View>
       </View>

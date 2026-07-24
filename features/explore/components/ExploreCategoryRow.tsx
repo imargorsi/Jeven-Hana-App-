@@ -15,10 +15,10 @@ export const EXPLORE_ROW_CATEGORIES: {
   label: string;
 }[] = [
   { key: "all", label: "All" },
-  { key: "restaurants", label: "Food" },
-  { key: "cafes", label: "Cafés" },
-  { key: "grocery", label: "Grocery" },
-  { key: "pharmacies", label: "Pharma" },
+  { key: "food", label: "Food" },
+  { key: "masjid", label: "Masjid" },
+  { key: "shops", label: "Shops" },
+  { key: "parks", label: "Parks" },
 ];
 
 interface IExploreCategoryRowProps {

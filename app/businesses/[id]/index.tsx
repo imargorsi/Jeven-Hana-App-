@@ -1,8 +1,7 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { ScrollView, View } from "react-native";
 
-import { BusinessReviewForm } from "@/components/BusinessReviewForm";
 import { BusinessReviewList } from "@/components/BusinessReviewList";
 import { ContactActions } from "@/components/ContactActions";
 import { ListingHero } from "@/components/ListingHero";
@@ -16,20 +15,19 @@ import {
 } from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
+import { BusinessManageActions } from "@/features/businesses/components/BusinessManageActions";
 import { useBusinessDetail } from "@/features/businesses/useBusinessDetail.hook";
+import { useBusinessManage } from "@/features/businesses/useBusinessManage.hook";
 import { shareContent } from "@/lib/linking.utils";
+import { href } from "@/lib/navigation.utils";
 import { getBusinessCategoryLabel } from "@/lib/services/businesses.service";
 
 export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const {
-    business,
-    isLoading,
-    isError,
-    refetch,
-    submitReview,
-    isSubmittingReview,
-  } = useBusinessDetail(id);
+  const router = useRouter();
+  const { business, isLoading, isError, refetch } = useBusinessDetail(id);
+  const { canManage, openEdit, confirmDelete, deletingId } =
+    useBusinessManage();
 
   if (isLoading) {
     return (
@@ -47,12 +45,10 @@ export default function BusinessDetailScreen() {
     );
   }
 
-  const categoryLabel = getBusinessCategoryLabel(business.categorySlug);
-  const metaLine = [categoryLabel, ...(business.tags ?? [])]
-    .filter(Boolean)
-    .join(" · ");
+  const categoryLabel = getBusinessCategoryLabel(business.category);
   const openStatus = getBusinessOpenStatus(business.hours);
-  const shareMessage = `${business.name} — ${business.location.address}`;
+  const shareMessage = `${business.name} — ${business.address}`;
+  const showManage = canManage(business);
 
   return (
     <Screen withSafeArea={false} withAppHeader={false}>
@@ -70,24 +66,11 @@ export default function BusinessDetailScreen() {
         />
 
         <View className="px-4 pt-2">
-          <View className="flex-row items-start justify-between gap-3">
-            <View className="min-w-0 flex-1 gap-2">
-              <Text variant="h2" numberOfLines={2}>
-                {business.name}
-              </Text>
-              {business.isKaBest ? <KaBestBadge size="sm" /> : null}
-            </View>
-            {business.nameUrdu ? (
-              <Text
-                variant="bodySmall"
-                tone="muted"
-                isUrdu
-                className="shrink pt-1"
-                numberOfLines={2}
-              >
-                {business.nameUrdu}
-              </Text>
-            ) : null}
+          <View className="min-w-0 gap-2">
+            <Text variant="h2" numberOfLines={2}>
+              {business.name}
+            </Text>
+            {business.isKaBest ? <KaBestBadge size="sm" /> : null}
           </View>
 
           <View className="mt-3 flex-row items-center gap-2">
@@ -102,49 +85,70 @@ export default function BusinessDetailScreen() {
           </View>
 
           <View className="mt-2.5 flex-row flex-wrap items-center gap-2">
-            {metaLine ? (
-              <Text variant="caption" tone="muted">
-                {metaLine}
-              </Text>
-            ) : null}
-            <View
-              className={
-                openStatus.isOpen
-                  ? "rounded-chip bg-success/15 px-2 py-0.5"
-                  : "rounded-chip bg-cream/10 px-2 py-0.5"
-              }
-            >
-              <Text
-                variant="caption"
-                weight="semibold"
-                tone={openStatus.isOpen ? "success" : "muted"}
-              >
-                {openStatus.isOpen ? "Open" : "Closed"}
-              </Text>
-            </View>
             <Text variant="caption" tone="muted">
-              {openStatus.detail}
+              {categoryLabel}
             </Text>
+            {openStatus.hasHours ? (
+              <>
+                <View
+                  className={
+                    openStatus.isOpen
+                      ? "rounded-chip bg-success/15 px-2 py-0.5"
+                      : "rounded-chip bg-cream/10 px-2 py-0.5"
+                  }
+                >
+                  <Text
+                    variant="caption"
+                    weight="semibold"
+                    tone={openStatus.isOpen ? "success" : "muted"}
+                  >
+                    {openStatus.isOpen ? "Open" : "Closed"}
+                  </Text>
+                </View>
+                <Text variant="caption" tone="muted">
+                  {openStatus.detail}
+                </Text>
+              </>
+            ) : null}
           </View>
 
           <ContactActions
             className="mt-5"
-            phone={business.phone}
-            whatsapp={business.whatsapp}
-            lat={business.location.lat}
-            lng={business.location.lng}
+            phone={business.phone ?? undefined}
+            whatsapp={business.whatsapp ?? undefined}
             label={business.name}
             onShare={() => void shareContent(shareMessage)}
           />
 
-          <View className="mt-8">
-            <Text variant="h3" className="mb-2">
-              About
-            </Text>
-            <Text variant="bodySmall" tone="muted" className="leading-6">
-              {business.description}
-            </Text>
-          </View>
+          {showManage ? (
+            <BusinessManageActions
+              className="mt-3"
+              isDeleting={deletingId === business.id}
+              onEdit={() => openEdit(business.id)}
+              onDelete={() =>
+                confirmDelete(business, {
+                  onDeleted: () => {
+                    if (router.canGoBack()) {
+                      router.back();
+                    } else {
+                      router.replace(href("/(tabs)/explore"));
+                    }
+                  },
+                })
+              }
+            />
+          ) : null}
+
+          {business.description ? (
+            <View className="mt-8">
+              <Text variant="h3" className="mb-2">
+                About
+              </Text>
+              <Text variant="bodySmall" tone="muted" className="leading-6">
+                {business.description}
+              </Text>
+            </View>
+          ) : null}
 
           <View className="mt-6 flex-row items-start gap-3 rounded-card border border-cream/10 bg-surface/60 p-3.5">
             <View className="h-9 w-9 items-center justify-center rounded-full bg-primary/15">
@@ -163,7 +167,7 @@ export default function BusinessDetailScreen() {
                 Address
               </Text>
               <Text variant="bodySmall" className="mt-0.5">
-                {business.location.address}
+                {business.address}
               </Text>
             </View>
           </View>
@@ -177,11 +181,18 @@ export default function BusinessDetailScreen() {
               average
             </Text>
 
-            <BusinessReviewForm
-              className="mb-4"
-              isSubmitting={isSubmittingReview}
-              onSubmit={(input) => submitReview(input)}
-            />
+            <View className="mb-4 rounded-card border border-dashed border-cream/15 bg-surface/50 px-4 py-5">
+              <Text variant="bodySmall" weight="medium" className="text-center">
+                Writing reviews comes in part 2
+              </Text>
+              <Text
+                variant="caption"
+                tone="muted"
+                className="mt-1.5 text-center"
+              >
+                Ratings stay ready on each listing until then.
+              </Text>
+            </View>
 
             <BusinessReviewList reviews={business.reviews} />
           </View>

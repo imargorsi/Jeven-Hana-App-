@@ -1,3 +1,7 @@
+/**
+ * SF / Material icon map for Explore category tiles.
+ * Fixed v1: All + food | masjid | shops | parks
+ */
 import type { SymbolView } from "expo-symbols";
 import type { ComponentProps } from "react";
 
@@ -7,72 +11,31 @@ export type TExploreCategoryKey = "all" | TBusinessCategorySlug;
 
 type TSymbolName = NonNullable<ComponentProps<typeof SymbolView>["name"]>;
 
-/** SF / Material icon map for Explore category tiles. */
 export const EXPLORE_CATEGORY_ICONS = {
   all: {
     ios: "square.grid.2x2",
     android: "grid_view",
     web: "grid_view",
   },
-  restaurants: {
+  food: {
     ios: "fork.knife",
     android: "restaurant",
     web: "restaurant",
   },
-  cafes: {
-    ios: "cup.and.saucer.fill",
-    android: "local_cafe",
-    web: "local_cafe",
+  masjid: {
+    ios: "building.columns.fill",
+    android: "account_balance",
+    web: "account_balance",
   },
-  grocery: {
-    ios: "cart.fill",
-    android: "shopping_cart",
-    web: "shopping_cart",
+  shops: {
+    ios: "bag.fill",
+    android: "store",
+    web: "store",
   },
-  pharmacies: {
-    ios: "cross.case.fill",
-    android: "local_pharmacy",
-    web: "local_pharmacy",
-  },
-  salons: {
-    ios: "scissors",
-    android: "content_cut",
-    web: "content_cut",
-  },
-  electricians: {
-    ios: "bolt.fill",
-    android: "bolt",
-    web: "bolt",
-  },
-  plumbers: {
-    ios: "wrench.fill",
-    android: "plumbing",
-    web: "plumbing",
-  },
-  mechanics: {
-    ios: "car.fill",
-    android: "directions_car",
-    web: "directions_car",
-  },
-  tailors: {
-    ios: "tshirt.fill",
-    android: "checkroom",
-    web: "checkroom",
-  },
-  tutors: {
-    ios: "book.fill",
-    android: "menu_book",
-    web: "menu_book",
-  },
-  gyms: {
-    ios: "figure.strengthtraining.traditional",
-    android: "fitness_center",
-    web: "fitness_center",
-  },
-  "home-services": {
-    ios: "house.fill",
-    android: "home_repair_service",
-    web: "home_repair_service",
+  parks: {
+    ios: "leaf.fill",
+    android: "park",
+    web: "park",
   },
 } as const satisfies Record<TExploreCategoryKey, TSymbolName>;
 

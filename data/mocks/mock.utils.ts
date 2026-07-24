@@ -53,4 +53,6 @@ export const IMG = {
   avatar: require("../../assets/images/logo.png"),
   street: DUMMY.b,
   logo: require("../../assets/images/logo.png"),
+  /** Business / listing cover when no `coverImageUrl`. */
+  businessFallback: require("../../assets/images/jevenhana-fallback.png"),
 } as const;

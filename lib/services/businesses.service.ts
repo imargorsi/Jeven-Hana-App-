@@ -1,98 +1,242 @@
-import {
-  businessCategories,
-  businesses,
-} from "@/data/mocks/businesses.mock";
-import { delay, paginate } from "@/data/mocks/mock.utils";
+import { IMG } from "@/data/mocks/mock.utils";
+import type { IApiEnvelope } from "@/features/auth/auth.types";
+import { createApiClient, isApiConfigured } from "@/lib/api.client";
 import type {
   IBusiness,
-  IBusinessCategory,
   TBusinessCategorySlug,
 } from "@/types/business.types";
-import type { IPaginatedResult, IReview } from "@/types/common.types";
+import {
+  BUSINESS_CATEGORIES,
+  BUSINESS_CATEGORY_LABELS,
+} from "@/types/business.types";
+import type { IPaginatedResult } from "@/types/common.types";
 
-export async function getBusinessCategories(): Promise<IBusinessCategory[]> {
-  await delay();
-  return businessCategories;
+type TGetToken = () => Promise<string | null>;
+
+interface IApiBusiness {
+  id: number;
+  name: string;
+  category: string;
+  description: string | null;
+  address: string;
+  phone: string | null;
+  whatsapp: string | null;
+  coverImageUrl: string | null;
+  isKaBest: boolean;
+  ratingAvg: number;
+  reviewCount: number;
+  createdByUserId: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
+function requireApi() {
+  if (!isApiConfigured()) {
+    throw new Error(
+      "API is not configured. Set EXPO_PUBLIC_API_URL or run Expo in __DEV__.",
+    );
+  }
+}
+
+function mapBusiness(api: IApiBusiness): IBusiness {
+  const cover = api.coverImageUrl?.trim() || null;
+  return {
+    id: String(api.id),
+    name: api.name,
+    category: api.category as TBusinessCategorySlug,
+    description: api.description,
+    address: api.address,
+    phone: api.phone,
+    whatsapp: api.whatsapp,
+    coverImageUrl: cover,
+    imageUrls: cover ? [cover] : [IMG.businessFallback],
+    rating: Number(api.ratingAvg) || 0,
+    reviewCount: api.reviewCount || 0,
+    isKaBest: Boolean(api.isKaBest),
+    createdByUserId: api.createdByUserId,
+    reviews: [],
+    hours: [],
+  };
+}
+
+/**
+ * GET /api/v1/businesses — public list.
+ * Optional client-side `query` filter (API has category filter only in part 1).
+ */
 export async function getBusinesses(params?: {
   categorySlug?: TBusinessCategorySlug;
+  category?: TBusinessCategorySlug;
   query?: string;
-  featuredOnly?: boolean;
-  topRatedOnly?: boolean;
-  cursor?: string | null;
+  getToken?: TGetToken;
   limit?: number;
 }): Promise<IPaginatedResult<IBusiness>> {
-  await delay();
-  let list = [...businesses];
+  requireApi();
+  const getToken = params?.getToken ?? (async () => null);
+  const client = createApiClient(getToken);
+  const category = params?.category ?? params?.categorySlug;
+  const query = category ? `?category=${category}` : "";
+  const { data } = await client.get<
+    IApiEnvelope<{ businesses: IApiBusiness[] }>
+  >(`/api/v1/businesses${query}`);
 
-  if (params?.categorySlug) {
-    list = list.filter((b) => b.categorySlug === params.categorySlug);
+  if (!data.success || !data.data?.businesses) {
+    throw new Error(data.message || "Failed to load businesses");
   }
-  if (params?.featuredOnly) {
-    list = list.filter((b) => b.isFeatured);
-  }
-  if (params?.topRatedOnly) {
-    list = list.filter((b) => b.isTopRated);
-  }
+
+  let items = data.data.businesses.map(mapBusiness);
+
   if (params?.query?.trim()) {
     const q = params.query.trim().toLowerCase();
-    list = list.filter(
+    items = items.filter(
       (b) =>
         b.name.toLowerCase().includes(q) ||
-        b.description.toLowerCase().includes(q) ||
-        b.tags?.some((t) => t.toLowerCase().includes(q)),
+        (b.description?.toLowerCase().includes(q) ?? false) ||
+        b.address.toLowerCase().includes(q),
     );
   }
 
-  list.sort((a, b) => b.rating - a.rating);
-  return paginate(list, params?.cursor, params?.limit ?? 20);
-}
+  if (params?.limit != null) {
+    items = items.slice(0, params.limit);
+  }
 
-export async function getBusinessById(id: string): Promise<IBusiness | null> {
-  await delay();
-  return businesses.find((b) => b.id === id) ?? null;
-}
-
-export async function addBusinessReview(
-  businessId: string,
-  input: {
-    authorName: string;
-    rating: number;
-    comment: string;
-  },
-): Promise<IBusiness | null> {
-  await delay(200);
-  const business = businesses.find((b) => b.id === businessId);
-  if (!business) return null;
-
-  const rating = Math.max(1, Math.min(5, Math.round(input.rating)));
-  const comment = input.comment.trim();
-  if (!comment) return null;
-
-  const review: IReview = {
-    id: `rev-${businessId}-${Date.now()}`,
-    authorName: input.authorName.trim() || "Neighbour",
-    rating,
-    comment,
-    createdAt: new Date().toISOString(),
+  return {
+    items,
+    nextCursor: null,
+    total: items.length,
   };
+}
 
-  business.reviews = [review, ...business.reviews];
-  business.reviewCount += 1;
+/** GET /api/v1/businesses/:id */
+export async function getBusinessById(
+  id: string,
+  getToken?: TGetToken,
+): Promise<IBusiness | null> {
+  requireApi();
+  const client = createApiClient(getToken ?? (async () => null));
+  try {
+    const { data } = await client.get<
+      IApiEnvelope<{ business: IApiBusiness }>
+    >(`/api/v1/businesses/${id}`);
+    if (!data.success || !data.data?.business) return null;
+    return mapBusiness(data.data.business);
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "response" in error &&
+      (error as { response?: { status?: number } }).response?.status === 404
+    ) {
+      return null;
+    }
+    throw error;
+  }
+}
 
-  const totalStars = business.reviews.reduce(
-    (sum, item) => sum + item.rating,
-    0,
-  );
-  business.rating =
-    Math.round((totalStars / business.reviews.length) * 10) / 10;
+/** GET /api/v1/businesses/me */
+export async function getMyBusinesses(
+  getToken: TGetToken,
+): Promise<IBusiness[]> {
+  requireApi();
+  const client = createApiClient(getToken);
+  const { data } = await client.get<
+    IApiEnvelope<{ businesses: IApiBusiness[] }>
+  >("/api/v1/businesses/me");
 
-  return { ...business };
+  if (!data.success || !data.data?.businesses) {
+    throw new Error(data.message || "Failed to load your listings");
+  }
+
+  return data.data.businesses.map(mapBusiness);
+}
+
+export interface IBusinessWriteInput {
+  name: string;
+  category: TBusinessCategorySlug;
+  address: string;
+  description?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+  coverImageUrl?: string | null;
+}
+
+export async function createBusiness(
+  input: IBusinessWriteInput,
+  getToken: TGetToken,
+): Promise<IBusiness> {
+  requireApi();
+  const client = createApiClient(getToken);
+  const { data } = await client.post<
+    IApiEnvelope<{ business: IApiBusiness }>
+  >("/api/v1/businesses", input);
+
+  if (!data.success || !data.data?.business) {
+    throw new Error(data.message || "Failed to create listing");
+  }
+
+  return mapBusiness(data.data.business);
+}
+
+export async function updateBusiness(
+  id: string,
+  input: Partial<IBusinessWriteInput>,
+  getToken: TGetToken,
+): Promise<IBusiness> {
+  requireApi();
+  const client = createApiClient(getToken);
+  const { data } = await client.patch<
+    IApiEnvelope<{ business: IApiBusiness }>
+  >(`/api/v1/businesses/${id}`, input);
+
+  if (!data.success || !data.data?.business) {
+    throw new Error(data.message || "Failed to update listing");
+  }
+
+  return mapBusiness(data.data.business);
+}
+
+export async function deleteBusiness(
+  id: string,
+  getToken: TGetToken,
+): Promise<IBusiness> {
+  requireApi();
+  const client = createApiClient(getToken);
+  const { data } = await client.delete<
+    IApiEnvelope<{ business: IApiBusiness }>
+  >(`/api/v1/businesses/${id}`);
+
+  if (!data.success || !data.data?.business) {
+    throw new Error(data.message || "Failed to delete listing");
+  }
+
+  return mapBusiness(data.data.business);
+}
+
+/** POST /api/v1/businesses/:id/ka-best — admin only. */
+export async function toggleBusinessKaBest(
+  id: string,
+  getToken: TGetToken,
+): Promise<IBusiness> {
+  requireApi();
+  const client = createApiClient(getToken);
+  const { data } = await client.post<
+    IApiEnvelope<{ business: IApiBusiness }>
+  >(`/api/v1/businesses/${id}/ka-best`);
+
+  if (!data.success || !data.data?.business) {
+    throw new Error(data.message || "Failed to update Ka Best");
+  }
+
+  return mapBusiness(data.data.business);
 }
 
 export function getBusinessCategoryLabel(
   slug: TBusinessCategorySlug,
 ): string {
-  return businessCategories.find((c) => c.slug === slug)?.name ?? "Business";
+  return BUSINESS_CATEGORY_LABELS[slug] ?? "Business";
+}
+
+export function isBusinessCategory(
+  value: string,
+): value is TBusinessCategorySlug {
+  return (BUSINESS_CATEGORIES as string[]).includes(value);
 }

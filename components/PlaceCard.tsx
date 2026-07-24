@@ -26,7 +26,7 @@ export function PlaceCard({
 
   return (
     <Pressable
-      onPress={() => router.push(href(`/places/${place.id}`))}
+      onPress={() => router.push(href("/(tabs)/explore"))}
       className={cn(
         "overflow-hidden rounded-card border border-cream/10 bg-surface",
         isHorizontal ? "w-64" : "w-full",

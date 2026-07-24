@@ -29,7 +29,7 @@ function navigateForNotification(
   if (n.targetType === "post") router.push(href("/(tabs)/community"));
   if (n.targetType === "event") router.push(href("/(tabs)/events"));
   if (n.targetType === "business") router.push(href(`/businesses/${n.targetId}`));
-  if (n.targetType === "place") router.push(href(`/places/${n.targetId}`));
+  if (n.targetType === "place") router.push(href("/(tabs)/explore"));
 }
 
 export default function NotificationsScreen() {
