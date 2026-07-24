@@ -25,6 +25,7 @@ import "../global.css";
 import { palette } from "@/constants/Colors";
 import { fonts } from "@/constants/Fonts";
 import { clerkPublishableKey } from "@/features/auth/auth.config";
+import { AuthSessionSync } from "@/features/auth/components/AuthSessionSync";
 import { createQueryClient } from "@/lib/queryClient";
 
 export {
@@ -65,8 +66,8 @@ export default function RootLayout() {
     return null;
   }
 
-  const tree = (
-    <QueryClientProvider client={queryClient}>
+  const stack = (
+    <>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -87,16 +88,23 @@ export default function RootLayout() {
         <Stack.Screen name="places" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
       </Stack>
+    </>
+  );
+
+  const withQuery = (
+    <QueryClientProvider client={queryClient}>
+      {clerkPublishableKey ? <AuthSessionSync /> : null}
+      {stack}
     </QueryClientProvider>
   );
 
   if (!clerkPublishableKey) {
-    return tree;
+    return withQuery;
   }
 
   return (
     <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
-      {tree}
+      {withQuery}
     </ClerkProvider>
   );
 }

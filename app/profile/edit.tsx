@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/expo";
+import { useAuth, useUser } from "@clerk/expo";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -16,34 +16,65 @@ import { Button, Screen, Text, TextField } from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
 import { palette } from "@/constants/Colors";
 import { IMG } from "@/data/mocks/mock.utils";
+import { getClerkErrorMessage } from "@/features/auth/auth.utils";
+import { toClerkProfileImageDataUrl } from "@/features/auth/clerkProfileImage.utils";
+import { useInvalidateMe } from "@/features/auth/useMe.hook";
+import { isApiConfigured } from "@/lib/api.client";
+import { fetchMe } from "@/lib/services/auth.service";
 
 export default function EditProfileScreen() {
   const { user } = useUser();
+  const { getToken } = useAuth();
+  const invalidateMe = useInvalidateMe();
   const router = useRouter();
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [isSaving, setIsSaving] = useState(false);
-  const [localImage, setLocalImage] = useState<string | null>(null);
+  const [localImageUri, setLocalImageUri] = useState<string | null>(null);
+  const [pendingImageDataUrl, setPendingImageDataUrl] = useState<string | null>(
+    null,
+  );
 
   const displayName = `${firstName} ${lastName}`.trim() || "Neighbour";
   const avatarUri =
-    localImage ?? (user?.hasImage ? user.imageUrl : IMG.avatar);
+    localImageUri ?? (user?.hasImage ? user.imageUrl : IMG.avatar);
   const username = user?.username ? `@${user.username}` : null;
   const email = user?.primaryEmailAddress?.emailAddress;
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Permission needed", "Allow photo access to change your photo.");
+      Alert.alert(
+        "Permission needed",
+        "Allow photo access to change your photo.",
+      );
       return;
     }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      quality: 0.8,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+      base64: true,
     });
-    if (!result.canceled) {
-      setLocalImage(result.assets[0]?.uri ?? null);
+
+    if (result.canceled || !result.assets[0]) {
+      return;
     }
+
+    const asset = result.assets[0];
+    const dataUrl = toClerkProfileImageDataUrl(asset);
+    if (!dataUrl) {
+      Alert.alert(
+        "Could not read photo",
+        "Please try another image from your library.",
+      );
+      return;
+    }
+
+    setLocalImageUri(asset.uri);
+    setPendingImageDataUrl(dataUrl);
   };
 
   const save = async () => {
@@ -51,14 +82,28 @@ export default function EditProfileScreen() {
     setIsSaving(true);
     try {
       await user.update({ firstName, lastName });
-      if (localImage) {
-        const blob = await fetch(localImage).then((r) => r.blob());
-        await user.setProfileImage({ file: blob as unknown as File });
+
+      if (pendingImageDataUrl) {
+        await user.setProfileImage({ file: pendingImageDataUrl });
+        setPendingImageDataUrl(null);
+        setLocalImageUri(null);
       }
+
+      await user.reload();
+
+      if (isApiConfigured()) {
+        try {
+          await fetchMe(getToken);
+          invalidateMe();
+        } catch {
+          // Clerk profile is saved; session sync retries on next app open.
+        }
+      }
+
       Alert.alert("Saved", "Your profile was updated.");
       router.back();
-    } catch {
-      Alert.alert("Could not save", "Please try again.");
+    } catch (error) {
+      Alert.alert("Could not save", getClerkErrorMessage(error));
     } finally {
       setIsSaving(false);
     }

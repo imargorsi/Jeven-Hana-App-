@@ -13,7 +13,13 @@ Community app for residents of **Jevan Hana, Garden Town, Lahore** — local dis
 
 ## Product scope (v1 / v2)
 
-Full tables live in local `doc/modules/scope.md` (gitignored). Summary:
+Full tables live in the **central** workspace docs (not inside this app):
+
+- `../AGENTS.md` — planning overview
+- `../doc/modules/scope.md` — capability map
+- `AGENTS.md` (this repo) — mobile stack / UI rules only
+
+Summary:
 
 ### Roles
 
@@ -38,11 +44,11 @@ Comments · Approval workflows · Separate admin web dashboard · In-app delete 
 
 ### v2 — planned
 
-**Comments** · Optional approval/claim if spam · push prefs · light admin dashboard / in-app delete-user if needed · real API sync.
+**Comments** · Optional approval/claim if spam · push prefs · light admin dashboard / in-app delete-user if needed · remaining domain APIs (auth/users already live).
 
 ## Current status (frontend MVP)
 
-Implemented with **mock data** (no backend yet):
+UI implemented; **most domains still mock**. Auth/user sync to the Express API is live when the API is running.
 
 | Area | Routes / notes |
 | ---- | -------------- |
@@ -59,7 +65,7 @@ Implemented with **mock data** (no backend yet):
 | Notifications | Account |
 | Saved / Profile | Account (guest Profile = Sign up / Log in) |
 
-**Next:** replace `lib/services/*` mocks with real REST APIs; wire Clerk `admin` role + create/moderation UI per `scope.md`.
+**Next:** replace remaining `lib/services/*` mocks with real REST APIs; create/moderation UI per `../doc/modules/scope.md`.
 
 ## Distribution (v1)
 
@@ -69,7 +75,7 @@ Implemented with **mock data** (no backend yet):
 | **2** | Google Play **Closed Testing** | Better for real town users ($25 Play Console) — normal install, auto-updates |
 | **3** | Play **Production** | Open launch |
 
-Firebase works short-term but is **not** ideal for months of whole-town public use (unknown-app warnings, manual updates, trust). Details: local `doc/modules/distribution.md`.
+Firebase works short-term but is **not** ideal for months of whole-town public use (unknown-app warnings, manual updates, trust). Details: `../doc/modules/distribution.md`.
 
 ## Getting started
 
@@ -110,8 +116,9 @@ features/            # auth, community, events, explore, home, search, …
 lib/                 # queryClient, services, utils
 stores/              # Zustand (app, saved, search)
 types/               # Shared TypeScript entities
-doc/modules/         # Local product notes (gitignored); see scope.md
 ```
+
+Product docs: **`../doc/modules/`** (workspace root). Stack rules: **`AGENTS.md`**.
 
 ## Data layer
 
