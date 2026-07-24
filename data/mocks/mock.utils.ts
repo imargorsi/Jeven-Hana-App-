@@ -49,7 +49,8 @@ export const IMG = {
   chai: DUMMY.a,
   barber: DUMMY.b,
   community: DUMMY.c,
-  avatar: DUMMY.a,
+  /** Fallback when Clerk user has no profile photo — app logo. */
+  avatar: require("../../assets/images/logo.png"),
   street: DUMMY.b,
   logo: require("../../assets/images/logo.png"),
 } as const;
