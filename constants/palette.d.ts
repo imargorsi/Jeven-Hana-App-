@@ -8,4 +8,7 @@ export declare const palette: {
   success: string;
   error: string;
   muted: string;
+  googleButtonBg: string;
+  googleButtonBorder: string;
+  googleButtonText: string;
 };

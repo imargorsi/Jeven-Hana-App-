@@ -16,6 +16,10 @@ const palette = {
   success: "#16A344",
   error: "#DC2626",
   muted: "#94A3B8",
+  /** Official Google Sign-In button colors (brand guidelines). */
+  googleButtonBg: "#FFFFFF",
+  googleButtonBorder: "#4285F4",
+  googleButtonText: "#3C4043",
 };
 
 module.exports = { palette };

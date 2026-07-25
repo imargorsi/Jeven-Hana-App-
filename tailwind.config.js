@@ -20,6 +20,9 @@ module.exports = {
         success: palette.success,
         error: palette.error,
         muted: palette.muted,
+        "google-button-bg": palette.googleButtonBg,
+        "google-button-border": palette.googleButtonBorder,
+        "google-button-text": palette.googleButtonText,
       },
       fontFamily: {
         english: ["NotoSans_400Regular"],

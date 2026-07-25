@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Image, Pressable } from "react-native";
 
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
@@ -11,8 +11,7 @@ interface ISocialAuthButtonsProps {
 }
 
 /**
- * Google continue button (Facebook SSO removed for v1).
- * Brand mark uses palette tokens for contrast.
+ * Official-style Google continue button — white surface, blue outline, real G mark.
  */
 export function SocialAuthButtons({
   onGooglePress,
@@ -28,25 +27,34 @@ export function SocialAuthButtons({
       disabled={isInactive}
       onPress={onGooglePress}
       className={cn(
-        "min-h-14 w-full flex-row items-center justify-center gap-2.5 rounded-button border border-cream/15 bg-surface active:opacity-90",
+        "min-h-14 w-full flex-row items-center justify-center gap-3 rounded-button active:opacity-90",
         isInactive && "opacity-50",
       )}
+      style={{
+        backgroundColor: palette.googleButtonBg,
+        borderWidth: 1.5,
+        borderColor: palette.googleButtonBorder,
+      }}
     >
-      <View
-        className="h-8 w-8 items-center justify-center rounded-full"
-        style={{ backgroundColor: palette.cream }}
-      >
-        <Text
-          variant="button"
-          weight="bold"
-          style={{ color: palette.background, fontSize: 16, lineHeight: 20 }}
-        >
-          G
-        </Text>
-      </View>
-      <Text variant="button" tone="cream" weight="semibold">
-        Continue with Google
-      </Text>
+      {isGoogleLoading ? (
+        <ActivityIndicator color={palette.googleButtonText} />
+      ) : (
+        <>
+          <Image
+            source={require("@/assets/images/google-g.png")}
+            style={{ width: 22, height: 22 }}
+            resizeMode="contain"
+            accessibilityIgnoresInvertColors
+          />
+          <Text
+            variant="button"
+            weight="medium"
+            style={{ color: palette.googleButtonText }}
+          >
+            Continue with Google
+          </Text>
+        </>
+      )}
     </Pressable>
   );
 }
