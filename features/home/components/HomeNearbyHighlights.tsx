@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
+  type LayoutChangeEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   Pressable,
@@ -28,7 +29,7 @@ import { getBusinesses } from "@/lib/services/businesses.service";
 import type { IBusiness } from "@/types/business.types";
 
 const CARD_STEP = NEARBY_HIGHLIGHT_CARD_WIDTH + NEARBY_HIGHLIGHT_CARD_GAP;
-const AUTO_INTERVAL_MS = 6000;
+const AUTO_INTERVAL_MS = 12000;
 
 interface IHomeNearbyHighlightsProps {
   className?: string;
@@ -38,6 +39,7 @@ export function HomeNearbyHighlights({
   className,
 }: IHomeNearbyHighlightsProps) {
   const router = useRouter();
+  const [viewportWidth, setViewportWidth] = useState(0);
 
   const highlightsQuery = useQuery({
     queryKey: ["home-nearby-highlights"],
@@ -52,6 +54,23 @@ export function HomeNearbyHighlights({
     [],
   );
 
+  /**
+   * Last index that still fills the viewport (no lone card + empty half).
+   * Next auto tick from here jumps back to the first card.
+   */
+  const maxAutoIndex = useMemo(() => {
+    if (businesses.length <= 1) return 0;
+    if (viewportWidth <= 0) return Math.max(0, businesses.length - 2);
+
+    const contentWidth =
+      businesses.length * NEARBY_HIGHLIGHT_CARD_WIDTH +
+      (businesses.length - 1) * NEARBY_HIGHLIGHT_CARD_GAP;
+    const maxScroll = Math.max(0, contentWidth - viewportWidth);
+    const reachable = Math.floor(maxScroll / CARD_STEP);
+
+    return Math.max(0, Math.min(businesses.length - 1, reachable));
+  }, [businesses.length, viewportWidth]);
+
   const {
     scrollRef,
     activeIndex,
@@ -63,7 +82,13 @@ export function HomeNearbyHighlights({
     itemCount: businesses.length,
     intervalMs: AUTO_INTERVAL_MS,
     getOffsetForIndex,
+    maxIndex: maxAutoIndex,
   });
+
+  const onViewportLayout = useCallback((event: LayoutChangeEvent) => {
+    const next = Math.round(event.nativeEvent.layout.width);
+    setViewportWidth((current) => (current === next ? current : next));
+  }, []);
 
   const onMomentumScrollEnd = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -116,7 +141,7 @@ export function HomeNearbyHighlights({
         onActionPress={() => router.push(href("/(tabs)/explore"))}
       />
 
-      <Pressable onHoverIn={pause} onHoverOut={resume}>
+      <Pressable onHoverIn={pause} onHoverOut={resume} onLayout={onViewportLayout}>
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -126,10 +151,11 @@ export function HomeNearbyHighlights({
           snapToAlignment="start"
           disableIntervalMomentum
           contentContainerStyle={{ gap: NEARBY_HIGHLIGHT_CARD_GAP }}
-          onScrollBeginDrag={pause}
-          onScrollEndDrag={resume}
           onTouchStart={pause}
           onTouchEnd={resume}
+          onTouchCancel={resume}
+          onScrollBeginDrag={pause}
+          onScrollEndDrag={resume}
           onMomentumScrollEnd={onMomentumScrollEnd}
         >
           {businesses.map((business) => (
@@ -146,7 +172,7 @@ export function HomeNearbyHighlights({
           goToIndex(index);
           resume();
         }}
-        labelPrefix="Go to business highlight"
+        labelPrefix="Go to Business Highlight"
       />
     </View>
   );

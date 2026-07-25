@@ -6,6 +6,12 @@ interface IUseAutoScrollCarouselOptions {
   intervalMs: number;
   /** Pixel offset for a given index (e.g. index * cardStep). */
   getOffsetForIndex: (index: number) => number;
+  /**
+   * Last index auto-scroll will visit before wrapping to 0.
+   * Use when trailing items can't snap without leaving empty space.
+   * Defaults to `itemCount - 1`.
+   */
+  maxIndex?: number;
 }
 
 /**
@@ -15,12 +21,21 @@ export function useAutoScrollCarousel({
   itemCount,
   intervalMs,
   getOffsetForIndex,
+  maxIndex: maxIndexProp,
 }: IUseAutoScrollCarouselOptions) {
   const scrollRef = useRef<ScrollView>(null);
   const isMountedRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  const maxIndex = Math.max(
+    0,
+    Math.min(
+      itemCount - 1,
+      maxIndexProp == null ? itemCount - 1 : maxIndexProp,
+    ),
+  );
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -79,22 +94,24 @@ export function useAutoScrollCarousel({
   );
 
   useEffect(() => {
-    if (itemCount < 2 || isPaused) return;
+    if (itemCount < 2 || maxIndex < 1 || isPaused) return;
 
     const timer = setInterval(() => {
       if (!isMountedRef.current) return;
       setActiveIndex((current) => {
-        const next = (current + 1) % itemCount;
+        // At / past the last good snap → jump to first (no reverse scrub).
+        const next = current >= maxIndex ? 0 : current + 1;
+        const isWrappingToStart = next === 0 && current >= maxIndex;
         scrollRef.current?.scrollTo({
           x: getOffsetForIndex(next),
-          animated: true,
+          animated: !isWrappingToStart,
         });
         return next;
       });
     }, intervalMs);
 
     return () => clearInterval(timer);
-  }, [getOffsetForIndex, intervalMs, isPaused, itemCount]);
+  }, [getOffsetForIndex, intervalMs, isPaused, itemCount, maxIndex]);
 
   return {
     scrollRef,
