@@ -15,7 +15,7 @@ const SLIDER_BASE =
 export const HOME_HERO_SLIDES: IHomeHeroSlide[] = [
   {
     id: "slide-1",
-    image: `${SLIDER_BASE}/PXL_20260725_121210414.jpg`,
+    image: `${SLIDER_BASE}/1.jpg`,
     badgeLabel: "Chota Chowk",
     titleUrdu: "آپ کا محلہ،\nاب ایک جگہ",
     subtitleUrdu:
@@ -23,7 +23,7 @@ export const HOME_HERO_SLIDES: IHomeHeroSlide[] = [
   },
   {
     id: "slide-2",
-    image: `${SLIDER_BASE}/images%20(1).jpg`,
+    image: `${SLIDER_BASE}/2.jpg`,
     badgeLabel: "Bara Chowk",
     titleUrdu: "اپنا کاروبار سب\nتک پہنچائیں",
     subtitleUrdu:
@@ -31,7 +31,7 @@ export const HOME_HERO_SLIDES: IHomeHeroSlide[] = [
   },
   {
     id: "slide-3",
-    image: `${SLIDER_BASE}/r4hxHhv.jpg`,
+    image: `${SLIDER_BASE}/3.jpg`,
     badgeLabel: "Barkat Market",
     titleUrdu: "اپنے لوگوں کے\nساتھ جڑیں",
     subtitleUrdu:

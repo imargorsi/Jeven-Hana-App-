@@ -46,7 +46,8 @@ export function createApiClient(
 
   const client = create({
     baseURL,
-    timeout: 15000,
+    // Neon + Vercel cold starts can exceed 15s on first hit.
+    timeout: 30000,
   });
 
   client.interceptors.request.use(async (config) => {
