@@ -4,6 +4,7 @@ import type { ComponentProps } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
+import { ReportButton } from "@/components/ReportButton";
 import { palette } from "@/constants/Colors";
 import { IMG, toImageSource } from "@/lib/image.utils";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
@@ -199,7 +200,14 @@ export function EventCard({
                 )}
               </Pressable>
             </>
-          ) : null}
+          ) : (
+            <ReportButton
+              targetType="event"
+              targetId={event.id}
+              variant="pill"
+              className="h-8 w-8 shrink-0 rounded-xl"
+            />
+          )}
 
           {onToggleInterested ? (
             <Pressable

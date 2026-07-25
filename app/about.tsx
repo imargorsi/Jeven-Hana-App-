@@ -200,16 +200,28 @@ export default function AboutScreen() {
             </View>
           </View>
 
-          <Pressable
-            accessibilityRole="link"
-            accessibilityLabel="Privacy Policy"
-            onPress={() => router.push(href("/privacy"))}
-            className="mt-8 items-center py-2 active:opacity-80"
-          >
-            <Text variant="bodySmall" tone="primary" weight="semibold">
-              Privacy Policy
-            </Text>
-          </Pressable>
+          <View className="mt-8 gap-3">
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel="Community Guidelines"
+              onPress={() => router.push(href("/guidelines"))}
+              className="items-center py-2 active:opacity-80"
+            >
+              <Text variant="bodySmall" tone="primary" weight="semibold">
+                Community Guidelines
+              </Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel="Privacy Policy"
+              onPress={() => router.push(href("/privacy"))}
+              className="items-center py-2 active:opacity-80"
+            >
+              <Text variant="bodySmall" tone="primary" weight="semibold">
+                Privacy Policy
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </Screen>

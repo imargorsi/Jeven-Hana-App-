@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Avatar } from "@/components/ui/Avatar";
 import { Text } from "@/components/ui/Text";
+import { ReportButton } from "@/components/ReportButton";
 import { palette } from "@/constants/Colors";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
@@ -148,6 +149,13 @@ export function CommunityUpdateCard({
             Share
           </Text>
         </Pressable>
+
+        {!canManage ? (
+          <>
+            <View className="mx-3 h-1 w-1 rounded-full bg-muted" />
+            <ReportButton targetType="post" targetId={post.id} />
+          </>
+        ) : null}
 
         <View className="flex-1" />
 

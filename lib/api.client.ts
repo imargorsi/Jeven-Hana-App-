@@ -1,14 +1,34 @@
 import { type AxiosInstance, create } from "axios";
 import Constants from "expo-constants";
 
-/**
- * Prefer EXPO_PUBLIC_API_URL. In Expo Go /dev, fall back to the Metro host
- * on port 3001 so a physical device can reach a local Express API.
- */
-export function getApiBaseUrl(): string | null {
-  const fromEnv = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "");
+let hasLoggedBaseUrl = false;
+
+function readConfiguredApiUrl(): string | null {
+  const fromEnv = process.env.EXPO_PUBLIC_API_URL?.trim().replace(/\/$/, "");
   if (fromEnv) {
     return fromEnv;
+  }
+
+  const fromExtra = (
+    Constants.expoConfig?.extra as { apiUrl?: string } | undefined
+  )?.apiUrl
+    ?.trim()
+    .replace(/\/$/, "");
+  if (fromExtra) {
+    return fromExtra;
+  }
+
+  return null;
+}
+
+/**
+ * Prefer EXPO_PUBLIC_API_URL (also mirrored in app.config extra.apiUrl).
+ * In Expo Go /dev, fall back to the Metro host on port 3001 for a local API.
+ */
+export function getApiBaseUrl(): string | null {
+  const configured = readConfiguredApiUrl();
+  if (configured) {
+    return configured;
   }
 
   if (!__DEV__) {
@@ -36,6 +56,11 @@ export function createApiClient(
     throw new Error(
       "API URL is not configured. Set EXPO_PUBLIC_API_URL or run Expo in __DEV__.",
     );
+  }
+
+  if (__DEV__ && !hasLoggedBaseUrl) {
+    hasLoggedBaseUrl = true;
+    console.log(`[api] baseURL=${baseURL}`);
   }
 
   const client = create({

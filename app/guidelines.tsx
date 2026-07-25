@@ -6,14 +6,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Screen, Text } from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import {
-  PRIVACY_INTRO,
-  PRIVACY_LAST_UPDATED,
-  PRIVACY_SECTIONS,
-  PRIVACY_TITLE,
-} from "@/lib/content/privacy.content";
-import { href } from "@/lib/navigation.utils";
+  GUIDELINES_INTRO,
+  GUIDELINES_LAST_UPDATED,
+  GUIDELINES_SECTIONS,
+  GUIDELINES_TITLE,
+} from "@/lib/content/guidelines.content";
 
-export default function PrivacyScreen() {
+export default function GuidelinesScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -30,7 +29,7 @@ export default function PrivacyScreen() {
         >
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel="Go Back"
             onPress={() => router.back()}
             className="h-11 w-11 items-center justify-center rounded-full active:opacity-80"
           >
@@ -48,17 +47,26 @@ export default function PrivacyScreen() {
 
         <View className="px-4 pt-2">
           <Text variant="h1" weight="bold" className="mb-2">
-            {PRIVACY_TITLE}
+            {GUIDELINES_TITLE}
           </Text>
           <Text variant="caption" tone="muted" className="mb-6">
-            Last updated: {PRIVACY_LAST_UPDATED}
+            Last updated: {GUIDELINES_LAST_UPDATED}
+          </Text>
+
+          <Text
+            isUrdu
+            variant="bodySmall"
+            tone="muted"
+            className="mb-4 text-right leading-6"
+          >
+            یہ رہنما اصول جیون ہانہ کمیونٹی کو محفوظ اور مفید رکھنے کے لیے ہیں۔
           </Text>
 
           <Text variant="body" tone="muted" className="mb-8 leading-7">
-            {PRIVACY_INTRO}
+            {GUIDELINES_INTRO}
           </Text>
 
-          {PRIVACY_SECTIONS.map((section) => (
+          {GUIDELINES_SECTIONS.map((section) => (
             <View key={section.heading} className="mb-7">
               <Text variant="h3" weight="semibold" className="mb-2">
                 {section.heading}
@@ -68,17 +76,6 @@ export default function PrivacyScreen() {
               </Text>
             </View>
           ))}
-
-          <Pressable
-            accessibilityRole="link"
-            accessibilityLabel="Community Guidelines"
-            onPress={() => router.push(href("/guidelines"))}
-            className="mt-2 items-center py-3 active:opacity-80"
-          >
-            <Text variant="bodySmall" tone="primary" weight="semibold">
-              Community Guidelines
-            </Text>
-          </Pressable>
         </View>
       </ScrollView>
     </Screen>

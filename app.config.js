@@ -65,6 +65,7 @@ module.exports = {
   },
   extra: {
     clerkPublishableKey,
+    apiUrl: process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "") || undefined,
     privacyPolicyUrl:
       process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL ??
       (process.env.EXPO_PUBLIC_API_URL

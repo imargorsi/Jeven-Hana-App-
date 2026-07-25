@@ -86,6 +86,7 @@ export default function RootLayout() {
         <Stack.Screen name="notifications" options={{ headerShown: false }} />
         <Stack.Screen name="about" options={{ headerShown: false }} />
         <Stack.Screen name="privacy" options={{ headerShown: false }} />
+        <Stack.Screen name="guidelines" options={{ headerShown: false }} />
         <Stack.Screen name="saved" options={{ headerShown: false }} />
         <Stack.Screen name="businesses" options={{ headerShown: false }} />
         <Stack.Screen name="places" options={{ headerShown: false }} />

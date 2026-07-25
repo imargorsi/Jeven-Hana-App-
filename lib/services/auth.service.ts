@@ -41,3 +41,22 @@ export async function fetchUserMe(getToken: TGetToken): Promise<IApiUser> {
 
   return data.data.user;
 }
+
+/** Must match API `ACCOUNT_DELETE_CONFIRM`. */
+export const ACCOUNT_DELETE_CONFIRM = "DELETE";
+
+/**
+ * DELETE /api/v1/users/me — permanently deletes Neon data + Clerk user.
+ * Requires confirm: "DELETE".
+ */
+export async function deleteMyAccount(getToken: TGetToken): Promise<void> {
+  const client = await getAuthedClient(getToken);
+  const { data } = await client.delete<IApiEnvelope<{ deleted: boolean }>>(
+    "/api/v1/users/me",
+    { data: { confirm: ACCOUNT_DELETE_CONFIRM } },
+  );
+
+  if (!data.success) {
+    throw new Error(data.message || "Failed to delete account");
+  }
+}

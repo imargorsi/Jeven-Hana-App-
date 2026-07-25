@@ -28,6 +28,7 @@ function ProfileStack() {
       <Stack.Screen name="posts" options={{ title: "My Posts" }} />
       <Stack.Screen name="saved" options={{ title: "Saved Places" }} />
       <Stack.Screen name="going" options={{ title: "Events Going" }} />
+      <Stack.Screen name="delete-account" options={{ title: "Delete Account" }} />
     </Stack>
   );
 }

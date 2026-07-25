@@ -287,6 +287,28 @@ export default function ProfileTabScreen() {
             Log Out
           </Text>
         </Pressable>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Delete Account"
+          onPress={() =>
+            requireAuth(() => router.push(href("/profile/delete-account")))
+          }
+          className="mt-2 flex-row items-center justify-center gap-2 py-3 active:opacity-70"
+        >
+          <SymbolView
+            name={{
+              ios: "trash",
+              android: "delete",
+              web: "delete",
+            }}
+            size={16}
+            tintColor={palette.error}
+          />
+          <Text variant="bodySmall" weight="medium" tone="error">
+            Delete Account
+          </Text>
+        </Pressable>
       </ScrollView>
     </Screen>
   );

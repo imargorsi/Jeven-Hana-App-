@@ -21,6 +21,8 @@ interface ISavedItemsState {
   isSaved: (type: TSavedItemType, id: string) => boolean;
   toggleSaved: (type: TSavedItemType, id: string) => void;
   removeSaved: (type: TSavedItemType, id: string) => void;
+  /** Wipe device-local saves for a deleted account. */
+  clearSavedForUser: (userId: string) => void;
   /** Convenience lists for the signed-in user (empty when signed out). */
   businesses: string[];
   places: string[];
@@ -149,6 +151,29 @@ export const useSavedItemsStore = create<ISavedItemsState>()(
           ...withDerivedLists(nextByUser, currentUserId),
         });
         void syncSavedItem(type, normalizedId, false);
+      },
+      clearSavedForUser: (userId) => {
+        const { byUserId, currentUserId } = get();
+        if (!userId || !byUserId[userId]) {
+          if (currentUserId === userId) {
+            set({
+              currentUserId: null,
+              ...withDerivedLists(byUserId, null),
+            });
+          }
+          return;
+        }
+
+        const nextByUser = { ...byUserId };
+        delete nextByUser[userId];
+        const nextCurrent =
+          currentUserId === userId ? null : currentUserId;
+
+        set({
+          byUserId: nextByUser,
+          currentUserId: nextCurrent,
+          ...withDerivedLists(nextByUser, nextCurrent),
+        });
       },
     }),
     {

@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ImageGallery } from "@/components/ImageGallery";
+import { ReportButton } from "@/components/ReportButton";
 import {
   ACTION_PILL_SIZE,
   ACTION_PILL_STYLE,
@@ -27,6 +28,8 @@ interface IListingHeroProps {
   onEdit?: () => void;
   onDelete?: () => void;
   isDeleting?: boolean;
+  /** When false, hide Report (e.g. owner viewing own listing). Default true. */
+  canReport?: boolean;
 }
 
 /**
@@ -42,6 +45,7 @@ export function ListingHero({
   onEdit,
   onDelete,
   isDeleting = false,
+  canReport = true,
 }: IListingHeroProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -158,6 +162,13 @@ export function ListingHero({
                 />
               )}
             </Pressable>
+          ) : null}
+          {canReport && !canManage ? (
+            <ReportButton
+              targetType="business"
+              targetId={saveId}
+              variant="pill"
+            />
           ) : null}
           <ShareButton onPress={onShare} size={16} color={palette.cream} />
           <SaveButton type={saveType} id={saveId} size={16} />

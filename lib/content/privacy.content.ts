@@ -36,7 +36,7 @@ export const PRIVACY_SECTIONS: IPrivacySection[] = [
   },
   {
     heading: "Data retention and deletion",
-    body: `We keep account and content data while your account is active and as needed to operate the service. You can edit or remove much of your content in the app. To request account deletion or help with data removal, email ${APP_CONTACT.email} or WhatsApp ${APP_CONTACT.whatsappDisplay}.`,
+    body: `We keep account and content data while your account is active and as needed to operate the service. You can edit or remove much of your content in the app. You can permanently delete your account in Profile → Delete Account (type DELETE to confirm). You can also email ${APP_CONTACT.email} or WhatsApp ${APP_CONTACT.whatsappDisplay} for help.`,
   },
   {
     heading: "Children",

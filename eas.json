@@ -18,7 +18,8 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.jevanhana.argorsi.com",
-        "EXPO_PUBLIC_PRIVACY_POLICY_URL": "https://api.jevanhana.argorsi.com/privacy"
+        "EXPO_PUBLIC_PRIVACY_POLICY_URL": "https://api.jevanhana.argorsi.com/privacy",
+        "EXPO_PUBLIC_GUIDELINES_URL": "https://api.jevanhana.argorsi.com/guidelines"
       }
     },
     "production": {
@@ -27,7 +28,8 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.jevanhana.argorsi.com",
-        "EXPO_PUBLIC_PRIVACY_POLICY_URL": "https://api.jevanhana.argorsi.com/privacy"
+        "EXPO_PUBLIC_PRIVACY_POLICY_URL": "https://api.jevanhana.argorsi.com/privacy",
+        "EXPO_PUBLIC_GUIDELINES_URL": "https://api.jevanhana.argorsi.com/guidelines"
       }
     }
   },
