@@ -13,6 +13,14 @@ export interface IBusinessFormValues {
   phone: string;
   whatsapp: string;
   description: string;
+  /** Existing remote cover (from API). */
+  coverImageUrl: string | null;
+  /** Newly picked local URI — upload on submit. */
+  coverLocalUri: string | null;
+  coverMimeType: string | null;
+  coverFileName: string | null;
+  /** User removed cover on edit. */
+  coverCleared: boolean;
 }
 
 export function emptyBusinessFormValues(): IBusinessFormValues {
@@ -23,6 +31,11 @@ export function emptyBusinessFormValues(): IBusinessFormValues {
     phone: "",
     whatsapp: "",
     description: "",
+    coverImageUrl: null,
+    coverLocalUri: null,
+    coverMimeType: null,
+    coverFileName: null,
+    coverCleared: false,
   };
 }
 
@@ -34,11 +47,24 @@ export function businessToFormValues(business: IBusiness): IBusinessFormValues {
     phone: business.phone ?? "",
     whatsapp: business.whatsapp ?? "",
     description: business.description ?? "",
+    coverImageUrl: business.coverImageUrl ?? null,
+    coverLocalUri: null,
+    coverMimeType: null,
+    coverFileName: null,
+    coverCleared: false,
   };
+}
+
+/** Preview URI for the form (local pick wins over remote). */
+export function getCoverPreviewUri(values: IBusinessFormValues): string | null {
+  if (values.coverLocalUri) return values.coverLocalUri;
+  if (values.coverCleared) return null;
+  return values.coverImageUrl;
 }
 
 export function buildBusinessPayload(
   values: IBusinessFormValues,
+  options?: { coverImageUrl?: string | null; includeCover?: boolean },
 ): { payload: IBusinessWriteInput } | { error: string } {
   const name = values.name.trim();
   if (!name) {
@@ -54,17 +80,20 @@ export function buildBusinessPayload(
     return { error: "Pick a category." };
   }
 
-  return {
-    payload: {
-      name,
-      category: values.category,
-      address,
-      description: values.description.trim() || null,
-      phone: values.phone.trim() || null,
-      whatsapp: values.whatsapp.trim() || null,
-      // Cover upload via R2 later — omit so edit does not clear existing URLs.
-    },
+  const payload: IBusinessWriteInput = {
+    name,
+    category: values.category,
+    address,
+    description: values.description.trim() || null,
+    phone: values.phone.trim() || null,
+    whatsapp: values.whatsapp.trim() || null,
   };
+
+  if (options?.includeCover) {
+    payload.coverImageUrl = options.coverImageUrl ?? null;
+  }
+
+  return { payload };
 }
 
 export { BUSINESS_CATEGORIES, BUSINESS_CATEGORY_LABELS };

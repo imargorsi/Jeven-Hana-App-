@@ -15,6 +15,7 @@ import {
 } from "@/features/businesses/businessForm.utils";
 import { canManageBusiness } from "@/features/businesses/businessOwnership.utils";
 import { BusinessForm } from "@/features/businesses/components/BusinessForm";
+import { resolveBusinessCoverForSubmit } from "@/features/businesses/resolveBusinessCover.utils";
 import { invalidateBusinessQueries } from "@/features/businesses/useBusinessManage.hook";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
@@ -35,11 +36,21 @@ function EditBusinessForm({ business }: { business: IBusiness }) {
   const [isFeatured, setIsFeatured] = useState(business.isFeatured);
 
   const mutation = useMutation({
-    mutationFn: () => {
-      const result = buildBusinessPayload(values);
+    mutationFn: async () => {
+      const base = buildBusinessPayload(values);
+      if ("error" in base) {
+        throw new Error(base.error);
+      }
+
+      const cover = await resolveBusinessCoverForSubmit(values, getToken);
+      const result = buildBusinessPayload(values, {
+        includeCover: cover.includeCover,
+        coverImageUrl: cover.includeCover ? cover.coverImageUrl : undefined,
+      });
       if ("error" in result) {
         throw new Error(result.error);
       }
+
       return updateBusiness(business.id, result.payload, getToken);
     },
     onSuccess: () => {
@@ -93,6 +104,7 @@ function EditBusinessForm({ business }: { business: IBusiness }) {
     />
   );
 }
+
 
 function EditBusinessContent() {
   const { id } = useLocalSearchParams<{ id: string }>();

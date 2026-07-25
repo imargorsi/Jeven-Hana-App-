@@ -8,7 +8,7 @@ Community app for residents of **Jevan Hana, Garden Town, Lahore** — local dis
 - Expo Router (file-based navigation)
 - NativeWind (Tailwind for RN)
 - Clerk (`@clerk/expo`) — authentication
-- TanStack Query — server-state patterns (currently backed by mocks)
+- TanStack Query — server state (events, community, businesses, uploads live; some domains still mock)
 - Zustand + AsyncStorage — client persistence (onboarding, saved items, recent searches)
 
 ## Product scope (v1 / v2)
@@ -24,7 +24,7 @@ Summary:
 ### Roles
 
 - **User** — create businesses, places (seeded categories), community posts, events, reviews; edit/delete **own** content only.
-- **Admin** (you only) — same as user + delete any content, toggle Featured. Same app, elevated controls. No separate dashboard in v1.
+- **Admin** (you only) — same as user + edit/delete any content, toggle Featured. Same app, elevated controls. No separate dashboard in v1.
 - **No approval queues in v1** — content goes live; admin cleans up.
 - **Comments = v2.** Delete users = Clerk Dashboard only for now (no in-app module).
 
@@ -48,24 +48,24 @@ Comments · Approval workflows · Separate admin web dashboard · In-app delete 
 
 ## Current status (frontend MVP)
 
-UI implemented; **most domains still mock**. Auth/user sync to the Express API is live when the API is running.
+UI + live API for core domains when the Express API is running.
 
 | Area | Routes / notes |
 | ---- | -------------- |
 | Onboarding | → Home (guest); no forced login |
-| Auth | Login / register when an account action is required |
+| Auth | Login / register; `/me` sync when API is up |
 | Tabs | Public browse (Home, Explore, Community, Events, Profile) |
 | Home | Hero, Quick Access, Nearby, Community list (5) |
-| Explore / Search | **Public** discovery |
-| Businesses | Detail; review + save need account; **add listing = product intent (UI TBD)** |
-| Places | Detail; save needs account; browse → Explore; **add place (seeded cats) = product intent (UI TBD)** |
-| Featured | **Badge only** — **admin-only** toggle (`isFeatured`) |
-| Community | Public feed; like needs account; **create = product intent (UI TBD)**; **comments = v2** |
-| Events | Public list; Going needs account; **create = product intent (UI TBD)** |
-| Notifications | Account |
-| Saved / Profile | Account (guest Profile = Sign up / Log in) |
+| Explore / Search | **Public** discovery (businesses live; places folded in) |
+| Businesses | Live CRUD + cover upload (R2); Featured admin toggle; reviews = part 2 |
+| Places | Folded into Business; browse → Explore |
+| Featured | **Badge only** — admin toggle (`isFeatured`) |
+| Community | Live feed + create/edit/delete; like; **comments = v2** |
+| Events | Live list + create/edit/delete + Going |
+| Notifications | Account (mock) |
+| Saved / Profile | Account (local saved; guest Profile = Sign up / Log in) |
 
-**Next:** replace remaining `lib/services/*` mocks with real REST APIs; create/moderation UI per `../doc/modules/scope.md`.
+**Next:** favorites sync, search server-side, notifications live, reviews part 2. See `../AGENTS.md` build order.
 
 ## Distribution (v1)
 
@@ -137,6 +137,6 @@ Product docs: **`../doc/modules/`** (workspace root). Stack rules: **`AGENTS.md`
 | `npm run lint:fix` | ESLint auto-fix |
 | `npm run format` | Prettier |
 
-## Backend (later)
+## Backend
 
-Replace mock services with real REST endpoints, wire `lib/api.client.ts` to `EXPO_PUBLIC_API_URL`, add image upload, saved-items sync, push notifications, and event RSVP persistence.
+Core domains talk to the Express API (`EXPO_PUBLIC_API_URL` or Metro host `:3001` in `__DEV__`). Remaining: favorites sync, search server-side, push notifications, reviews part 2.

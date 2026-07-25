@@ -13,6 +13,7 @@ import {
   type IBusinessFormValues,
 } from "@/features/businesses/businessForm.utils";
 import { BusinessForm } from "@/features/businesses/components/BusinessForm";
+import { resolveBusinessCoverForSubmit } from "@/features/businesses/resolveBusinessCover.utils";
 import { invalidateBusinessQueries } from "@/features/businesses/useBusinessManage.hook";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import { createBusiness } from "@/lib/services/businesses.service";
@@ -26,11 +27,21 @@ function CreateBusinessForm() {
   );
 
   const mutation = useMutation({
-    mutationFn: () => {
-      const result = buildBusinessPayload(values);
+    mutationFn: async () => {
+      const base = buildBusinessPayload(values);
+      if ("error" in base) {
+        throw new Error(base.error);
+      }
+
+      const cover = await resolveBusinessCoverForSubmit(values, getToken);
+      const result = buildBusinessPayload(values, {
+        includeCover: cover.includeCover,
+        coverImageUrl: cover.includeCover ? cover.coverImageUrl : undefined,
+      });
       if ("error" in result) {
         throw new Error(result.error);
       }
+
       return createBusiness(result.payload, getToken);
     },
     onSuccess: () => {
