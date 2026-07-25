@@ -1,5 +1,5 @@
 import { useSignIn } from "@clerk/expo";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { Alert } from "react-native";
 
@@ -18,6 +18,15 @@ export function useClerkLogin() {
   const needsEmailVerification = useMemo(
     () => signIn?.status === "needs_client_trust",
     [signIn?.status],
+  );
+
+  // Clear leftover forgot-password SignIn state when returning to Login.
+  useFocusEffect(
+    useCallback(() => {
+      if (signIn?.status === "needs_new_password") {
+        signIn.reset();
+      }
+    }, [signIn]),
   );
 
   const login = useCallback(

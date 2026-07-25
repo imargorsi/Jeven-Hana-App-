@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
@@ -38,6 +39,7 @@ function PreviewLoginActions() {
 }
 
 function ClerkLoginForm() {
+  const router = useRouter();
   const [step, setStep] = useState<TLoginStep>("email");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -159,6 +161,22 @@ function ClerkLoginForm() {
             >
               Continue
             </Button>
+
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Forgot Password"
+              onPress={() =>
+                router.push({
+                  pathname: "/forgot-password",
+                  params: email.trim() ? { email: email.trim() } : undefined,
+                })
+              }
+              className="items-center py-2"
+            >
+              <Text variant="body" tone="primary" weight="semibold">
+                Forgot Password?
+              </Text>
+            </Pressable>
 
             <Pressable
               accessibilityRole="button"

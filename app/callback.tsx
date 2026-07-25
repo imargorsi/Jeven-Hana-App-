@@ -1,35 +1,34 @@
 import { useAuth } from "@clerk/expo";
-import { Redirect, useRouter } from "expo-router";
+import { Redirect } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 import { palette } from "@/constants/Colors";
+import { href } from "@/lib/navigation.utils";
 
 WebBrowser.maybeCompleteAuthSession();
 
 /**
- * OAuth return route for Google SSO (`…://callback` / Expo Go `…/--/callback`).
- * Completes the browser session and sends the user into the app.
+ * OAuth return route (`jevan-hana://callback`).
+ * Stay on a spinner until Clerk activates the session — do not bounce
+ * unsigned users away immediately (that caused the Google redirect loop).
  */
 export default function OAuthCallbackScreen() {
   const { isLoaded, isSignedIn } = useAuth();
-  const router = useRouter();
+  const [hasTimedOut, setHasTimedOut] = useState(false);
 
   useEffect(() => {
-    if (!isLoaded) {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      router.replace(isSignedIn ? "/(tabs)" : "/");
-    }, 50);
-
+    const timer = setTimeout(() => setHasTimedOut(true), 12_000);
     return () => clearTimeout(timer);
-  }, [isLoaded, isSignedIn, router]);
+  }, []);
 
   if (isLoaded && isSignedIn) {
     return <Redirect href="/(tabs)" />;
+  }
+
+  if (hasTimedOut && isLoaded && !isSignedIn) {
+    return <Redirect href={href("/login")} />;
   }
 
   return (
