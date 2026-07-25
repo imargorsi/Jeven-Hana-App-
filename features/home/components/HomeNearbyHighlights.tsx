@@ -101,7 +101,7 @@ export function HomeNearbyHighlights({
   if (highlightsQuery.isLoading) {
     return (
       <View className={cn(className)}>
-        <SectionHeader title="Nearby Highlights" />
+        <SectionHeader isUrdu title="قریبی نمایاں جگہیں" />
         <LoadingBlock className="py-10" />
       </View>
     );
@@ -110,7 +110,7 @@ export function HomeNearbyHighlights({
   if (highlightsQuery.isError) {
     return (
       <View className={cn(className)}>
-        <SectionHeader title="Nearby Highlights" />
+        <SectionHeader isUrdu title="قریبی نمایاں جگہیں" />
         <ErrorState
           className="px-2 py-8"
           onRetry={() => void highlightsQuery.refetch()}
@@ -123,7 +123,8 @@ export function HomeNearbyHighlights({
     return (
       <View className={cn(className)}>
         <SectionHeader
-          title="Nearby Highlights"
+          isUrdu
+          title="قریبی نمایاں جگہیں"
           actionLabel="View All"
           onActionPress={() => router.push(href("/(tabs)/explore"))}
         />
@@ -135,8 +136,8 @@ export function HomeNearbyHighlights({
   return (
     <View className={cn(className)}>
       <SectionHeader
-        title="Nearby Highlights"
-        subtitle={`${businesses.length} ${businesses.length === 1 ? "place" : "places"} nearby`}
+        isUrdu
+        title="قریبی نمایاں جگہیں"
         actionLabel="View All"
         onActionPress={() => router.push(href("/(tabs)/explore"))}
       />

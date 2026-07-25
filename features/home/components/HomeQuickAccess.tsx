@@ -72,7 +72,7 @@ export function HomeQuickAccess({ className }: IHomeQuickAccessProps) {
 
   return (
     <View className={cn(className)}>
-      <SectionHeader title="Quick Access" />
+      <SectionHeader isUrdu title="فوری رسائی" />
       <View className="flex-row gap-2">
         {QUICK_ACCESS_ITEMS.map((item) => (
           <Pressable

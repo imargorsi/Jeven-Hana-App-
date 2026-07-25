@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   type LayoutChangeEvent,
@@ -18,7 +17,6 @@ import {
 import { HOME_HERO_SLIDES } from "@/features/home/home.slides";
 import { useAutoScrollCarousel } from "@/features/home/useAutoScrollCarousel.hook";
 import { cn } from "@/lib/cn.utils";
-import { href } from "@/lib/navigation.utils";
 
 const AUTO_INTERVAL_MS = 5000;
 
@@ -36,7 +34,6 @@ interface IHomeHeroSliderProps {
 }
 
 export function HomeHeroSlider({ className }: IHomeHeroSliderProps) {
-  const router = useRouter();
   const [slideWidth, setSlideWidth] = useState(0);
 
   const getOffsetForIndex = useCallback(
@@ -112,7 +109,6 @@ export function HomeHeroSlider({ className }: IHomeHeroSliderProps) {
                   key={slide.id}
                   slide={slide}
                   width={slideWidth}
-                  onCtaPress={() => router.push(href(slide.href))}
                 />
               ))}
             </ScrollView>

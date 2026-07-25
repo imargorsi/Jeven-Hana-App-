@@ -5,10 +5,10 @@ import { cn } from "@/lib/cn.utils";
 import type { TSearchTab } from "@/types/search.types";
 
 const TAB_LABEL: Record<TSearchTab, string> = {
-  all: "All",
-  businesses: "Businesses",
-  community: "Community",
-  events: "Events",
+  all: "سب",
+  businesses: "کاروبار",
+  community: "کمیونٹی",
+  events: "ایونٹس",
 };
 
 export const SEARCH_FILTERS: { key: TSearchTab; label: string }[] = [
@@ -55,6 +55,7 @@ export function SearchFilterRow({
               )}
             >
               <Text
+                isUrdu
                 variant="caption"
                 weight={isActive ? "semibold" : "medium"}
                 tone={isActive ? "primary" : "muted"}

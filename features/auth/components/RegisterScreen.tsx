@@ -77,8 +77,9 @@ function ClerkRegisterForm() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Create Your Account"
-        subtitle="Welcome! Please fill in the details to get started."
+        isUrdu
+        title="اکاؤنٹ نہیں ہے؟ ابھی شامل ہوں"
+        subtitle="اپنے محلے کے ساتھ جڑنے کا پہلا قدم اٹھائیں"
       />
 
       <SocialAuthButtons
@@ -206,8 +207,9 @@ function PreviewRegisterContent() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Create Your Account"
-        subtitle="Welcome! Please fill in the details to get started."
+        isUrdu
+        title="اکاؤنٹ نہیں ہے؟ ابھی شامل ہوں"
+        subtitle="اپنے محلے کے ساتھ جڑنے کا پہلا قدم اٹھائیں"
       />
       <PreviewRegisterActions />
     </View>

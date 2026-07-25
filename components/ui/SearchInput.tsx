@@ -16,6 +16,8 @@ interface ISearchInputProps {
   onPress?: () => void;
   className?: string;
   autoFocus?: boolean;
+  /** Urdu placeholder / typed query font + RTL. */
+  isUrdu?: boolean;
 }
 
 export function SearchInput({
@@ -28,6 +30,7 @@ export function SearchInput({
   onPress,
   className,
   autoFocus,
+  isUrdu = false,
 }: ISearchInputProps) {
   const content = (
     <View
@@ -47,7 +50,11 @@ export function SearchInput({
         placeholder={placeholder}
         placeholderTextColor={withAlpha(palette.cream, 0.4)}
         className="ml-2 flex-1 py-2 text-base text-cream"
-        style={{ fontFamily: fonts.english.regular }}
+        style={{
+          fontFamily: isUrdu ? fonts.urdu.regular : fonts.english.regular,
+          textAlign: isUrdu ? "right" : "left",
+          writingDirection: isUrdu ? "rtl" : "ltr",
+        }}
         returnKeyType="search"
         onSubmitEditing={onSubmit}
         editable={editable && !onPress}

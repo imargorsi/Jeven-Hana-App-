@@ -204,7 +204,7 @@ export function EventCard({
           {onToggleInterested ? (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={isGoing ? "Cancel Going" : "Mark as Going"}
+              accessibilityLabel={isGoing ? "شامل منسوخ کریں" : "شامل ہوں"}
               accessibilityState={{ selected: isGoing }}
               disabled={isToggling}
               onPress={() => requireAuth(() => onToggleInterested?.())}
@@ -231,8 +231,8 @@ export function EventCard({
                     size={13}
                     tintColor={palette.primary}
                   />
-                  <Text variant="caption" weight="bold" tone="primary">
-                    {isGoing ? "Going" : "Go"}
+                  <Text isUrdu variant="caption" weight="bold" tone="primary">
+                    شامل
                   </Text>
                 </>
               )}

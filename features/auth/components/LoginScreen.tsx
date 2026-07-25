@@ -31,8 +31,9 @@ function PreviewLoginActions() {
         Continue
       </Button>
       <AuthFooterLink
-        prompt="Don't have an account?"
-        linkLabel="Sign up"
+        isUrdu
+        prompt="اکاؤنٹ نہیں ہے؟"
+        linkLabel="ابھی شامل ہوں"
         href="/register"
       />
     </>
@@ -80,8 +81,9 @@ function ClerkLoginForm() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Sign In to Jevan Hana"
-        subtitle="Welcome back! Please sign in to continue"
+        isUrdu
+        title="جیون ہانہ میں خوش آمدید"
+        subtitle="واپس آئیں — آپ کا محلہ آپ کا انتظار کر رہا ہے"
       />
 
       {step === "email" ? (
@@ -182,8 +184,9 @@ function ClerkLoginForm() {
       )}
 
       <AuthFooterLink
-        prompt="Don't have an account?"
-        linkLabel="Sign up"
+        isUrdu
+        prompt="اکاؤنٹ نہیں ہے؟"
+        linkLabel="ابھی شامل ہوں"
         href="/register"
       />
     </View>
@@ -202,8 +205,9 @@ function PreviewLoginContent() {
   return (
     <View className="gap-6">
       <AuthFormHeader
-        title="Sign In to Jevan Hana"
-        subtitle="Welcome back! Please sign in to continue"
+        isUrdu
+        title="جیون ہانہ میں خوش آمدید"
+        subtitle="واپس آئیں — آپ کا محلہ آپ کا انتظار کر رہا ہے"
       />
       <PreviewLoginActions />
     </View>

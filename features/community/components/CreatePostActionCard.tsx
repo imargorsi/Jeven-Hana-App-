@@ -17,7 +17,7 @@ export function CreatePostActionCard({ onPress }: ICreatePostActionCardProps) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Create Post"
+      accessibilityLabel="اپنی بات شیئر کریں"
       onPress={onPress}
       className="relative mb-4 overflow-hidden rounded-card border border-cream/15 bg-surface active:opacity-90"
       style={{
@@ -67,11 +67,23 @@ export function CreatePostActionCard({ onPress }: ICreatePostActionCardProps) {
         </View>
 
         <View className="min-w-0 flex-1">
-          <Text variant="body" weight="bold">
-            Create Post
+          <Text
+            isUrdu
+            variant="body"
+            weight="bold"
+            className="text-left"
+            style={{ textAlign: "left" }}
+          >
+            اپنی بات شیئر کریں
           </Text>
-          <Text variant="caption" tone="muted" className="mt-1">
-            Share an update with the neighbourhood
+          <Text
+            isUrdu
+            variant="caption"
+            tone="muted"
+            className="mt-1 text-left"
+            style={{ textAlign: "left" }}
+          >
+            اپنے محلے کے ساتھ کوئی اپڈیٹ، سوال یا خبر شیئر کریں
           </Text>
         </View>
 

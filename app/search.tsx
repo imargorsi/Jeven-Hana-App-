@@ -111,7 +111,8 @@ function SearchScreenInner({ getToken }: { getToken: TGetToken }) {
               value={input}
               onChangeText={setInput}
               autoFocus
-              placeholder="Businesses, Community, Events…"
+              placeholder="کسی جگہ، کاروبار یا پوسٹ کو تلاش کریں…"
+              isUrdu
               onSubmit={() => runSearch(input)}
               onClear={() => {
                 setInput("");

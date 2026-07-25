@@ -20,7 +20,7 @@ export function CreateListingActionCard({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Create Listing"
+      accessibilityLabel="اپنا کاروبار سب تک پہنچائیں"
       onPress={onPress}
       className="relative mb-6 overflow-hidden rounded-card border border-cream/15 bg-surface active:opacity-90"
       style={{
@@ -70,11 +70,17 @@ export function CreateListingActionCard({
         </View>
 
         <View className="min-w-0 flex-1">
-          <Text variant="body" weight="bold">
-            Create Listing
+          <Text isUrdu variant="body" weight="bold" className="text-left" style={{ textAlign: "left" }}>
+            اپنا کاروبار سب تک پہنچائیں
           </Text>
-          <Text variant="caption" tone="muted" className="mt-1">
-            Add a shop or place for neighbours
+          <Text
+            isUrdu
+            variant="caption"
+            tone="muted"
+            className="mt-1 text-left"
+            style={{ textAlign: "left" }}
+          >
+            اپنی دکان یا سروس کو لسٹ کریں
           </Text>
         </View>
 

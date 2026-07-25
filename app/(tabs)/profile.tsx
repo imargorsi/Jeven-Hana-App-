@@ -25,8 +25,8 @@ interface IProfileLink {
 
 const PROFILE_LINKS: IProfileLink[] = [
   {
-    title: "Edit Profile",
-    subtitle: "Name, photo & account details",
+    title: "پروفائل میں ترمیم کریں",
+    subtitle: "نام، تصویر اور اکاؤنٹ کی تفصیلات",
     icon: {
       ios: "pencil",
       android: "edit",
@@ -35,8 +35,8 @@ const PROFILE_LINKS: IProfileLink[] = [
     route: "/profile/edit",
   },
   {
-    title: "My Posts",
-    subtitle: "Updates you've shared",
+    title: "میری پوسٹس",
+    subtitle: "آپ کی شیئر کی گئی اپڈیٹس",
     icon: {
       ios: "doc.text",
       android: "article",
@@ -45,8 +45,8 @@ const PROFILE_LINKS: IProfileLink[] = [
     route: "/profile/posts",
   },
   {
-    title: "Saved Places",
-    subtitle: "Businesses & events you've bookmarked",
+    title: "محفوظ کی گئی جگہیں",
+    subtitle: "وہ کاروبار اور ایونٹس جو آپ نے محفوظ کیے ہیں",
     icon: {
       ios: "bookmark",
       android: "bookmark_border",
@@ -55,8 +55,8 @@ const PROFILE_LINKS: IProfileLink[] = [
     route: "/profile/saved",
   },
   {
-    title: "Events Going",
-    subtitle: "Neighbourhood events you're attending",
+    title: "شامل ہونے والے ایونٹس",
+    subtitle: "وہ ایونٹس جن میں آپ شرکت کر رہے ہیں",
     icon: {
       ios: "calendar",
       android: "event",
@@ -227,10 +227,22 @@ export default function ProfileTabScreen() {
                 />
               </View>
               <View className="min-w-0 flex-1">
-                <Text variant="bodySmall" weight="semibold">
+                <Text
+                  isUrdu
+                  variant="bodySmall"
+                  weight="semibold"
+                  className="text-left"
+                  style={{ textAlign: "left" }}
+                >
                   {link.title}
                 </Text>
-                <Text variant="caption" tone="muted" className="mt-0.5">
+                <Text
+                  isUrdu
+                  variant="caption"
+                  tone="muted"
+                  className="mt-0.5 text-left"
+                  style={{ textAlign: "left" }}
+                >
                   {link.subtitle}
                 </Text>
               </View>

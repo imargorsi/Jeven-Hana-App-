@@ -54,7 +54,7 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
   if (postsQuery.isLoading) {
     return (
       <View className={cn(className)}>
-        <SectionHeader title="Community Updates" />
+        <SectionHeader isUrdu title="کمیونٹی اپڈیٹس" />
         <LoadingBlock className="py-10" />
       </View>
     );
@@ -63,7 +63,7 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
   if (postsQuery.isError) {
     return (
       <View className={cn(className)}>
-        <SectionHeader title="Community Updates" />
+        <SectionHeader isUrdu title="کمیونٹی اپڈیٹس" />
         <ErrorState
           className="px-2 py-8"
           description={getApiErrorMessage(postsQuery.error)}
@@ -77,7 +77,8 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
     return (
       <View className={cn(className)}>
         <SectionHeader
-          title="Community Updates"
+          isUrdu
+          title="کمیونٹی اپڈیٹس"
           actionLabel="View All"
           onActionPress={goToCommunity}
         />
@@ -89,7 +90,8 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
   return (
     <View className={cn(className)}>
       <SectionHeader
-        title="Community Updates"
+        isUrdu
+        title="کمیونٹی اپڈیٹس"
         actionLabel="View All"
         onActionPress={goToCommunity}
       />
