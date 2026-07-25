@@ -23,11 +23,11 @@ module.exports = {
       },
       fontFamily: {
         english: ["NotoSans_400Regular"],
-        "english-medium": ["NotoSans_500Medium"],
+        "english-medium": ["NotoSans_400Regular"],
         "english-semibold": ["NotoSans_600SemiBold"],
         "english-bold": ["NotoSans_700Bold"],
         urdu: ["NotoNaskhArabic_400Regular"],
-        "urdu-medium": ["NotoNaskhArabic_500Medium"],
+        "urdu-medium": ["NotoNaskhArabic_400Regular"],
         "urdu-semibold": ["NotoNaskhArabic_600SemiBold"],
         "urdu-bold": ["NotoNaskhArabic_700Bold"],
       },

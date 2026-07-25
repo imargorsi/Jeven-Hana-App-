@@ -15,9 +15,9 @@ export function toImageSource(image: TAppImage): ImageSource | number {
 /**
  * App image fallbacks — only from `assets/images/`.
  */
+const AUTH_BG = require("../assets/images/auth-bg.png");
 const FALLBACK = require("../assets/images/jevenhana-fallback.png");
 const LOGO = require("../assets/images/logo.png");
-const AUTH_BG = require("../assets/images/auth-bg.png");
 
 /** Placeholder images for missing remote covers. */
 export const IMG = {

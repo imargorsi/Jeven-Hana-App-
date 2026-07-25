@@ -102,7 +102,7 @@ npm start
 npx expo start --clear
 ```
 
-Open with Expo Go. Email/password and browser-based Facebook or Google sign-in work without a custom dev build.
+Open with Expo Go. Email/password and browser-based Google sign-in work without a custom dev build.
 
 ## Project layout
 

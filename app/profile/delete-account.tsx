@@ -7,8 +7,8 @@ import {
   Text,
   TextField,
 } from "@/components/ui";
-import { APP_CONTACT } from "@/constants/Contact";
 import { palette } from "@/constants/Colors";
+import { APP_CONTACT } from "@/constants/Contact";
 import { useDeleteAccount } from "@/features/auth/useDeleteAccount.hook";
 import { withAlpha } from "@/lib/color.utils";
 

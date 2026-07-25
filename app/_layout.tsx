@@ -2,13 +2,11 @@ import { ClerkProvider } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import {
   NotoNaskhArabic_400Regular,
-  NotoNaskhArabic_500Medium,
   NotoNaskhArabic_600SemiBold,
   NotoNaskhArabic_700Bold,
 } from "@expo-google-fonts/noto-naskh-arabic";
 import {
   NotoSans_400Regular,
-  NotoSans_500Medium,
   NotoSans_600SemiBold,
   NotoSans_700Bold,
 } from "@expo-google-fonts/noto-sans";
@@ -44,11 +42,9 @@ export default function RootLayout() {
   const [queryClient] = useState(() => createQueryClient());
   const [loaded, error] = useFonts({
     NotoSans_400Regular,
-    NotoSans_500Medium,
     NotoSans_600SemiBold,
     NotoSans_700Bold,
     NotoNaskhArabic_400Regular,
-    NotoNaskhArabic_500Medium,
     NotoNaskhArabic_600SemiBold,
     NotoNaskhArabic_700Bold,
   });

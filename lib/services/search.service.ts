@@ -1,6 +1,6 @@
-import { IMG } from "@/lib/image.utils";
 import type { IApiEnvelope } from "@/features/auth/auth.types";
 import { createApiClient, isApiConfigured } from "@/lib/api.client";
+import { IMG } from "@/lib/image.utils";
 import type {
   IBusiness,
   TBusinessCategorySlug,

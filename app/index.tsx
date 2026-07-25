@@ -1,10 +1,14 @@
 import { Redirect } from "expo-router";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 import { palette } from "@/constants/Colors";
 import { isClerkConfigured } from "@/features/auth/auth.config";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { useAppStore } from "@/stores/useAppStore";
+
+/** Avoid hanging forever if Clerk production Frontend API is unreachable. */
+const CLERK_LOAD_TIMEOUT_MS = 12_000;
 
 /**
  * Entry: onboarding once → home tabs for everyone.
@@ -26,8 +30,24 @@ export default function Index() {
 
 function ClerkAwareIndex({ hasOnboarded }: { hasOnboarded: boolean }) {
   const { isSignedIn, isLoaded } = useRequireAuth();
+  const [hasTimedOut, setHasTimedOut] = useState(false);
 
-  if (!isLoaded) {
+  useEffect(() => {
+    if (isLoaded) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      setHasTimedOut(true);
+      if (__DEV__) {
+        console.warn(
+          "[auth] Clerk isLoaded timed out — check pk_live key + Clerk Frontend API DNS (e.g. clerk.argorsi.com).",
+        );
+      }
+    }, CLERK_LOAD_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [isLoaded]);
+
+  if (!isLoaded && !hasTimedOut) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator color={palette.primary} />
@@ -36,7 +56,7 @@ function ClerkAwareIndex({ hasOnboarded }: { hasOnboarded: boolean }) {
   }
 
   // Signed-in users skip onboarding if they somehow land here again.
-  if (isSignedIn) {
+  if (isLoaded && isSignedIn) {
     return <Redirect href="/(tabs)" />;
   }
 

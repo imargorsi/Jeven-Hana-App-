@@ -12,10 +12,10 @@ import {
   Screen,
   Text,
 } from "@/components/ui";
-import { APP_CONTACT } from "@/constants/Contact";
 import { palette } from "@/constants/Colors";
-import { IMG, toImageSource } from "@/lib/image.utils";
+import { APP_CONTACT } from "@/constants/Contact";
 import { withAlpha } from "@/lib/color.utils";
+import { IMG, toImageSource } from "@/lib/image.utils";
 import { openEmail, openWhatsApp } from "@/lib/linking.utils";
 import { href } from "@/lib/navigation.utils";
 import { getAboutContent } from "@/lib/services/about.service";

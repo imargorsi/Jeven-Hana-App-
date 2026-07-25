@@ -9,44 +9,34 @@ import { getClerkErrorMessage } from "@/features/auth/auth.utils";
 
 WebBrowser.maybeCompleteAuthSession();
 
-type TSocialStrategy = "oauth_google" | "oauth_facebook";
-
 export function useClerkSocialAuth() {
   const { startSSOFlow } = useSSO();
   const router = useRouter();
-  const [loadingStrategy, setLoadingStrategy] = useState<TSocialStrategy | null>(
-    null,
-  );
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  const continueWithProvider = useCallback(
-    async (strategy: TSocialStrategy) => {
-      setLoadingStrategy(strategy);
+  const continueWithGoogle = useCallback(async () => {
+    setIsGoogleLoading(true);
 
-      try {
-        const { createdSessionId, setActive } = await startSSOFlow({
-          strategy,
-          redirectUrl: Linking.createURL("/"),
-        });
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_google",
+        redirectUrl: Linking.createURL("/"),
+      });
 
-        if (createdSessionId && setActive) {
-          await setActive({ session: createdSessionId });
-          router.replace("/(tabs)");
-        }
-      } catch (error) {
-        const provider = strategy === "oauth_google" ? "Google" : "Facebook";
-        Alert.alert(`${provider} sign-in failed`, getClerkErrorMessage(error));
-      } finally {
-        setLoadingStrategy(null);
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        router.replace("/(tabs)");
       }
-    },
-    [router, startSSOFlow],
-  );
+    } catch (error) {
+      Alert.alert("Google Sign-In Failed", getClerkErrorMessage(error));
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  }, [router, startSSOFlow]);
 
   return {
-    continueWithGoogle: () => continueWithProvider("oauth_google"),
-    continueWithFacebook: () => continueWithProvider("oauth_facebook"),
-    isGoogleLoading: loadingStrategy === "oauth_google",
-    isFacebookLoading: loadingStrategy === "oauth_facebook",
-    isLoading: loadingStrategy !== null,
+    continueWithGoogle,
+    isGoogleLoading,
+    isLoading: isGoogleLoading,
   };
 }

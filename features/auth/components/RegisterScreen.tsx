@@ -20,10 +20,7 @@ import { useClerkSocialAuth } from "@/features/auth/useClerkSocialAuth.hook";
 function PreviewRegisterActions() {
   return (
     <>
-      <SocialAuthButtons
-        onFacebookPress={notifyClerkMissing}
-        onGooglePress={notifyClerkMissing}
-      />
+      <SocialAuthButtons onGooglePress={notifyClerkMissing} />
       <AuthDivider />
       <Button variant="primary" size="lg" isFullWidth onPress={notifyClerkMissing}>
         Continue
@@ -55,9 +52,7 @@ function ClerkRegisterForm() {
   } = useClerkRegister();
   const {
     continueWithGoogle,
-    continueWithFacebook,
     isGoogleLoading,
-    isFacebookLoading,
     isLoading: isSocialLoading,
   } = useClerkSocialAuth();
 
@@ -83,10 +78,8 @@ function ClerkRegisterForm() {
       />
 
       <SocialAuthButtons
-        onFacebookPress={continueWithFacebook}
         onGooglePress={continueWithGoogle}
         isDisabled={isBusy}
-        isFacebookLoading={isFacebookLoading}
         isGoogleLoading={isGoogleLoading}
       />
       <AuthDivider />

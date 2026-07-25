@@ -14,7 +14,7 @@ module.exports = {
   slug: "jevan-hana",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/app-icon.png",
   scheme: "jevan-hana",
   userInterfaceStyle: "dark",
   ios: {
@@ -25,8 +25,7 @@ module.exports = {
     versionCode: 1,
     adaptiveIcon: {
       backgroundColor: palette.background,
-      foregroundImage: "./assets/images/android-icon-foreground.png",
-      backgroundImage: "./assets/images/android-icon-background.png",
+      foregroundImage: "./assets/images/app-icon.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
     predictiveBackGestureEnabled: false,
@@ -71,5 +70,8 @@ module.exports = {
       (process.env.EXPO_PUBLIC_API_URL
         ? `${process.env.EXPO_PUBLIC_API_URL.replace(/\/$/, "")}/privacy`
         : undefined),
+    eas: {
+      projectId: "e99bc685-9e9b-46e2-9e34-356d4bd5c9e0",
+    },
   },
 };

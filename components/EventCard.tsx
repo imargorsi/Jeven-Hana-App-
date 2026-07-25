@@ -3,10 +3,9 @@ import { SymbolView } from "expo-symbols";
 import type { ComponentProps } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { Text } from "@/components/ui/Text";
 import { ReportButton } from "@/components/ReportButton";
+import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
-import { IMG, toImageSource } from "@/lib/image.utils";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { withAlpha } from "@/lib/color.utils";
@@ -16,6 +15,7 @@ import {
   formatEventTime,
   formatEventWeekdayAbbrev,
 } from "@/lib/formatter.utils";
+import { IMG, toImageSource } from "@/lib/image.utils";
 import type { IEvent } from "@/types/event.types";
 
 type TSymbolName = NonNullable<ComponentProps<typeof SymbolView>["name"]>;

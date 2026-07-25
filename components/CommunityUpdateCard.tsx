@@ -1,9 +1,9 @@
 import { SymbolView } from "expo-symbols";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
+import { ReportButton } from "@/components/ReportButton";
 import { Avatar } from "@/components/ui/Avatar";
 import { Text } from "@/components/ui/Text";
-import { ReportButton } from "@/components/ReportButton";
 import { palette } from "@/constants/Colors";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";

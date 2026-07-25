@@ -10,7 +10,6 @@ import {
   TextField,
 } from "@/components/ui";
 import { palette } from "@/constants/Colors";
-import { toImageSource } from "@/lib/image.utils";
 import {
   BUSINESS_CATEGORIES,
   BUSINESS_CATEGORY_LABELS,
@@ -19,6 +18,7 @@ import {
 } from "@/features/businesses/businessForm.utils";
 import { cn } from "@/lib/cn.utils";
 import { withAlpha } from "@/lib/color.utils";
+import { toImageSource } from "@/lib/image.utils";
 import { normalizeCoverContentType } from "@/lib/services/uploads.service";
 
 interface IBusinessFormProps {

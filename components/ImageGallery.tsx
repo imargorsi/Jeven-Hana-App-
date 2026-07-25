@@ -2,8 +2,8 @@ import { Image } from "expo-image";
 import { useState } from "react";
 import { ScrollView, useWindowDimensions, View } from "react-native";
 
-import { toImageSource } from "@/lib/image.utils";
 import { cn } from "@/lib/cn.utils";
+import { toImageSource } from "@/lib/image.utils";
 import type { TAppImage } from "@/types/common.types";
 
 interface IImageGalleryProps {

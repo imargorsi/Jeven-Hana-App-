@@ -22,10 +22,7 @@ type TLoginStep = "email" | "password";
 function PreviewLoginActions() {
   return (
     <>
-      <SocialAuthButtons
-        onFacebookPress={notifyClerkMissing}
-        onGooglePress={notifyClerkMissing}
-      />
+      <SocialAuthButtons onGooglePress={notifyClerkMissing} />
       <AuthDivider />
       <Button variant="primary" size="lg" isFullWidth onPress={notifyClerkMissing}>
         Continue
@@ -58,9 +55,7 @@ function ClerkLoginForm() {
   } = useClerkLogin();
   const {
     continueWithGoogle,
-    continueWithFacebook,
     isGoogleLoading,
-    isFacebookLoading,
     isLoading: isSocialLoading,
   } = useClerkSocialAuth();
 
@@ -89,10 +84,8 @@ function ClerkLoginForm() {
       {step === "email" ? (
         <>
           <SocialAuthButtons
-            onFacebookPress={continueWithFacebook}
             onGooglePress={continueWithGoogle}
             isDisabled={isBusy}
-            isFacebookLoading={isFacebookLoading}
             isGoogleLoading={isGoogleLoading}
           />
           <AuthDivider />
