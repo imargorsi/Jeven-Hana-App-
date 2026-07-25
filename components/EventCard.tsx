@@ -96,7 +96,7 @@ function StatCell({
   );
 }
 
-/** Event list card — glassy date/Go, location on top, start/end/interested stats. */
+/** Event list card — title + actions on one row; date before start time. */
 export function EventCard({
   event,
   isToggling = false,
@@ -140,17 +140,26 @@ export function EventCard({
         }}
       />
 
-      {/* Top: manage icons · Go (always glassy) */}
+      {/* Top: title · edit · delete · Go */}
       <View className="relative z-10">
         <View className="flex-row items-center gap-2">
+          <Text
+            variant="h3"
+            weight="bold"
+            className="min-w-0 flex-1"
+            numberOfLines={2}
+          >
+            {event.title}
+          </Text>
+
           {canManage ? (
-            <View className="flex-row items-center gap-1.5">
+            <>
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Edit Event"
                 disabled={isDeleting}
                 onPress={onEdit}
-                className="h-8 w-8 items-center justify-center rounded-xl active:opacity-80"
+                className="h-8 w-8 shrink-0 items-center justify-center rounded-xl active:opacity-80"
                 style={GLASS_PILL}
               >
                 <SymbolView
@@ -168,7 +177,7 @@ export function EventCard({
                 accessibilityLabel="Delete Event"
                 disabled={isDeleting}
                 onPress={onDelete}
-                className="h-8 w-8 items-center justify-center rounded-xl active:opacity-80"
+                className="h-8 w-8 shrink-0 items-center justify-center rounded-xl active:opacity-80"
                 style={{
                   backgroundColor: withAlpha(palette.error, 0.12),
                   borderWidth: 1,
@@ -189,10 +198,8 @@ export function EventCard({
                   />
                 )}
               </Pressable>
-            </View>
+            </>
           ) : null}
-
-          <View className="flex-1" />
 
           {onToggleInterested ? (
             <Pressable
@@ -202,7 +209,7 @@ export function EventCard({
               disabled={isToggling}
               onPress={() => requireAuth(() => onToggleInterested?.())}
               className={cn(
-                "h-9 flex-row items-center gap-1 overflow-hidden rounded-full px-3 active:opacity-90",
+                "h-9 shrink-0 flex-row items-center gap-1 overflow-hidden rounded-full px-3 active:opacity-90",
                 isToggling && "opacity-60",
               )}
               style={{
@@ -233,12 +240,8 @@ export function EventCard({
           ) : null}
         </View>
 
-        <Text variant="h3" weight="bold" className="mt-3" numberOfLines={2}>
-          {event.title}
-        </Text>
-
-        {/* Location only on top */}
-        <View className="mt-2.5 flex-row items-center gap-1.5">
+        {/* Location */}
+        <View className="mt-2 flex-row items-center gap-1.5">
           <SymbolView
             name={{
               ios: "mappin.and.ellipse",
@@ -257,14 +260,14 @@ export function EventCard({
           <Text
             variant="bodySmall"
             tone="muted"
-            className="mt-3 leading-5"
+            className="mt-2.5 leading-5"
             numberOfLines={3}
           >
             {description}
           </Text>
         ) : null}
 
-        {/* Starts · Date · Interested */}
+        {/* Date · Starts · Interested */}
         <View
           className="mt-3.5 flex-row overflow-hidden rounded-2xl"
           style={{
@@ -280,21 +283,21 @@ export function EventCard({
         >
           <StatCell
             icon={{
-              ios: "play.circle",
-              android: "play_circle",
-              web: "play_circle",
-            }}
-            label="Starts"
-            value={startsTime || "—"}
-          />
-          <StatCell
-            icon={{
               ios: "calendar",
               android: "calendar_today",
               web: "calendar_today",
             }}
             label={weekday || "Date"}
             value={`${day} ${month}`.trim() || "—"}
+          />
+          <StatCell
+            icon={{
+              ios: "play.circle",
+              android: "play_circle",
+              web: "play_circle",
+            }}
+            label="Starts"
+            value={startsTime || "—"}
           />
           <StatCell
             icon={{
