@@ -29,30 +29,28 @@ export function toImageSource(image: TAppImage): ImageSource | number {
 }
 
 /**
- * Local dummy images — relative requires (reliable with Metro).
- * Copied from `screens/dummy` into `assets/images/dummy`.
+ * App image fallbacks — only from `assets/images/`.
+ * Do not reference deleted `screens/` or `dummy/` folders.
  */
-export const DUMMY = {
-  a: require("../../assets/images/dummy/hq720.jpg"),
-  b: require("../../assets/images/dummy/7spz4y1t9s771.jpg"),
-  c: require("../../assets/images/dummy/Blog-cover.jpg"),
-} as const;
+const FALLBACK = require("../../assets/images/jevenhana-fallback.png");
+const LOGO = require("../../assets/images/logo.png");
+const AUTH_BG = require("../../assets/images/auth-bg.png");
 
-/** Placeholder images — local dummies for now. */
+/** Placeholder images for mocks / missing remote covers. */
 export const IMG = {
-  cafe: DUMMY.a,
-  restaurant: DUMMY.b,
-  park: DUMMY.c,
-  mosque: DUMMY.a,
-  grocery: DUMMY.b,
-  event: DUMMY.c,
-  chai: DUMMY.a,
-  barber: DUMMY.b,
-  community: DUMMY.c,
-  /** Legacy — prefer Avatar initials when a user has no photo (do not use for people). */
-  avatar: require("../../assets/images/logo.png"),
-  street: DUMMY.b,
-  logo: require("../../assets/images/logo.png"),
-  /** Business / listing cover when no `coverImageUrl`. */
-  businessFallback: require("../../assets/images/jevenhana-fallback.png"),
+  cafe: FALLBACK,
+  restaurant: FALLBACK,
+  park: FALLBACK,
+  mosque: FALLBACK,
+  grocery: FALLBACK,
+  event: FALLBACK,
+  chai: FALLBACK,
+  barber: FALLBACK,
+  community: FALLBACK,
+  street: AUTH_BG,
+  /** Prefer Avatar initials when a user has no photo (do not use for people). */
+  avatar: LOGO,
+  logo: LOGO,
+  /** Business / listing / about cover when no remote image. */
+  businessFallback: FALLBACK,
 } as const;

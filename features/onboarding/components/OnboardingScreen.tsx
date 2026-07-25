@@ -23,7 +23,7 @@ export function OnboardingScreen() {
   return (
     <View className="flex-1 bg-background">
       <ImageBackground
-        source={require("@/assets/images/splash-screen-bg.jpg")}
+        source={require("@/assets/images/auth-bg.png")}
         className="absolute inset-0"
         resizeMode="cover"
       />
