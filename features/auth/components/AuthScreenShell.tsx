@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { ImageBackground, Pressable, ScrollView, View } from "react-native";
+import { ImageBackground, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { KeyboardAwareScrollView } from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import { AuthBrandHeader } from "@/features/auth/components/AuthBrandHeader";
 import { AuthPrivacyNote } from "@/features/auth/components/AuthPrivacyNote";
@@ -33,9 +34,7 @@ export function AuthScreenShell({
         style={{ backgroundColor: withAlpha(palette.background, 0.86) }}
       />
 
-      <ScrollView
-        className="flex-1"
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAwareScrollView
         contentContainerClassName="grow px-5 pb-8"
         style={{ paddingTop: Math.max(insets.top, 12) }}
       >
@@ -71,7 +70,7 @@ export function AuthScreenShell({
         >
           <AuthPrivacyNote />
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 }

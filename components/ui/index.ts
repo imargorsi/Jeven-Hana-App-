@@ -19,3 +19,4 @@ export { AppTabBar } from "@/components/ui/AppTabBar";
 export { PageHeading } from "@/components/ui/PageHeading";
 export { CarouselDots } from "@/components/ui/CarouselDots";
 export { StackBackButton } from "@/components/ui/StackBackButton";
+export { KeyboardAwareScrollView } from "@/components/ui/KeyboardAwareScrollView";

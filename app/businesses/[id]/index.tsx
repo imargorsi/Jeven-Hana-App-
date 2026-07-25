@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, View } from "react-native";
+import { Alert, Pressable, View } from "react-native";
 
 import { BusinessReviewList } from "@/components/BusinessReviewList";
 import { ContactActions } from "@/components/ContactActions";
@@ -10,6 +10,7 @@ import {
   Button,
   ErrorState,
   FeaturedIcon,
+  KeyboardAwareScrollView,
   LoadingBlock,
   RatingDisplay,
   Screen,
@@ -124,12 +125,7 @@ export default function BusinessDetailScreen() {
 
   return (
     <Screen withSafeArea={false} withAppHeader={false}>
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="pb-14"
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
+      <KeyboardAwareScrollView contentContainerClassName="pb-14" bottomOffset={32}>
         <ListingHero
           urls={business.imageUrls}
           saveType="business"
@@ -309,7 +305,7 @@ export default function BusinessDetailScreen() {
             ) : null}
           </View>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </Screen>
   );
 }

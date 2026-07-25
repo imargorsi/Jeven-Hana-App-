@@ -1,7 +1,7 @@
 import { SymbolView } from "expo-symbols";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 
-import { Button, Text, TextField } from "@/components/ui";
+import { Button, KeyboardAwareScrollView, Text, TextField } from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import { cn } from "@/lib/cn.utils";
 import { hasUrduScript } from "@/lib/text.utils";
@@ -46,12 +46,7 @@ export function CommunityPostForm({
   onPinnedChange,
 }: ICommunityPostFormProps) {
   return (
-    <ScrollView
-      className="flex-1"
-      contentContainerClassName="gap-4 px-4 pb-10 pt-2"
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+    <KeyboardAwareScrollView contentContainerClassName="gap-4 px-4 pb-10 pt-2">
       <Text variant="caption" tone="muted">
         Posts go live immediately. English, Urdu, or both are fine.
       </Text>
@@ -151,7 +146,7 @@ export function CommunityPostForm({
       >
         {submitLabel}
       </Button>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

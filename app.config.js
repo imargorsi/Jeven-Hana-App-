@@ -28,6 +28,8 @@ module.exports = {
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
     predictiveBackGestureEnabled: false,
+    /** Shrink the window when the keyboard opens so inputs stay visible. */
+    softwareKeyboardLayoutMode: "resize",
   },
   web: {
     bundler: "metro",

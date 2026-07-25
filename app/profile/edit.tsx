@@ -3,16 +3,15 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useState } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
+import { Alert, Pressable, View } from "react-native";
 
-import { Button, Screen, Text, TextField } from "@/components/ui";
+import {
+  Button,
+  KeyboardAwareScrollView,
+  Screen,
+  Text,
+  TextField,
+} from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
 import { palette } from "@/constants/Colors";
 import { IMG } from "@/data/mocks/mock.utils";
@@ -111,16 +110,7 @@ export default function EditProfileScreen() {
 
   return (
     <Screen withSafeArea={false}>
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="px-4 pb-10 pt-2"
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+      <KeyboardAwareScrollView contentContainerClassName="px-4 pb-10 pt-2">
           <View className="mb-7 items-center">
             <Pressable
               accessibilityRole="button"
@@ -219,8 +209,7 @@ export default function EditProfileScreen() {
           >
             Save Changes
           </Button>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </Screen>
   );
 }

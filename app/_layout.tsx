@@ -18,6 +18,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 
 import "../global.css";
@@ -101,13 +102,21 @@ export default function RootLayout() {
     </QueryClientProvider>
   );
 
+  // Expo Android is edge-to-edge; without these, KeyboardProvider adds its own
+  // status/nav bar paddings (white strip + double top inset on stack screens).
+  const withKeyboard = (
+    <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
+      {withQuery}
+    </KeyboardProvider>
+  );
+
   if (!clerkPublishableKey) {
-    return withQuery;
+    return withKeyboard;
   }
 
   return (
     <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
-      {withQuery}
+      {withKeyboard}
     </ClerkProvider>
   );
 }

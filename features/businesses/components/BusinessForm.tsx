@@ -1,9 +1,14 @@
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { SymbolView } from "expo-symbols";
-import { Alert, Pressable, ScrollView, View } from "react-native";
+import { Alert, Pressable, View } from "react-native";
 
-import { Button, Text, TextField } from "@/components/ui";
+import {
+  Button,
+  KeyboardAwareScrollView,
+  Text,
+  TextField,
+} from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import { toImageSource } from "@/data/mocks/mock.utils";
 import {
@@ -89,12 +94,7 @@ export function BusinessForm({
   };
 
   return (
-    <ScrollView
-      className="flex-1"
-      contentContainerClassName="gap-4 px-4 pb-10 pt-2"
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+    <KeyboardAwareScrollView contentContainerClassName="gap-4 px-4 pb-10 pt-2">
       <Text variant="caption" tone="muted">
         Listings go live immediately. English, Urdu, or both are fine for
         name and address.
@@ -319,6 +319,6 @@ export function BusinessForm({
       >
         {submitLabel}
       </Button>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
