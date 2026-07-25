@@ -57,7 +57,7 @@ UI + live API for core domains when the Express API is running.
 | Tabs | Public browse (Home, Explore, Community, Events, Profile) |
 | Home | Hero, Quick Access, Nearby, Community list (5) |
 | Explore / Search | **Public** discovery (businesses live; places folded in) |
-| Businesses | Live CRUD + cover upload (R2); Featured admin toggle; reviews = part 2 |
+| Businesses | Live CRUD + cover upload (R2) + **reviews**; Featured admin toggle |
 | Places | Folded into Business; browse → Explore |
 | Featured | **Badge only** — admin toggle (`isFeatured`) |
 | Community | Live feed + create/edit/delete; like; **comments = v2** |
@@ -65,7 +65,7 @@ UI + live API for core domains when the Express API is running.
 | Notifications | Account (mock) |
 | Saved / Profile | Account (local saved; guest Profile = Sign up / Log in) |
 
-**Next:** favorites sync, search server-side, notifications live, reviews part 2. See `../AGENTS.md` build order.
+**Next:** favorites sync, search server-side, notifications live. See `../AGENTS.md` build order.
 
 ## Distribution (v1)
 

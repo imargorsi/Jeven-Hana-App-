@@ -1,11 +1,13 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { ScrollView, View } from "react-native";
+import { useState } from "react";
+import { Alert, Pressable, ScrollView, View } from "react-native";
 
 import { BusinessReviewList } from "@/components/BusinessReviewList";
 import { ContactActions } from "@/components/ContactActions";
 import { ListingHero } from "@/components/ListingHero";
 import {
+  Button,
   ErrorState,
   FeaturedIcon,
   LoadingBlock,
@@ -15,11 +17,18 @@ import {
 } from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
+import {
+  BusinessReviewForm,
+  emptyBusinessReviewFormValues,
+  type IBusinessReviewFormValues,
+} from "@/features/businesses/components/BusinessReviewForm";
 import { useBusinessDetail } from "@/features/businesses/useBusinessDetail.hook";
 import { useBusinessManage } from "@/features/businesses/useBusinessManage.hook";
+import { useBusinessReviews } from "@/features/businesses/useBusinessReviews.hook";
 import { shareAppLink } from "@/lib/linking.utils";
 import { href } from "@/lib/navigation.utils";
 import { getBusinessCategoryLabel } from "@/lib/services/businesses.service";
+import type { IReview } from "@/types/common.types";
 
 export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -27,6 +36,12 @@ export default function BusinessDetailScreen() {
   const { business, isLoading, isError, refetch } = useBusinessDetail(id);
   const { canManage, openEdit, confirmDelete, deletingId } =
     useBusinessManage();
+  const reviewsApi = useBusinessReviews(business?.id ?? id);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState<IReview | null>(null);
+  const [formValues, setFormValues] = useState<IBusinessReviewFormValues>(
+    emptyBusinessReviewFormValues,
+  );
 
   if (isLoading) {
     return (
@@ -48,6 +63,64 @@ export default function BusinessDetailScreen() {
   const openStatus = getBusinessOpenStatus(business.hours);
   const sharePath = `/businesses/${business.id}`;
   const showManage = canManage(business);
+  const hasMyReview = Boolean(reviewsApi.myReview);
+
+  const openCreateForm = () => {
+    reviewsApi.requireAuth(() => {
+      if (reviewsApi.myReview) {
+        Alert.alert(
+          "Already Reviewed",
+          "You already reviewed this listing. Edit your existing review instead.",
+        );
+        return;
+      }
+      setEditingReview(null);
+      setFormValues(emptyBusinessReviewFormValues());
+      setIsFormOpen(true);
+    });
+  };
+
+  const openEditForm = (review: IReview) => {
+    setEditingReview(review);
+    setFormValues({
+      rating: review.rating,
+      comment: review.comment,
+    });
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingReview(null);
+    setFormValues(emptyBusinessReviewFormValues());
+  };
+
+  const submitForm = async () => {
+    const comment = formValues.comment.trim();
+    if (!comment) {
+      Alert.alert("Check Details", "Please write a short review.");
+      return;
+    }
+    if (formValues.rating < 1 || formValues.rating > 5) {
+      Alert.alert("Check Details", "Pick a rating from 1 to 5 stars.");
+      return;
+    }
+
+    if (editingReview) {
+      const ok = await reviewsApi.updateReview(editingReview.id, {
+        rating: formValues.rating,
+        comment,
+      });
+      if (ok) closeForm();
+      return;
+    }
+
+    const ok = await reviewsApi.createReview({
+      rating: formValues.rating,
+      comment,
+    });
+    if (ok) closeForm();
+  };
 
   return (
     <Screen withSafeArea={false} withAppHeader={false}>
@@ -93,7 +166,7 @@ export default function BusinessDetailScreen() {
               size="md"
             />
             <Text variant="caption" tone="muted">
-              reviews
+              Reviews
             </Text>
           </View>
 
@@ -167,28 +240,73 @@ export default function BusinessDetailScreen() {
           </View>
 
           <View className="mt-8">
-            <Text variant="h3" className="mb-1">
-              Reviews
-            </Text>
-            <Text variant="caption" tone="muted" className="mb-4">
-              {business.reviewCount} reviews · {business.rating.toFixed(1)}{" "}
-              average
-            </Text>
-
-            <View className="mb-4 rounded-card border border-dashed border-cream/15 bg-surface/50 px-4 py-5">
-              <Text variant="bodySmall" weight="medium" className="text-center">
-                Writing reviews comes in part 2
-              </Text>
-              <Text
-                variant="caption"
-                tone="muted"
-                className="mt-1.5 text-center"
-              >
-                Ratings stay ready on each listing until then.
-              </Text>
+            <View className="mb-1 flex-row items-center justify-between gap-3">
+              <Text variant="h3">Reviews</Text>
+              {!hasMyReview && !isFormOpen ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Write Review"
+                  onPress={openCreateForm}
+                  className="active:opacity-80"
+                >
+                  <Text variant="caption" weight="semibold" tone="primary">
+                    Write Review
+                  </Text>
+                </Pressable>
+              ) : null}
             </View>
+            <Text variant="caption" tone="muted" className="mb-4">
+              {business.reviewCount}{" "}
+              {business.reviewCount === 1 ? "review" : "reviews"} ·{" "}
+              {business.rating.toFixed(1)} average
+            </Text>
 
-            <BusinessReviewList reviews={business.reviews} />
+            {isFormOpen ? (
+              <View className="mb-4">
+                <BusinessReviewForm
+                  values={formValues}
+                  onChange={(patch) =>
+                    setFormValues((prev) => ({ ...prev, ...patch }))
+                  }
+                  onSubmit={submitForm}
+                  onCancel={closeForm}
+                  isSubmitting={
+                    reviewsApi.isCreating || reviewsApi.isUpdating
+                  }
+                  submitLabel={
+                    editingReview ? "Save Changes" : "Post Review"
+                  }
+                />
+              </View>
+            ) : null}
+
+            {reviewsApi.isLoading ? (
+              <LoadingBlock className="py-8" />
+            ) : reviewsApi.isError ? (
+              <View className="py-2">
+                <ErrorState onRetry={() => void reviewsApi.refetch()} />
+              </View>
+            ) : (
+              <BusinessReviewList
+                reviews={reviewsApi.reviews}
+                canManage={reviewsApi.canManage}
+                onEdit={openEditForm}
+                onDelete={reviewsApi.confirmDelete}
+                deletingId={reviewsApi.deletingId}
+              />
+            )}
+
+            {!hasMyReview && !isFormOpen ? (
+              <Button
+                variant="secondary"
+                size="md"
+                isFullWidth
+                onPress={openCreateForm}
+                className="mt-4"
+              >
+                Write Review
+              </Button>
+            ) : null}
           </View>
         </View>
       </ScrollView>

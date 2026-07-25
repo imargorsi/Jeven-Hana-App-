@@ -29,12 +29,12 @@ export interface IBusiness {
   coverImageUrl: string | null;
   /** Derived from coverImageUrl, or town fallback image when empty. */
   imageUrls: TAppImage[];
-  /** From API `ratingAvg` — reviews write is part 2. */
+  /** From API `ratingAvg` — refreshed when reviews change. */
   rating: number;
   reviewCount: number;
   isFeatured: boolean;
   createdByUserId: number;
-  /** Always empty in part 1 — reviews API is part 2. */
+  /** Optional embedded list; detail screen loads reviews via reviews API. */
   reviews: IReview[];
   /** Always empty in part 1 — hours out of scope. */
   hours: IOpeningHours[];

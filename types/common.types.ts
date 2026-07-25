@@ -20,11 +20,23 @@ export interface IGeoLocation {
   address: string;
 }
 
+export interface IReviewAuthor {
+  id: number;
+  firstName: string | null;
+  lastName: string | null;
+  imageUrl: string | null;
+  role: "user" | "admin";
+}
+
 export interface IReview {
   id: string;
-  authorName: string;
-  authorAvatarUrl?: string;
+  businessId: string;
   rating: number;
   comment: string;
+  createdByUserId: number;
+  authorName: string;
+  authorAvatarUrl?: string | null;
+  author?: IReviewAuthor | null;
   createdAt: string;
+  updatedAt?: string;
 }
