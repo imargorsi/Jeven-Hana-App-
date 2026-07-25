@@ -149,6 +149,17 @@ export default function AboutScreen() {
               {about.contact.heading}
             </Text>
 
+            {about.contact.body ? (
+              <Text
+                isUrdu
+                variant="bodySmall"
+                tone="muted"
+                className="mb-3 text-right leading-6"
+              >
+                {about.contact.body}
+              </Text>
+            ) : null}
+
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={about.contact.whatsappLabel ?? "واٹس ایپ"}
