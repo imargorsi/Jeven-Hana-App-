@@ -1,10 +1,11 @@
+import { APP_CONTACT } from "@/constants/Contact";
 import type { IAboutContent } from "@/types/about.types";
 
 /**
- * About Us payload until GET /api/v1/about ships.
- * Page is Urdu-only: one heading, then paragraphs, then contact.
+ * About Us copy (static until GET /api/v1/about exists).
+ * Urdu-only: heading, paragraphs, then contact.
  */
-export const ABOUT_CONTENT_MOCK: IAboutContent = {
+export const ABOUT_CONTENT: IAboutContent = {
   title: "ہمارے بارے میں",
   coverImageUrl: null,
   paragraphs: [
@@ -14,8 +15,9 @@ export const ABOUT_CONTENT_MOCK: IAboutContent = {
   ],
   contact: {
     heading: "رابطہ کریں",
-    body: "اگر آپ کو ایپ استعمال کرتے ہوئے کسی بھی قسم کی دشواری پیش آئے یا آپ کی کوئی تجویز ہو، تو آپ براہِ راست واٹس ایپ کے ذریعے ہم سے رابطہ کر سکتے ہیں۔ آپ کی رائے ہمارے لیے نہایت اہم ہے۔",
-    whatsapp: "923001234567",
+    body: "اگر آپ کو ایپ استعمال کرتے ہوئے کسی بھی قسم کی دشواری پیش آئے یا آپ کی کوئی تجویز ہو، تو آپ ای میل یا واٹس ایپ کے ذریعے ہم سے رابطہ کر سکتے ہیں۔ آپ کی رائے ہمارے لیے نہایت اہم ہے۔",
+    email: APP_CONTACT.email,
+    whatsapp: APP_CONTACT.whatsappDigits,
     whatsappLabel: "واٹس ایپ",
     whatsappMessage: "السلام علیکم، جیون ہانہ ایپ کے بارے میں ایک سوال ہے۔",
   },

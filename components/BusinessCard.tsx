@@ -8,7 +8,7 @@ import { RatingDisplay } from "@/components/ui/RatingDisplay";
 import { SaveButton } from "@/components/ui/SaveButton";
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
-import { toImageSource } from "@/data/mocks/mock.utils";
+import { toImageSource } from "@/lib/image.utils";
 import { getBusinessOpenStatus } from "@/features/businesses/business.utils";
 import { getExploreCategoryIcon } from "@/features/explore/explore.icons";
 import { cn } from "@/lib/cn.utils";

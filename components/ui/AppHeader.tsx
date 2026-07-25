@@ -111,7 +111,7 @@ function AppHeaderView({
             value=""
             onChangeText={() => undefined}
             placeholder="کسی جگہ، کاروبار یا پوسٹ کو تلاش کریں…"
-            isUrdu
+            isUrduPlaceholder
             onPress={() => router.push(href("/search"))}
             className="min-h-10 rounded-chip border-cream/20 bg-surface/80 px-2.5"
           />

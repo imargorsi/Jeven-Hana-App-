@@ -4,7 +4,8 @@ import { FlatList, View } from "react-native";
 
 import { BusinessCard } from "@/components/BusinessCard";
 import { EventCard } from "@/components/EventCard";
-import { EmptyState, LoadingBlock, Screen } from "@/components/ui";
+import { EmptyState, ErrorState, LoadingBlock, Screen } from "@/components/ui";
+import { getApiErrorMessage } from "@/lib/apiError.utils";
 import { getBusinessById } from "@/lib/services/businesses.service";
 import { getEventById } from "@/lib/services/events.service";
 import { useSavedItemsStore } from "@/stores/useSavedItemsStore";
@@ -27,7 +28,7 @@ export default function SavedPlacesScreen() {
   const businesses = useSavedItemsStore((s) => s.businesses);
   const events = useSavedItemsStore((s) => s.events);
 
-  // Places are folded into Business in part 1 — only businesses + events.
+  // Places are folded into Business — only businesses + events.
   const refs: ISavedRef[] = [
     ...businesses.map((id) => ({ kind: "business" as const, id })),
     ...events.map((id) => ({ kind: "event" as const, id })),
@@ -45,6 +46,9 @@ export default function SavedPlacesScreen() {
   });
 
   const isLoading = refs.length > 0 && queries.some((q) => q.isLoading);
+  const isError = queries.some((q) => q.isError);
+  const firstError = queries.find((q) => q.isError)?.error;
+
   const items: TSavedRow[] = queries
     .map((q, index) => {
       const ref = refs[index];
@@ -57,6 +61,22 @@ export default function SavedPlacesScreen() {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
         <LoadingBlock />
+      </Screen>
+    );
+  }
+
+  if (isError && items.length === 0) {
+    return (
+      <Screen withSafeArea={false} withAppHeader={false}>
+        <ErrorState
+          title="Could Not Load Saved Items"
+          description={getApiErrorMessage(firstError)}
+          onRetry={() => {
+            for (const q of queries) {
+              void q.refetch();
+            }
+          }}
+        />
       </Screen>
     );
   }
@@ -75,7 +95,7 @@ export default function SavedPlacesScreen() {
         }}
         ListEmptyComponent={
           <EmptyState
-            title="Nothing Saved"
+            title="Nothing Saved Yet"
             description="Bookmark businesses or events to see them here."
           />
         }

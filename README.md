@@ -111,20 +111,24 @@ app/                 # Expo Router screens (tabs, stacks, auth)
 assets/              # Images, fonts
 components/          # Shared cards + UI primitives
 constants/           # palette, Colors, Fonts, tokens
-data/mocks/          # Mock entities (replace with API later)
 features/            # auth, community, events, explore, home, search, …
-lib/                 # queryClient, services, utils
+lib/                 # api.client, services, image.utils, content/, utils
 stores/              # Zustand (app, saved, search)
 types/               # Shared TypeScript entities
 ```
 
 Product docs: **`../doc/modules/`** (workspace root). Stack rules: **`AGENTS.md`**.
 
+## Language
+
+- **English** for API, database, form inputs, and search queries.
+- **Urdu** only for explanatory UI (headings, About, onboarding, placeholders).
+- Search: Urdu placeholder OK; typed query is English LTR.
+
 ## Data layer
 
 - Typed entities in `types/`
-- Mock data in `data/mocks/`
-- Service functions in `lib/services/` (async, REST-shaped; easy to swap for real APIs)
+- Service functions in `lib/services/` (live REST API)
 - TanStack Query in screens/hooks — do not put server lists in Zustand
 - Zustand only for: `hasOnboarded`, saved IDs, recent searches
 

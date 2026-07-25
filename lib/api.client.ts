@@ -2,14 +2,8 @@ import { type AxiosInstance, create } from "axios";
 import Constants from "expo-constants";
 
 /**
- * Domain modules still use mocks until their REST routes exist.
- * Auth/user always hit the real API when a base URL is available.
- */
-export const USE_MOCK_API = true;
-
-/**
  * Prefer EXPO_PUBLIC_API_URL. In Expo Go /dev, fall back to the Metro host
- * on port 3001 so a physical device can reach the local Express API.
+ * on port 3001 so a physical device can reach a local Express API.
  */
 export function getApiBaseUrl(): string | null {
   const fromEnv = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "");

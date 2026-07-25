@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
-import { toImageSource } from "@/data/mocks/mock.utils";
+import { toImageSource } from "@/lib/image.utils";
 import { cn } from "@/lib/cn.utils";
 import { withAlpha } from "@/lib/color.utils";
 import type { TAppImage } from "@/types/common.types";

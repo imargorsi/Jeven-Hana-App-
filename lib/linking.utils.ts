@@ -6,6 +6,11 @@ export async function openPhone(phone: string) {
   await Linking.openURL(url);
 }
 
+export async function openEmail(email: string, subject?: string) {
+  const query = subject ? `?subject=${encodeURIComponent(subject)}` : "";
+  await Linking.openURL(`mailto:${email}${query}`);
+}
+
 export async function openWhatsApp(phone: string, message?: string) {
   const digits = phone.replace(/[^\d]/g, "");
   const text = message ? `&text=${encodeURIComponent(message)}` : "";

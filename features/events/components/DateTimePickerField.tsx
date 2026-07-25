@@ -103,7 +103,7 @@ export function DateTimePickerField({
         });
 
   return (
-    <View className={cn("w-full gap-2", containerClassName)}>
+    <View className={cn("min-w-0 gap-2", containerClassName ?? "w-full")}>
       {label ? (
         <Text
           variant="label"
@@ -121,15 +121,15 @@ export function DateTimePickerField({
           accessibilityLabel ?? `${label ?? mode}, ${shown || placeholder}`
         }
         onPress={open}
-        className="min-h-14 flex-row items-center rounded-button border border-cream/15 bg-surface px-4 active:opacity-90"
+        className="min-h-14 w-full flex-row items-center rounded-button border border-cream/15 bg-surface px-3 active:opacity-90"
       >
-        <View className="mr-3">
+        <View className="mr-2 shrink-0">
           <SymbolView name={iconName} size={18} tintColor={palette.primary} />
         </View>
         <Text
           variant="body"
           tone={shown ? "cream" : "muted"}
-          className="flex-1"
+          className="min-w-0 flex-1"
           numberOfLines={1}
         >
           {shown || placeholder}

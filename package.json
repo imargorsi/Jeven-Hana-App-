@@ -62,6 +62,8 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "build:android:preview": "npx eas-cli build -p android --profile preview",
+    "build:android:production": "npx eas-cli build -p android --profile production",
     "postinstall": "node scripts/patch-clerk-expo-go.js"
   }
 }

@@ -12,10 +12,12 @@ import {
   Screen,
   Text,
 } from "@/components/ui";
+import { APP_CONTACT } from "@/constants/Contact";
 import { palette } from "@/constants/Colors";
-import { IMG, toImageSource } from "@/data/mocks/mock.utils";
+import { IMG, toImageSource } from "@/lib/image.utils";
 import { withAlpha } from "@/lib/color.utils";
-import { openWhatsApp } from "@/lib/linking.utils";
+import { openEmail, openWhatsApp } from "@/lib/linking.utils";
+import { href } from "@/lib/navigation.utils";
 import { getAboutContent } from "@/lib/services/about.service";
 
 const COVER_HEIGHT = 220;
@@ -160,22 +162,54 @@ export default function AboutScreen() {
               </Text>
             ) : null}
 
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={about.contact.whatsappLabel ?? "واٹس ایپ"}
-              onPress={() =>
-                void openWhatsApp(
-                  about.contact.whatsapp,
-                  about.contact.whatsappMessage,
-                )
-              }
-              className="items-center justify-center rounded-button bg-success px-3 py-2.5 active:opacity-90"
-            >
-              <Text isUrdu variant="button" weight="semibold" tone="cream">
-                {about.contact.whatsappLabel ?? "واٹس ایپ"}
-              </Text>
-            </Pressable>
+            <View className="gap-2.5">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Email ${APP_CONTACT.email}`}
+                onPress={() =>
+                  void openEmail(
+                    about.contact.email ?? APP_CONTACT.email,
+                    "Jevan Hana app",
+                  )
+                }
+                className="items-center justify-center rounded-button border border-cream/15 bg-background px-3 py-2.5 active:opacity-90"
+              >
+                <Text variant="button" weight="semibold" tone="cream">
+                  {APP_CONTACT.email}
+                </Text>
+              </Pressable>
+
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`${about.contact.whatsappLabel ?? "واٹس ایپ"} ${APP_CONTACT.whatsappDisplay}`}
+                onPress={() =>
+                  void openWhatsApp(
+                    about.contact.whatsapp,
+                    about.contact.whatsappMessage,
+                  )
+                }
+                className="items-center justify-center rounded-button bg-success px-3 py-2.5 active:opacity-90"
+              >
+                <Text isUrdu variant="button" weight="semibold" tone="cream">
+                  {about.contact.whatsappLabel ?? "واٹس ایپ"}
+                </Text>
+                <Text variant="caption" tone="cream" className="mt-0.5 opacity-90">
+                  {APP_CONTACT.whatsappDisplay}
+                </Text>
+              </Pressable>
+            </View>
           </View>
+
+          <Pressable
+            accessibilityRole="link"
+            accessibilityLabel="Privacy Policy"
+            onPress={() => router.push(href("/privacy"))}
+            className="mt-8 items-center py-2 active:opacity-80"
+          >
+            <Text variant="bodySmall" tone="primary" weight="semibold">
+              Privacy Policy
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </Screen>

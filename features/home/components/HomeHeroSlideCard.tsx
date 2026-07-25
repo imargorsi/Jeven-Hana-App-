@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
-import { toImageSource } from "@/data/mocks/mock.utils";
+import { toImageSource } from "@/lib/image.utils";
 import type { IHomeHeroSlide } from "@/features/home/home.slides";
 import { withAlpha } from "@/lib/color.utils";
 

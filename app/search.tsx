@@ -22,6 +22,7 @@ import {
   SearchFilterRow,
   TAB_LABEL,
 } from "@/features/search/components/SearchFilterRow";
+import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
   getSearchSuggestions,
   getTrendingSearches,
@@ -112,7 +113,7 @@ function SearchScreenInner({ getToken }: { getToken: TGetToken }) {
               onChangeText={setInput}
               autoFocus
               placeholder="کسی جگہ، کاروبار یا پوسٹ کو تلاش کریں…"
-              isUrdu
+              isUrduPlaceholder
               onSubmit={() => runSearch(input)}
               onClear={() => {
                 setInput("");
@@ -160,6 +161,15 @@ function SearchScreenInner({ getToken }: { getToken: TGetToken }) {
             onSelect={runSearch}
           />
 
+          {trendingQuery.isError ? (
+            <ErrorState
+              className="py-8"
+              title="Could Not Load Trending"
+              description={getApiErrorMessage(trendingQuery.error)}
+              onRetry={() => void trendingQuery.refetch()}
+            />
+          ) : null}
+
           {suggestions.length > 0 && input.length > 0 ? (
             <SearchChipCloud
               title="Suggestions"
@@ -169,23 +179,14 @@ function SearchScreenInner({ getToken }: { getToken: TGetToken }) {
             />
           ) : null}
 
-          {recent.length === 0 && (trendingQuery.data?.length ?? 0) === 0 ? (
-            <View className="rounded-card border border-dashed border-cream/15 bg-surface/50 px-4 py-10">
-              <Text
-                variant="bodySmall"
-                weight="medium"
-                className="text-center"
-              >
-                Search Jevan Hana
-              </Text>
-              <Text
-                variant="caption"
-                tone="muted"
-                className="mt-1.5 text-center"
-              >
-                Find businesses, events, and community updates.
-              </Text>
-            </View>
+          {recent.length === 0 &&
+          !trendingQuery.isError &&
+          (trendingQuery.data?.length ?? 0) === 0 ? (
+            <EmptyState
+              className="py-10"
+              title="Search Jevan Hana"
+              description="Find businesses, events, and community updates."
+            />
           ) : null}
         </ScrollView>
       ) : resultsQuery.isLoading ? (

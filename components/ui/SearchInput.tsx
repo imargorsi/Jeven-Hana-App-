@@ -16,8 +16,10 @@ interface ISearchInputProps {
   onPress?: () => void;
   className?: string;
   autoFocus?: boolean;
-  /** Urdu placeholder / typed query font + RTL. */
-  isUrdu?: boolean;
+  /**
+   * Placeholder may be Urdu for clarity. Typed input is always English LTR.
+   */
+  isUrduPlaceholder?: boolean;
 }
 
 export function SearchInput({
@@ -30,8 +32,10 @@ export function SearchInput({
   onPress,
   className,
   autoFocus,
-  isUrdu = false,
+  isUrduPlaceholder = false,
 }: ISearchInputProps) {
+  const isEmpty = value.length === 0;
+
   const content = (
     <View
       className={cn(
@@ -51,15 +55,20 @@ export function SearchInput({
         placeholderTextColor={withAlpha(palette.cream, 0.4)}
         className="ml-2 flex-1 py-2 text-base text-cream"
         style={{
-          fontFamily: isUrdu ? fonts.urdu.regular : fonts.english.regular,
-          textAlign: isUrdu ? "right" : "left",
-          writingDirection: isUrdu ? "rtl" : "ltr",
+          // Urdu font only while showing the empty placeholder; typing stays English LTR.
+          fontFamily:
+            isUrduPlaceholder && isEmpty
+              ? fonts.urdu.regular
+              : fonts.english.regular,
+          textAlign: "left",
+          writingDirection: "ltr",
         }}
         returnKeyType="search"
         onSubmitEditing={onSubmit}
         editable={editable && !onPress}
         autoFocus={autoFocus}
         autoCorrect={false}
+        autoCapitalize="none"
       />
       {value.length > 0 && onClear ? (
         <Pressable onPress={onClear} hitSlop={8}>

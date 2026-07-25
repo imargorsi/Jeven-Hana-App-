@@ -21,6 +21,8 @@ module.exports = {
     supportsTablet: true,
   },
   android: {
+    package: "com.jevanhana.app",
+    versionCode: 1,
     adaptiveIcon: {
       backgroundColor: palette.background,
       foregroundImage: "./assets/images/android-icon-foreground.png",
@@ -49,6 +51,13 @@ module.exports = {
     "expo-font",
     "expo-secure-store",
     "expo-image",
+    [
+      "expo-image-picker",
+      {
+        photosPermission:
+          "Allow Jevan Hana to access your photos for profile pictures and listing covers.",
+      },
+    ],
     "@react-native-community/datetimepicker",
   ],
   experiments: {
@@ -56,5 +65,10 @@ module.exports = {
   },
   extra: {
     clerkPublishableKey,
+    privacyPolicyUrl:
+      process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL ??
+      (process.env.EXPO_PUBLIC_API_URL
+        ? `${process.env.EXPO_PUBLIC_API_URL.replace(/\/$/, "")}/privacy`
+        : undefined),
   },
 };

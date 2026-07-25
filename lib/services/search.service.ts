@@ -1,4 +1,4 @@
-import { IMG } from "@/data/mocks/mock.utils";
+import { IMG } from "@/lib/image.utils";
 import type { IApiEnvelope } from "@/features/auth/auth.types";
 import { createApiClient, isApiConfigured } from "@/lib/api.client";
 import type {

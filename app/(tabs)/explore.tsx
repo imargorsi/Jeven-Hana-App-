@@ -1,7 +1,7 @@
 import { FlatList, View } from "react-native";
 
 import { BusinessCard } from "@/components/BusinessCard";
-import { ErrorState, LoadingBlock, Screen, Text } from "@/components/ui";
+import { ErrorState, EmptyState, LoadingBlock, Screen, Text } from "@/components/ui";
 import { useBusinessManage } from "@/features/businesses/useBusinessManage.hook";
 import { CreateListingActionCard } from "@/features/explore/components/CreateListingActionCard";
 import { ExploreCategoryRow } from "@/features/explore/components/ExploreCategoryRow";
@@ -74,18 +74,10 @@ export default function ExploreScreen() {
           />
         )}
         ListEmptyComponent={
-          <View className="rounded-card border border-dashed border-cream/15 bg-surface/50 px-4 py-12">
-            <Text variant="bodySmall" weight="medium" className="text-center">
-              No places in this category
-            </Text>
-            <Text
-              variant="caption"
-              tone="muted"
-              className="mt-1.5 text-center"
-            >
-              Try another filter or create a listing.
-            </Text>
-          </View>
+          <EmptyState
+            title="No Places Found"
+            description="Nothing in this category yet. Try another filter or create a listing."
+          />
         }
         showsVerticalScrollIndicator={false}
       />

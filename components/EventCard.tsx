@@ -5,7 +5,7 @@ import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
 import { palette } from "@/constants/Colors";
-import { IMG, toImageSource } from "@/data/mocks/mock.utils";
+import { IMG, toImageSource } from "@/lib/image.utils";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { withAlpha } from "@/lib/color.utils";

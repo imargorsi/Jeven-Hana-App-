@@ -45,8 +45,7 @@ export function EventForm({
   return (
     <KeyboardAwareScrollView contentContainerClassName="gap-4 px-4 pb-10 pt-2">
       <Text variant="caption" tone="muted">
-        Title and location can be English, Urdu, or both. Events go live
-        immediately.
+        Title and location in English. Events go live immediately.
       </Text>
 
       <TextField
@@ -76,7 +75,7 @@ export function EventForm({
         >
           Starts
         </Text>
-        <View className="flex-row gap-3">
+        <View className="flex-row items-stretch gap-3">
           <DateTimePickerField
             mode="date"
             value={values.startsDate}
@@ -84,7 +83,7 @@ export function EventForm({
             placeholder="Pick a Date"
             accessibilityLabel="Start Date"
             onChange={(startsDate) => onChange({ startsDate })}
-            containerClassName="flex-1"
+            containerClassName="min-w-0 flex-1"
           />
           <DateTimePickerField
             mode="time"
@@ -93,7 +92,7 @@ export function EventForm({
             placeholder="Time"
             accessibilityLabel="Start Time"
             onChange={(startsTime) => onChange({ startsTime })}
-            containerClassName="w-[42%]"
+            containerClassName="min-w-0 flex-1"
           />
         </View>
       </View>
@@ -123,7 +122,7 @@ export function EventForm({
         </View>
 
         {hasEnd ? (
-          <View className="flex-row gap-3">
+          <View className="flex-row items-stretch gap-3">
             <DateTimePickerField
               mode="date"
               value={values.endsDate}
@@ -131,7 +130,7 @@ export function EventForm({
               placeholder="Pick a Date"
               accessibilityLabel="End Date"
               onChange={(endsDate) => onChange({ endsDate })}
-              containerClassName="flex-1"
+              containerClassName="min-w-0 flex-1"
             />
             <DateTimePickerField
               mode="time"
@@ -140,7 +139,7 @@ export function EventForm({
               placeholder="Time"
               accessibilityLabel="End Time"
               onChange={(endsTime) => onChange({ endsTime })}
-              containerClassName="w-[42%]"
+              containerClassName="min-w-0 flex-1"
             />
           </View>
         ) : (

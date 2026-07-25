@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@/components/ui";
 import { palette } from "@/constants/Colors";
-import { toImageSource } from "@/data/mocks/mock.utils";
+import { toImageSource } from "@/lib/image.utils";
 import {
   BUSINESS_CATEGORIES,
   BUSINESS_CATEGORY_LABELS,
@@ -96,8 +96,7 @@ export function BusinessForm({
   return (
     <KeyboardAwareScrollView contentContainerClassName="gap-4 px-4 pb-10 pt-2">
       <Text variant="caption" tone="muted">
-        Listings go live immediately. English, Urdu, or both are fine for
-        name and address.
+        Listings go live immediately. Enter name and address in English.
       </Text>
 
       <View className="gap-2">
