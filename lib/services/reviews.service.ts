@@ -64,7 +64,7 @@ function mapReview(api: IApiReview): IReview {
     comment: api.comment,
     createdByUserId: api.createdByUserId,
     authorName: api.authorName || "Neighbour",
-    authorAvatarUrl: api.authorAvatarUrl,
+    authorAvatarUrl: api.authorAvatarUrl?.trim() || undefined,
     author: mapAuthor(api.author),
     createdAt: api.createdAt,
     updatedAt: api.updatedAt,

@@ -1,13 +1,14 @@
 import { Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
+import { palette } from "@/constants/Colors";
 import { cn } from "@/lib/cn.utils";
 
 interface ISocialAuthButtonProps {
   label: string;
-  badge: string;
-  badgeClassName?: string;
-  badgeTextTone?: "background" | "cream";
+  mark: string;
+  markBackground: string;
+  markColor: string;
   onPress: () => void;
   isDisabled?: boolean;
   isLoading?: boolean;
@@ -15,9 +16,9 @@ interface ISocialAuthButtonProps {
 
 function SocialAuthButton({
   label,
-  badge,
-  badgeClassName,
-  badgeTextTone = "background",
+  mark,
+  markBackground,
+  markColor,
   onPress,
   isDisabled = false,
   isLoading = false,
@@ -31,18 +32,20 @@ function SocialAuthButton({
       disabled={isInactive}
       onPress={onPress}
       className={cn(
-        "min-h-14 flex-1 flex-row items-center justify-center gap-2 rounded-button border border-cream/15 bg-surface active:opacity-90",
+        "min-h-14 flex-1 flex-row items-center justify-center gap-2.5 rounded-button border border-cream/15 bg-surface active:opacity-90",
         isInactive && "opacity-50",
       )}
     >
       <View
-        className={cn(
-          "h-7 w-7 items-center justify-center rounded-full",
-          badgeClassName ?? "bg-cream",
-        )}
+        className="h-8 w-8 items-center justify-center rounded-full"
+        style={{ backgroundColor: markBackground }}
       >
-        <Text variant="button" tone={badgeTextTone} weight="bold">
-          {badge}
+        <Text
+          variant="button"
+          weight="bold"
+          style={{ color: markColor, fontSize: 16, lineHeight: 20 }}
+        >
+          {mark}
         </Text>
       </View>
       <Text variant="button" tone="cream" weight="semibold">
@@ -60,6 +63,10 @@ interface ISocialAuthButtonsProps {
   isFacebookLoading?: boolean;
 }
 
+/**
+ * Social continue buttons. Brand marks use palette tokens (visible without
+ * NativeWind class gaps that left empty white circles).
+ */
 export function SocialAuthButtons({
   onGooglePress,
   onFacebookPress,
@@ -71,14 +78,18 @@ export function SocialAuthButtons({
     <View className="flex-row gap-3">
       <SocialAuthButton
         label="Facebook"
-        badge="f"
+        mark="f"
+        markBackground={palette.primary}
+        markColor={palette.background}
         onPress={onFacebookPress}
         isDisabled={isDisabled}
         isLoading={isFacebookLoading}
       />
       <SocialAuthButton
         label="Google"
-        badge="G"
+        mark="G"
+        markBackground={palette.cream}
+        markColor={palette.background}
         onPress={onGooglePress}
         isDisabled={isDisabled}
         isLoading={isGoogleLoading}

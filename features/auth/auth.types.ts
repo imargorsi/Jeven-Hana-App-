@@ -25,6 +25,7 @@ export interface ILoginFormValues {
 }
 
 export interface IRegisterFormValues {
+  fullName: string;
   username: string;
   email: string;
   password: string;

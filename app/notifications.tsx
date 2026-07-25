@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/expo";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { FlatList, Pressable, View } from "react-native";
@@ -11,6 +12,8 @@ import {
   Text,
 } from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
+import { isClerkConfigured } from "@/features/auth/auth.config";
+import { ClerkSignedInGuard } from "@/features/auth/components/ClerkSignedInGuard";
 import { formatRelativeTime } from "@/lib/formatter.utils";
 import { href } from "@/lib/navigation.utils";
 import { groupNotifications } from "@/lib/notificationGrouping.utils";
@@ -28,27 +31,31 @@ function navigateForNotification(
   if (!n.targetType || !n.targetId) return;
   if (n.targetType === "post") router.push(href("/(tabs)/community"));
   if (n.targetType === "event") router.push(href("/(tabs)/events"));
-  if (n.targetType === "business") router.push(href(`/businesses/${n.targetId}`));
+  if (n.targetType === "business")
+    router.push(href(`/businesses/${n.targetId}`));
   if (n.targetType === "place") router.push(href("/(tabs)/explore"));
 }
 
-export default function NotificationsScreen() {
+function NotificationsContent() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { getToken, userId } = useAuth();
 
   const query = useQuery({
-    queryKey: ["notifications"],
-    queryFn: getNotifications,
+    queryKey: ["notifications", userId ?? "guest"],
+    queryFn: () => getNotifications(getToken),
+    staleTime: 30_000,
+    enabled: Boolean(userId),
   });
 
   const markAll = useMutation({
-    mutationFn: markAllNotificationsRead,
+    mutationFn: () => markAllNotificationsRead(getToken),
     onSuccess: () =>
       void queryClient.invalidateQueries({ queryKey: ["notifications"] }),
   });
 
   const markOne = useMutation({
-    mutationFn: markNotificationRead,
+    mutationFn: (id: string) => markNotificationRead(id, getToken),
     onSuccess: () =>
       void queryClient.invalidateQueries({ queryKey: ["notifications"] }),
   });
@@ -82,7 +89,7 @@ export default function NotificationsScreen() {
           isLoading={markAll.isPending}
           onPress={() => markAll.mutate()}
         >
-          Mark all read
+          Mark All Read
         </Button>
       }
     >
@@ -145,5 +152,24 @@ export default function NotificationsScreen() {
         }
       />
     </Screen>
+  );
+}
+
+export default function NotificationsScreen() {
+  if (!isClerkConfigured) {
+    return (
+      <Screen title="Notifications" showBack>
+        <EmptyState
+          title="Sign In Required"
+          description="Configure Clerk to use notifications."
+        />
+      </Screen>
+    );
+  }
+
+  return (
+    <ClerkSignedInGuard redirectHref="/register">
+      <NotificationsContent />
+    </ClerkSignedInGuard>
   );
 }

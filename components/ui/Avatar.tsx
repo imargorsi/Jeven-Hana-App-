@@ -22,21 +22,23 @@ const SIZE_PX = {
   xl: 96,
 } as const;
 
-/** Avatar with explicit pixel size — NativeWind sizing is unreliable on expo-image. */
+/** Avatar with photo when available; otherwise initials (never app logo). */
 export function Avatar({ uri, name, size = "md", className }: IAvatarProps) {
   const px = SIZE_PX[size];
+  const photo = typeof uri === "string" ? uri.trim() : uri;
   const initials =
     name
       ?.split(" ")
       .map((p) => p[0])
+      .filter(Boolean)
       .slice(0, 2)
       .join("")
       .toUpperCase() ?? "?";
 
-  if (uri) {
+  if (photo) {
     return (
       <Image
-        source={toImageSource(uri)}
+        source={toImageSource(photo)}
         style={{
           width: px,
           height: px,

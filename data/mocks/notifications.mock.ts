@@ -1,4 +1,3 @@
-import { IMG } from "@/data/mocks/mock.utils";
 import type { INotification } from "@/types/notification.types";
 
 export let notifications: INotification[] = [
@@ -10,7 +9,7 @@ export let notifications: INotification[] = [
     createdAt: "2026-07-20T08:05:00Z",
     isRead: false,
     actorName: "Jevan Hana Admin",
-    actorAvatarUrl: IMG.avatar,
+    actorAvatarUrl: undefined,
     targetType: "post",
     targetId: "post-1",
   },

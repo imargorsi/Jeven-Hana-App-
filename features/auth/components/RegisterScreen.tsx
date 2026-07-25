@@ -38,6 +38,7 @@ function PreviewRegisterActions() {
 }
 
 function ClerkRegisterForm() {
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -90,6 +91,21 @@ function ClerkRegisterForm() {
       <AuthDivider />
 
       <View className="gap-4">
+        <TextField
+          label="Full Name"
+          value={fullName}
+          onChangeText={setFullName}
+          placeholder="Enter your full name"
+          autoCapitalize="words"
+          autoCorrect={false}
+          textContentType="name"
+        />
+        {getFieldError("firstName") || getFieldError("lastName") ? (
+          <Text variant="caption" tone="primary">
+            {getFieldError("firstName") || getFieldError("lastName")}
+          </Text>
+        ) : null}
+
         <TextField
           label="Username"
           value={username}
@@ -157,6 +173,7 @@ function ClerkRegisterForm() {
           isDisabled={isBusy}
           onPress={() =>
             register({
+              fullName,
               username,
               email,
               password,
@@ -166,10 +183,10 @@ function ClerkRegisterForm() {
           Continue
         </Button>
         <AuthFooterLink
-        prompt="Already have an account?"
-        linkLabel="Sign in"
-        href="/login"
-      />
+          prompt="Already have an account?"
+          linkLabel="Sign In"
+          href="/login"
+        />
       </View>
 
       <View nativeID="clerk-captcha" />

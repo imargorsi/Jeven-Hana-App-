@@ -6,7 +6,6 @@ import { ScrollView, View } from "react-native";
 import { BusinessCard } from "@/components/BusinessCard";
 import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
 import { EventCard } from "@/components/EventCard";
-import { PlaceCard } from "@/components/PlaceCard";
 import {
   EmptyState,
   ErrorState,
@@ -16,6 +15,7 @@ import {
   Text,
 } from "@/components/ui";
 import { StackBackButton } from "@/components/ui/StackBackButton";
+import { isClerkConfigured } from "@/features/auth/auth.config";
 import { useCommunityPosts } from "@/features/community/useCommunityPosts.hook";
 import { SearchChipCloud } from "@/features/search/components/SearchChipCloud";
 import {
@@ -30,8 +30,22 @@ import {
 import { useSearchStore } from "@/stores/useSearchStore";
 import type { TSearchTab } from "@/types/search.types";
 
+type TGetToken = () => Promise<string | null>;
+
 export default function SearchScreen() {
+  if (!isClerkConfigured) {
+    return <SearchScreenInner getToken={async () => null} />;
+  }
+
+  return <SearchScreenWithClerk />;
+}
+
+function SearchScreenWithClerk() {
   const { getToken } = useAuth();
+  return <SearchScreenInner getToken={getToken} />;
+}
+
+function SearchScreenInner({ getToken }: { getToken: TGetToken }) {
   const [input, setInput] = useState("");
   const [debounced, setDebounced] = useState("");
   const [tab, setTab] = useState<TSearchTab>("all");
@@ -48,18 +62,18 @@ export default function SearchScreen() {
 
   const trendingQuery = useQuery({
     queryKey: ["trending-searches"],
-    queryFn: getTrendingSearches,
+    queryFn: () => getTrendingSearches(getToken),
+    staleTime: 60_000,
   });
 
-  const suggestionsQuery = useQuery({
-    queryKey: ["search-suggestions", input],
-    queryFn: () => getSearchSuggestions(input),
-    enabled: input.trim().length > 0 && debounced.length === 0,
-  });
+  const suggestions = useMemo(() => {
+    if (input.trim().length === 0 || debounced.length > 0) return [];
+    return getSearchSuggestions(input, trendingQuery.data ?? []);
+  }, [input, debounced, trendingQuery.data]);
 
   const resultsQuery = useQuery({
-    queryKey: ["search", debounced],
-    queryFn: () => searchAll(debounced, getToken),
+    queryKey: ["search", debounced, tab],
+    queryFn: () => searchAll(debounced, getToken, tab),
     enabled: debounced.length > 0,
   });
 
@@ -73,10 +87,7 @@ export default function SearchScreen() {
   const totalCount = useMemo(() => {
     if (!results) return 0;
     return (
-      results.businesses.length +
-      results.places.length +
-      results.posts.length +
-      results.events.length
+      results.businesses.length + results.posts.length + results.events.length
     );
   }, [results]);
 
@@ -84,13 +95,11 @@ export default function SearchScreen() {
     if (!results) return 0;
     if (tab === "all") return totalCount;
     if (tab === "businesses") return results.businesses.length;
-    if (tab === "places") return results.places.length;
     if (tab === "community") return results.posts.length;
     return results.events.length;
   }, [results, tab, totalCount]);
 
   const showIdle = debounced.length === 0;
-  const suggestions = suggestionsQuery.data ?? [];
 
   return (
     <Screen withAppHeader={false}>
@@ -102,7 +111,7 @@ export default function SearchScreen() {
               value={input}
               onChangeText={setInput}
               autoFocus
-              placeholder="Businesses, places, events…"
+              placeholder="Businesses, Community, Events…"
               onSubmit={() => runSearch(input)}
               onClear={() => {
                 setInput("");
@@ -173,7 +182,7 @@ export default function SearchScreen() {
                 tone="muted"
                 className="mt-1.5 text-center"
               >
-                Find businesses, places, events, and community updates.
+                Find businesses, events, and community updates.
               </Text>
             </View>
           ) : null}
@@ -198,8 +207,6 @@ export default function SearchScreen() {
             results?.businesses.map((b) => (
               <BusinessCard key={b.id} business={b} variant="compact" />
             ))}
-          {(tab === "all" || tab === "places") &&
-            results?.places.map((p) => <PlaceCard key={p.id} place={p} />)}
           {(tab === "all" || tab === "community") &&
             results?.posts.map((p) => (
               <CommunityUpdateCard key={p.id} post={p} onLike={likePost} />

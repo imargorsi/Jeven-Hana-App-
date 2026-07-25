@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/expo";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -5,6 +6,7 @@ import { Image, Pressable, View } from "react-native";
 
 import { SearchInput } from "@/components/ui/SearchInput";
 import { palette } from "@/constants/Colors";
+import { isClerkConfigured } from "@/features/auth/auth.config";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
@@ -16,18 +18,67 @@ interface IAppHeaderProps {
   hideSearch?: boolean;
 }
 
+type TGetToken = () => Promise<string | null>;
+
 /**
  * Global header — logo · search (public) · notifications (account).
  */
-export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
-  const router = useRouter();
+export function AppHeader(props: IAppHeaderProps) {
+  if (!isClerkConfigured) {
+    return (
+      <AppHeaderView
+        {...props}
+        getToken={async () => null}
+        userId={null}
+        isSignedIn={false}
+        requireAuth={(action) => {
+          action?.();
+          return true;
+        }}
+      />
+    );
+  }
+
+  return <AppHeaderWithClerk {...props} />;
+}
+
+function AppHeaderWithClerk(props: IAppHeaderProps) {
+  const { getToken, userId } = useAuth();
   const { requireAuth, isSignedIn } = useRequireAuth();
 
+  return (
+    <AppHeaderView
+      {...props}
+      getToken={getToken}
+      userId={userId}
+      isSignedIn={isSignedIn}
+      requireAuth={requireAuth}
+    />
+  );
+}
+
+interface IAppHeaderViewProps extends IAppHeaderProps {
+  getToken: TGetToken;
+  userId: string | null | undefined;
+  isSignedIn: boolean;
+  requireAuth: (action?: () => void) => boolean;
+}
+
+function AppHeaderView({
+  className,
+  hideSearch = false,
+  getToken,
+  userId,
+  isSignedIn,
+  requireAuth,
+}: IAppHeaderViewProps) {
+  const router = useRouter();
+
   const notificationsQuery = useQuery({
-    queryKey: ["notifications"],
-    queryFn: getNotifications,
+    queryKey: ["notifications", userId ?? "guest"],
+    queryFn: () => getNotifications(getToken),
     staleTime: 30_000,
-    enabled: isSignedIn,
+    enabled: isSignedIn && Boolean(userId),
   });
 
   const unreadCount =
@@ -42,7 +93,7 @@ export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Jevan Hana home"
+        accessibilityLabel="Jevan Hana Home"
         onPress={() => router.push(href("/(tabs)"))}
         className="shrink-0 active:opacity-80"
       >
@@ -50,7 +101,7 @@ export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
           source={require("@/assets/images/logo.png")}
           style={{ height: 52, width: 52 }}
           resizeMode="contain"
-          accessibilityLabel="Jevan Hana logo"
+          accessibilityLabel="Jevan Hana Logo"
         />
       </Pressable>
 
@@ -59,7 +110,7 @@ export function AppHeader({ className, hideSearch = false }: IAppHeaderProps) {
           <SearchInput
             value=""
             onChangeText={() => undefined}
-            placeholder="Search businesses, places, events…"
+            placeholder="Search businesses, events…"
             onPress={() => router.push(href("/search"))}
             className="min-h-10 rounded-chip border-cream/20 bg-surface/80 px-2.5"
           />

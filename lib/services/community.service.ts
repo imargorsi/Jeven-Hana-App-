@@ -58,7 +58,7 @@ function mapAuthor(author: IApiAuthor | null): ICommunityPostAuthor {
     firstName: author.firstName,
     lastName: author.lastName,
     fullName,
-    avatarUrl: author.imageUrl ?? undefined,
+    avatarUrl: author.imageUrl?.trim() || undefined,
     isAdmin: author.role === "admin",
   };
 }

@@ -8,8 +8,8 @@ import { Alert, Pressable, ScrollView, View } from "react-native";
 import { Button, Screen, Text } from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
 import { palette } from "@/constants/Colors";
-import { IMG } from "@/data/mocks/mock.utils";
 import { isClerkConfigured } from "@/features/auth/auth.config";
+import { joinFullName } from "@/features/auth/fullName.utils";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { withAlpha } from "@/lib/color.utils";
 import { href } from "@/lib/navigation.utils";
@@ -129,12 +129,12 @@ export default function ProfileTabScreen() {
   }
 
   const fullName =
-    [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
+    joinFullName(user?.firstName, user?.lastName) ||
     user?.username ||
     "Neighbour";
   const username = user?.username ? `@${user.username}` : "@neighbour";
   const email = user?.primaryEmailAddress?.emailAddress;
-  const avatarUri = user?.hasImage ? user.imageUrl : IMG.avatar;
+  const avatarUri = user?.hasImage ? user.imageUrl : undefined;
 
   return (
     <Screen>

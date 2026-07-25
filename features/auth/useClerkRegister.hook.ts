@@ -9,6 +9,7 @@ import {
   getClerkFieldError,
 } from "@/features/auth/auth.utils";
 import { createClerkFinalizeNavigate } from "@/features/auth/clerk.navigation";
+import { splitFullName } from "@/features/auth/fullName.utils";
 
 export function useClerkRegister() {
   const { signUp, errors, fetchStatus } = useSignUp();
@@ -28,12 +29,13 @@ export function useClerkRegister() {
   }, [signUp]);
 
   const register = useCallback(
-    async ({ username, email, password }: IRegisterFormValues) => {
+    async ({ fullName, username, email, password }: IRegisterFormValues) => {
+      const trimmedName = fullName.trim();
       const trimmedUsername = username.trim();
       const trimmedEmail = email.trim();
 
-      if (!trimmedUsername || !trimmedEmail || !password) {
-        Alert.alert("Missing details", "Please fill in all fields.");
+      if (!trimmedName || !trimmedUsername || !trimmedEmail || !password) {
+        Alert.alert("Missing Details", "Please fill in all fields.");
         return;
       }
 
@@ -41,19 +43,25 @@ export function useClerkRegister() {
         return;
       }
 
+      const { firstName, lastName } = splitFullName(trimmedName);
+
       try {
         const { error } = await signUp.password({
           emailAddress: trimmedEmail,
           password,
+          firstName,
+          lastName: lastName || undefined,
         });
 
         if (error) {
-          Alert.alert("Registration failed", getClerkErrorMessage(error));
+          Alert.alert("Registration Failed", getClerkErrorMessage(error));
           return;
         }
 
         await signUp.update({
           username: trimmedUsername,
+          firstName,
+          lastName: lastName || undefined,
         });
 
         if (signUp.status === "complete") {
@@ -65,7 +73,7 @@ export function useClerkRegister() {
 
         await signUp.verifications.sendEmailCode();
       } catch (error) {
-        Alert.alert("Registration failed", getClerkErrorMessage(error));
+        Alert.alert("Registration Failed", getClerkErrorMessage(error));
       }
     },
     [router, signUp],

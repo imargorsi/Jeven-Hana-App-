@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { SymbolView } from "expo-symbols";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
@@ -58,25 +57,11 @@ export function CommunityUpdateCard({
       </View>
 
       <View className="mb-2.5 flex-row items-center gap-2.5">
-        {post.user.isAdmin ? (
-          <Image
-            source={require("@/assets/images/logo.png")}
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 16,
-            }}
-            className="bg-background"
-            contentFit="contain"
-            accessibilityLabel="Jevan Hana logo"
-          />
-        ) : (
-          <Avatar
-            uri={post.user.avatarUrl}
-            name={post.user.fullName}
-            size="sm"
-          />
-        )}
+        <Avatar
+          uri={post.user.avatarUrl}
+          name={post.user.fullName}
+          size="sm"
+        />
         <View className="min-w-0 flex-1 flex-row items-center gap-1.5">
           <Text
             variant="bodySmall"

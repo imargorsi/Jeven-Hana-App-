@@ -31,6 +31,7 @@ export function AuthSessionSync() {
         void queryClient.removeQueries({ queryKey: ["my-posts"] });
         void queryClient.removeQueries({ queryKey: ["events-going"] });
         void queryClient.removeQueries({ queryKey: ["saved-item"] });
+        void queryClient.removeQueries({ queryKey: ["notifications"] });
       }
 
       previousUserId.current = nextId;

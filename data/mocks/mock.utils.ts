@@ -49,7 +49,7 @@ export const IMG = {
   chai: DUMMY.a,
   barber: DUMMY.b,
   community: DUMMY.c,
-  /** Fallback when Clerk user has no profile photo — app logo. */
+  /** Legacy — prefer Avatar initials when a user has no photo (do not use for people). */
   avatar: require("../../assets/images/logo.png"),
   street: DUMMY.b,
   logo: require("../../assets/images/logo.png"),

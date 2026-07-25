@@ -14,9 +14,12 @@ import {
 } from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
 import { palette } from "@/constants/Colors";
-import { IMG } from "@/data/mocks/mock.utils";
 import { getClerkErrorMessage } from "@/features/auth/auth.utils";
 import { toClerkProfileImageDataUrl } from "@/features/auth/clerkProfileImage.utils";
+import {
+  joinFullName,
+  splitFullName,
+} from "@/features/auth/fullName.utils";
 import { useInvalidateMe } from "@/features/auth/useMe.hook";
 import { isApiConfigured } from "@/lib/api.client";
 import { fetchMe } from "@/lib/services/auth.service";
@@ -26,17 +29,18 @@ export default function EditProfileScreen() {
   const { getToken } = useAuth();
   const invalidateMe = useInvalidateMe();
   const router = useRouter();
-  const [firstName, setFirstName] = useState(user?.firstName ?? "");
-  const [lastName, setLastName] = useState(user?.lastName ?? "");
+  const [fullName, setFullName] = useState(
+    joinFullName(user?.firstName, user?.lastName),
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [localImageUri, setLocalImageUri] = useState<string | null>(null);
   const [pendingImageDataUrl, setPendingImageDataUrl] = useState<string | null>(
     null,
   );
 
-  const displayName = `${firstName} ${lastName}`.trim() || "Neighbour";
+  const displayName = fullName.trim() || "Neighbour";
   const avatarUri =
-    localImageUri ?? (user?.hasImage ? user.imageUrl : IMG.avatar);
+    localImageUri ?? (user?.hasImage ? user.imageUrl : undefined);
   const username = user?.username ? `@${user.username}` : null;
   const email = user?.primaryEmailAddress?.emailAddress;
 
@@ -44,7 +48,7 @@ export default function EditProfileScreen() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
-        "Permission needed",
+        "Permission Needed",
         "Allow photo access to change your photo.",
       );
       return;
@@ -66,7 +70,7 @@ export default function EditProfileScreen() {
     const dataUrl = toClerkProfileImageDataUrl(asset);
     if (!dataUrl) {
       Alert.alert(
-        "Could not read photo",
+        "Could Not Read Photo",
         "Please try another image from your library.",
       );
       return;
@@ -78,9 +82,19 @@ export default function EditProfileScreen() {
 
   const save = async () => {
     if (!user) return;
+    const trimmed = fullName.trim();
+    if (!trimmed) {
+      Alert.alert("Missing Name", "Please enter your full name.");
+      return;
+    }
+
     setIsSaving(true);
     try {
-      await user.update({ firstName, lastName });
+      const { firstName, lastName } = splitFullName(trimmed);
+      await user.update({
+        firstName,
+        lastName: lastName || "",
+      });
 
       if (pendingImageDataUrl) {
         await user.setProfileImage({ file: pendingImageDataUrl });
@@ -102,7 +116,7 @@ export default function EditProfileScreen() {
       Alert.alert("Saved", "Your profile was updated.");
       router.back();
     } catch (error) {
-      Alert.alert("Could not save", getClerkErrorMessage(error));
+      Alert.alert("Could Not Save", getClerkErrorMessage(error));
     } finally {
       setIsSaving(false);
     }
@@ -111,104 +125,95 @@ export default function EditProfileScreen() {
   return (
     <Screen withSafeArea={false}>
       <KeyboardAwareScrollView contentContainerClassName="px-4 pb-10 pt-2">
-          <View className="mb-7 items-center">
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Change Photo"
-              onPress={() => void pickImage()}
-              className="relative active:opacity-90"
-            >
-              <View
-                className="rounded-full p-0.5"
-                style={{
-                  borderWidth: 2.5,
-                  borderColor: palette.primary,
-                  backgroundColor: palette.surface,
-                }}
-              >
-                <Avatar uri={avatarUri} name={displayName} size="xl" />
-              </View>
-              <View
-                className="absolute bottom-0.5 right-0.5 h-8 w-8 items-center justify-center rounded-full"
-                style={{
-                  backgroundColor: palette.primary,
-                  borderWidth: 2,
-                  borderColor: palette.background,
-                }}
-              >
-                <SymbolView
-                  name={{
-                    ios: "camera.fill",
-                    android: "photo_camera",
-                    web: "photo_camera",
-                  }}
-                  size={14}
-                  tintColor={palette.background}
-                />
-              </View>
-            </Pressable>
-
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Change Photo"
-              onPress={() => void pickImage()}
-              className="mt-3 active:opacity-70"
-            >
-              <Text variant="caption" weight="semibold" tone="primary">
-                Change photo
-              </Text>
-            </Pressable>
-
-            {username ? (
-              <Text
-                variant="bodySmall"
-                weight="semibold"
-                tone="primary"
-                className="mt-2.5"
-              >
-                {username}
-              </Text>
-            ) : null}
-            {email ? (
-              <Text
-                variant="caption"
-                tone="muted"
-                className="mt-0.5 text-center"
-                numberOfLines={1}
-              >
-                {email}
-              </Text>
-            ) : null}
-          </View>
-
-          <TextField
-            label="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-            autoCapitalize="words"
-            autoCorrect={false}
-            returnKeyType="next"
-            containerClassName="mb-4"
-          />
-          <TextField
-            label="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
-            autoCapitalize="words"
-            autoCorrect={false}
-            returnKeyType="done"
-            onSubmitEditing={() => void save()}
-            containerClassName="mb-7"
-          />
-
-          <Button
-            isFullWidth
-            size="lg"
-            isLoading={isSaving}
-            onPress={() => void save()}
+        <View className="mb-7 items-center">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Change Photo"
+            onPress={() => void pickImage()}
+            className="relative active:opacity-90"
           >
-            Save Changes
-          </Button>
+            <View
+              className="rounded-full p-0.5"
+              style={{
+                borderWidth: 2.5,
+                borderColor: palette.primary,
+                backgroundColor: palette.surface,
+              }}
+            >
+              <Avatar uri={avatarUri} name={displayName} size="xl" />
+            </View>
+            <View
+              className="absolute bottom-0.5 right-0.5 h-8 w-8 items-center justify-center rounded-full"
+              style={{
+                backgroundColor: palette.primary,
+                borderWidth: 2,
+                borderColor: palette.background,
+              }}
+            >
+              <SymbolView
+                name={{
+                  ios: "camera.fill",
+                  android: "photo_camera",
+                  web: "photo_camera",
+                }}
+                size={14}
+                tintColor={palette.background}
+              />
+            </View>
+          </Pressable>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Change Photo"
+            onPress={() => void pickImage()}
+            className="mt-3 active:opacity-70"
+          >
+            <Text variant="caption" weight="semibold" tone="primary">
+              Change Photo
+            </Text>
+          </Pressable>
+
+          {username ? (
+            <Text
+              variant="bodySmall"
+              weight="semibold"
+              tone="primary"
+              className="mt-2.5"
+            >
+              {username}
+            </Text>
+          ) : null}
+          {email ? (
+            <Text
+              variant="caption"
+              tone="muted"
+              className="mt-0.5 text-center"
+              numberOfLines={1}
+            >
+              {email}
+            </Text>
+          ) : null}
+        </View>
+
+        <TextField
+          label="Full Name"
+          value={fullName}
+          onChangeText={setFullName}
+          autoCapitalize="words"
+          autoCorrect={false}
+          returnKeyType="done"
+          onSubmitEditing={() => void save()}
+          containerClassName="mb-7"
+        />
+
+        <Button
+          isFullWidth
+          size="lg"
+          isLoading={isSaving}
+          onPress={() => void save()}
+        >
+          Save Changes
+        </Button>
       </KeyboardAwareScrollView>
     </Screen>
   );
