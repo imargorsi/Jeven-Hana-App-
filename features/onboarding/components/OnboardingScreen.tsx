@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { Image, ImageBackground, Pressable, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Text } from "@/components/ui/Text";
@@ -25,16 +25,6 @@ export function OnboardingScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <ImageBackground
-        source={require("@/assets/images/auth-bg.png")}
-        className="absolute inset-0"
-        resizeMode="cover"
-      />
-      <View
-        className="absolute inset-0"
-        style={{ backgroundColor: withAlpha(palette.background, 0.94) }}
-      />
-
       <View
         className="flex-1 items-center justify-center px-6"
         style={{
@@ -67,7 +57,7 @@ export function OnboardingScreen() {
           </View>
 
           <Image
-            source={require("@/assets/images/app-icon.png")}
+            source={require("@/assets/images/logo.png")}
             className="mt-10 h-52 w-52"
             resizeMode="contain"
             accessibilityLabel="Jevan Hana"

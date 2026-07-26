@@ -16,6 +16,12 @@ type TLikeContext = {
 };
 
 /**
+ * Cross-instance guard — Home / Community / Search / My Posts each mount
+ * their own hook, but they share the same React Query caches.
+ */
+let globalLikeInFlight = false;
+
+/**
  * Instant like/unlike in the UI; syncs with the API in the background.
  * Shared by Community, Home, Search, and My Posts.
  */
@@ -43,12 +49,16 @@ export function useTogglePostLike() {
       }
       Alert.alert("Could Not Update", getApiErrorMessage(error));
     },
+    onSettled: () => {
+      globalLikeInFlight = false;
+    },
   });
 
   return {
     likePost: (id: string) => {
-      // One in-flight like at a time — keeps rollback snapshots correct.
-      if (likeMutation.isPending) return;
+      // One in-flight like app-wide — keeps rollback snapshots correct.
+      if (globalLikeInFlight || likeMutation.isPending) return;
+      globalLikeInFlight = true;
       likeMutation.mutate(id);
     },
     isPending: likeMutation.isPending,

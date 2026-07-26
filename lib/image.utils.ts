@@ -15,7 +15,6 @@ export function toImageSource(image: TAppImage): ImageSource | number {
 /**
  * App image fallbacks — only from `assets/images/`.
  */
-const AUTH_BG = require("../assets/images/auth-bg.png");
 const FALLBACK = require("../assets/images/jevenhana-fallback.png");
 const LOGO = require("../assets/images/logo.png");
 
@@ -30,7 +29,7 @@ export const IMG = {
   chai: FALLBACK,
   barber: FALLBACK,
   community: FALLBACK,
-  street: AUTH_BG,
+  street: FALLBACK,
   /** Prefer Avatar initials when a user has no photo. */
   avatar: LOGO,
   logo: LOGO,
