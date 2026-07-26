@@ -4,7 +4,12 @@ import { FlatList, View } from "react-native";
 
 import { BusinessCard } from "@/components/BusinessCard";
 import { EventCard } from "@/components/EventCard";
-import { EmptyState, ErrorState, LoadingBlock, Screen } from "@/components/ui";
+import {
+  BusinessListSkeleton,
+  EmptyState,
+  ErrorState,
+  Screen,
+} from "@/components/ui";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import { getBusinessById } from "@/lib/services/businesses.service";
 import { getEventById } from "@/lib/services/events.service";
@@ -60,7 +65,7 @@ export default function SavedPlacesScreen() {
   if (isLoading) {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
-        <LoadingBlock />
+        <BusinessListSkeleton count={3} className="px-4 pt-4" />
       </Screen>
     );
   }
@@ -87,6 +92,10 @@ export default function SavedPlacesScreen() {
         data={items}
         keyExtractor={(item) => `${item.kind}-${item.id}`}
         contentContainerClassName="gap-3.5 px-4 pb-10 pt-2"
+        initialNumToRender={6}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        removeClippedSubviews
         renderItem={({ item }) => {
           if (item.kind === "business") {
             return <BusinessCard business={item.data} />;

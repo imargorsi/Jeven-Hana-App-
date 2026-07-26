@@ -1,8 +1,8 @@
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 
 import { Button } from "@/components/ui/Button";
+import { CommunityFeedSkeleton } from "@/components/ui/skeletons";
 import { Text } from "@/components/ui/Text";
-import { palette } from "@/constants/Colors";
 import { cn } from "@/lib/cn.utils";
 
 interface IEmptyStateProps {
@@ -62,7 +62,7 @@ export function ErrorState({
       </Text>
       {onRetry ? (
         <Button className="mt-6" variant="secondary" onPress={onRetry}>
-          Try again
+          Try Again
         </Button>
       ) : null}
     </View>
@@ -73,10 +73,17 @@ interface ILoadingBlockProps {
   className?: string;
 }
 
+/**
+ * Generic content loading fallback — soft skeleton stack (no spinner).
+ * Prefer domain skeletons (`BusinessListSkeleton`, etc.) when the layout is known.
+ */
 export function LoadingBlock({ className }: ILoadingBlockProps) {
   return (
-    <View className={cn("items-center justify-center py-16", className)}>
-      <ActivityIndicator color={palette.primary} />
+    <View
+      className={cn("px-4 py-6", className)}
+      accessibilityLabel="Loading"
+    >
+      <CommunityFeedSkeleton count={3} />
     </View>
   );
 }

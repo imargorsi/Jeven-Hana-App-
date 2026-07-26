@@ -1,17 +1,19 @@
 import { useAuth } from "@clerk/expo";
 import { Redirect, Stack } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import type { ReactNode } from "react";
+import { View } from "react-native";
 
+import { BootstrapSkeleton } from "@/components/ui";
 import { palette } from "@/constants/Colors";
 import { isClerkConfigured } from "@/features/auth/auth.config";
 
-function ClerkAuthGuard({ children }: { children: React.ReactNode }) {
+function ClerkAuthGuard({ children }: { children: ReactNode }) {
   const { isSignedIn, isLoaded } = useAuth();
 
   if (!isLoaded) {
     return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator color={palette.primary} />
+      <View className="flex-1 bg-background">
+        <BootstrapSkeleton />
       </View>
     );
   }

@@ -4,7 +4,7 @@ import { EventCard } from "@/components/EventCard";
 import {
   EmptyState,
   ErrorState,
-  LoadingBlock,
+  EventListSkeleton,
   Screen,
   Text,
 } from "@/components/ui";
@@ -26,15 +26,7 @@ export default function EventsTabScreen() {
   const { canManage, openCreate, openEdit, confirmDelete, deletingId } =
     useEventManage();
 
-  if (isLoading) {
-    return (
-      <Screen>
-        <LoadingBlock className="py-16" />
-      </Screen>
-    );
-  }
-
-  if (isError) {
+  if (isError && !isLoading) {
     return (
       <Screen>
         <ErrorState
@@ -62,7 +54,9 @@ export default function EventsTabScreen() {
       >
         <CreateEventActionCard onPress={openCreate} />
 
-        {!hasEvents ? (
+        {isLoading ? (
+          <EventListSkeleton count={3} className="mt-4" />
+        ) : !hasEvents ? (
           <EmptyState
             title="No Upcoming Events"
             description="Create an event to share something with the neighbourhood."

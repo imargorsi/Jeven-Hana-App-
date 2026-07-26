@@ -47,6 +47,7 @@ export function Avatar({ uri, name, size = "md", className }: IAvatarProps) {
         }}
         className={className}
         contentFit="cover"
+        cachePolicy="memory-disk"
         transition={200}
       />
     );

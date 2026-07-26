@@ -18,7 +18,7 @@ import {
 import {
   CarouselDots,
   ErrorState,
-  LoadingBlock,
+  NearbyHighlightsSkeleton,
   SectionHeader,
 } from "@/components/ui";
 import { HomeSectionEmpty } from "@/features/home/components/HomeSectionEmpty";
@@ -30,6 +30,8 @@ import type { IBusiness } from "@/types/business.types";
 
 const CARD_STEP = NEARBY_HIGHLIGHT_CARD_WIDTH + NEARBY_HIGHLIGHT_CARD_GAP;
 const AUTO_INTERVAL_MS = 12000;
+/** Home nearby strip — keep payload small for slow networks. */
+const HOME_NEARBY_LIMIT = 6;
 
 interface IHomeNearbyHighlightsProps {
   className?: string;
@@ -42,9 +44,9 @@ export function HomeNearbyHighlights({
   const [viewportWidth, setViewportWidth] = useState(0);
 
   const highlightsQuery = useQuery({
-    queryKey: ["home-nearby-highlights"],
+    queryKey: ["home-nearby-highlights", HOME_NEARBY_LIMIT],
     queryFn: (): Promise<{ items: IBusiness[] }> =>
-      getBusinesses({ limit: 8 }),
+      getBusinesses({ limit: HOME_NEARBY_LIMIT }),
   });
 
   const businesses: IBusiness[] = highlightsQuery.data?.items ?? [];
@@ -102,7 +104,7 @@ export function HomeNearbyHighlights({
     return (
       <View className={cn(className)}>
         <SectionHeader isUrdu title="قریبی نمایاں جگہیں" />
-        <LoadingBlock className="py-10" />
+        <NearbyHighlightsSkeleton />
       </View>
     );
   }

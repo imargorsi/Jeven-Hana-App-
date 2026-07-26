@@ -19,6 +19,8 @@ export interface IBusinessFormValues {
   coverLocalUri: string | null;
   coverMimeType: string | null;
   coverFileName: string | null;
+  /** Picker / local file size in bytes (for 5 MB guard). */
+  coverFileSize: number | null;
   /** User removed cover on edit. */
   coverCleared: boolean;
 }
@@ -35,6 +37,7 @@ export function emptyBusinessFormValues(): IBusinessFormValues {
     coverLocalUri: null,
     coverMimeType: null,
     coverFileName: null,
+    coverFileSize: null,
     coverCleared: false,
   };
 }
@@ -51,6 +54,7 @@ export function businessToFormValues(business: IBusiness): IBusinessFormValues {
     coverLocalUri: null,
     coverMimeType: null,
     coverFileName: null,
+    coverFileSize: null,
     coverCleared: false,
   };
 }

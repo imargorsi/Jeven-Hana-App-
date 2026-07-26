@@ -1,8 +1,8 @@
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 
-import { palette } from "@/constants/Colors";
+import { BootstrapSkeleton } from "@/components/ui";
 import { isClerkConfigured } from "@/features/auth/auth.config";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { useAppStore } from "@/stores/useAppStore";
@@ -49,8 +49,8 @@ function ClerkAwareIndex({ hasOnboarded }: { hasOnboarded: boolean }) {
 
   if (!isLoaded && !hasTimedOut) {
     return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator color={palette.primary} />
+      <View className="flex-1 bg-background">
+        <BootstrapSkeleton />
       </View>
     );
   }

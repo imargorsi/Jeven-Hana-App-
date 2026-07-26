@@ -5,12 +5,17 @@ import { createApiClient, isApiConfigured } from "@/lib/api.client";
 
 type TGetToken = () => Promise<string | null>;
 
+/** Max business cover upload size (5 MB). Keep in sync with API `MAX_COVER_BYTES`. */
+export const MAX_COVER_BYTES = 5 * 1024 * 1024;
+
 export interface IPresignUploadResult {
   uploadUrl: string;
   objectKey: string;
   publicUrl: string;
   expiresInSeconds: number;
   contentType: string;
+  maxBytes?: number;
+  byteSize?: number;
 }
 
 export interface IUploadStatus {
@@ -18,6 +23,7 @@ export interface IUploadStatus {
   bucket: string | null;
   publicBaseUrl: string | null;
   provider: string;
+  maxBytes?: number;
 }
 
 const ALLOWED_TYPES = new Set([
@@ -54,6 +60,37 @@ export function normalizeCoverContentType(
   return null;
 }
 
+export function isCoverWithinSizeLimit(byteSize: number | null | undefined): boolean {
+  if (byteSize == null || !Number.isFinite(byteSize)) return false;
+  return byteSize > 0 && byteSize <= MAX_COVER_BYTES;
+}
+
+/**
+ * Resolve local file byte size (picker `fileSize` or FileSystem).
+ */
+export async function getLocalFileByteSize(
+  uri: string,
+  knownSize?: number | null,
+): Promise<number | null> {
+  if (
+    knownSize != null &&
+    Number.isFinite(knownSize) &&
+    knownSize > 0
+  ) {
+    return Math.trunc(knownSize);
+  }
+
+  try {
+    const info = await FileSystem.getInfoAsync(uri);
+    if (info.exists && "size" in info && typeof info.size === "number") {
+      return info.size;
+    }
+  } catch {
+    // Fall through — caller should reject unknown size.
+  }
+  return null;
+}
+
 export async function getUploadStatus(
   getToken?: TGetToken,
 ): Promise<IUploadStatus> {
@@ -72,6 +109,7 @@ export async function createPresignedCoverUpload(
   params: {
     contentType: string;
     filename?: string;
+    byteSize: number;
   },
   getToken: TGetToken,
 ): Promise<IPresignUploadResult> {
@@ -79,6 +117,9 @@ export async function createPresignedCoverUpload(
   const contentType = normalizeCoverContentType(params.contentType);
   if (!contentType) {
     throw new Error("Use a JPEG, PNG, or WebP image.");
+  }
+  if (!isCoverWithinSizeLimit(params.byteSize)) {
+    throw new Error("Cover photo must be 5 MB or smaller.");
   }
 
   const filename =
@@ -92,6 +133,7 @@ export async function createPresignedCoverUpload(
       folder: "businesses/covers",
       contentType,
       filename,
+      byteSize: params.byteSize,
     },
   );
 
@@ -127,13 +169,14 @@ export async function putLocalFileToPresignedUrl(
 }
 
 /**
- * Full cover flow: presign → PUT to R2 → return public URL for `coverImageUrl`.
+ * Full cover flow: size check → presign → PUT to R2 → public URL.
  */
 export async function uploadBusinessCover(
   asset: {
     uri: string;
     mimeType?: string | null;
     fileName?: string | null;
+    fileSize?: number | null;
   },
   getToken: TGetToken,
 ): Promise<string> {
@@ -142,12 +185,17 @@ export async function uploadBusinessCover(
     throw new Error("Use a JPEG, PNG, or WebP image.");
   }
 
+  const byteSize = await getLocalFileByteSize(asset.uri, asset.fileSize);
+  if (!isCoverWithinSizeLimit(byteSize)) {
+    throw new Error("Cover photo must be 5 MB or smaller.");
+  }
+
   const filename =
     asset.fileName?.trim() ||
     `cover.${extensionForContentType(contentType)}`;
 
   const presign = await createPresignedCoverUpload(
-    { contentType, filename },
+    { contentType, filename, byteSize: byteSize as number },
     getToken,
   );
 

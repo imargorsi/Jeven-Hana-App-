@@ -22,6 +22,11 @@ interface INotificationsListData {
   unreadCount: number;
 }
 
+export interface INotificationsPage {
+  notifications: INotification[];
+  unreadCount: number;
+}
+
 function requireApi() {
   if (!isApiConfigured()) {
     throw new Error(
@@ -45,11 +50,11 @@ function mapNotification(api: IApiNotification): INotification {
   };
 }
 
-/** GET /api/v1/notifications — signed-in inbox */
-export async function getNotifications(
+/** GET /api/v1/notifications — signed-in inbox (+ server unreadCount). */
+export async function getNotificationsPage(
   getToken: TGetToken,
   limit = 30,
-): Promise<INotification[]> {
+): Promise<INotificationsPage> {
   requireApi();
   const client = createApiClient(getToken);
   const { data } = await client.get<IApiEnvelope<INotificationsListData>>(
@@ -61,7 +66,30 @@ export async function getNotifications(
     throw new Error(data.message || "Failed to load notifications");
   }
 
-  return data.data.notifications.map(mapNotification);
+  return {
+    notifications: data.data.notifications.map(mapNotification),
+    unreadCount: data.data.unreadCount ?? 0,
+  };
+}
+
+/** Full inbox list (notifications screen). */
+export async function getNotifications(
+  getToken: TGetToken,
+  limit = 30,
+): Promise<INotification[]> {
+  const page = await getNotificationsPage(getToken, limit);
+  return page.notifications;
+}
+
+/**
+ * Badge-only fetch — tiny page; unreadCount is a server COUNT
+ * (not derived from the returned rows).
+ */
+export async function getNotificationsUnreadCount(
+  getToken: TGetToken,
+): Promise<number> {
+  const page = await getNotificationsPage(getToken, 1);
+  return page.unreadCount;
 }
 
 /** PATCH /api/v1/notifications/:id/read */

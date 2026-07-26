@@ -130,6 +130,7 @@ export function EventCard({
       <Image
         source={toImageSource(IMG.businessFallback)}
         contentFit="cover"
+        cachePolicy="memory-disk"
         pointerEvents="none"
         style={{
           position: "absolute",

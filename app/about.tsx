@@ -7,8 +7,8 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
+  AboutSkeleton,
   ErrorState,
-  LoadingBlock,
   Screen,
   Text,
 } from "@/components/ui";
@@ -33,7 +33,7 @@ export default function AboutScreen() {
   if (query.isLoading) {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
-        <LoadingBlock />
+        <AboutSkeleton />
       </Screen>
     );
   }

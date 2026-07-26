@@ -3,9 +3,9 @@ import { FlatList, RefreshControl, View } from "react-native";
 
 import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
 import {
+  CommunityFeedSkeleton,
   EmptyState,
   ErrorState,
-  LoadingBlock,
   Screen,
 } from "@/components/ui";
 import { palette } from "@/constants/Colors";
@@ -37,7 +37,7 @@ export default function CommunityTabScreen() {
       </View>
 
       {feedQuery.isLoading ? (
-        <LoadingBlock className="py-16" />
+        <CommunityFeedSkeleton count={4} className="px-4" />
       ) : feedQuery.isError ? (
         <ErrorState
           description={getApiErrorMessage(feedQuery.error)}
@@ -49,6 +49,10 @@ export default function CommunityTabScreen() {
           keyExtractor={(item) => item.id}
           contentContainerClassName="gap-3.5 px-4"
           contentContainerStyle={{ paddingBottom: 48 }}
+          initialNumToRender={6}
+          maxToRenderPerBatch={8}
+          windowSize={7}
+          removeClippedSubviews
           refreshControl={
             <RefreshControl
               refreshing={feedQuery.isRefetching}

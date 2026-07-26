@@ -42,6 +42,8 @@ export function ImageGallery({
             source={toImageSource(image)}
             style={{ width, height }}
             contentFit="cover"
+            cachePolicy="memory-disk"
+            recyclingKey={`gallery-${i}`}
           />
         ))}
       </ScrollView>

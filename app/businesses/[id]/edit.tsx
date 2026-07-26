@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert } from "react-native";
 
-import { ErrorState, LoadingBlock, Screen } from "@/components/ui";
+import { ErrorState, FormScreenSkeleton, Screen } from "@/components/ui";
 import { isClerkConfigured } from "@/features/auth/auth.config";
 import { ClerkSignedInGuard } from "@/features/auth/components/ClerkSignedInGuard";
 import { useMe } from "@/features/auth/useMe.hook";
@@ -129,7 +129,7 @@ function EditBusinessContent() {
   if (businessQuery.isLoading || meQuery.isLoading) {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
-        <LoadingBlock />
+        <FormScreenSkeleton />
       </Screen>
     );
   }

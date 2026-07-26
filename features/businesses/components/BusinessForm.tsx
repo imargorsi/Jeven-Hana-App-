@@ -19,7 +19,11 @@ import {
 import { cn } from "@/lib/cn.utils";
 import { withAlpha } from "@/lib/color.utils";
 import { toImageSource } from "@/lib/image.utils";
-import { normalizeCoverContentType } from "@/lib/services/uploads.service";
+import {
+  getLocalFileByteSize,
+  isCoverWithinSizeLimit,
+  normalizeCoverContentType,
+} from "@/lib/services/uploads.service";
 
 interface IBusinessFormProps {
   values: IBusinessFormValues;
@@ -71,7 +75,16 @@ export function BusinessForm({
     const asset = result.assets[0];
     const contentType = normalizeCoverContentType(asset.mimeType);
     if (!contentType) {
-      Alert.alert("Unsupported photo", "Use a JPEG, PNG, or WebP image.");
+      Alert.alert("Unsupported Photo", "Use a JPEG, PNG, or WebP image.");
+      return;
+    }
+
+    const byteSize = await getLocalFileByteSize(asset.uri, asset.fileSize);
+    if (!isCoverWithinSizeLimit(byteSize)) {
+      Alert.alert(
+        "Photo Too Large",
+        "Cover photos must be 5 MB or smaller. Choose a smaller image.",
+      );
       return;
     }
 
@@ -79,6 +92,7 @@ export function BusinessForm({
       coverLocalUri: asset.uri,
       coverMimeType: contentType,
       coverFileName: asset.fileName ?? null,
+      coverFileSize: byteSize,
       coverCleared: false,
     });
   };
@@ -88,6 +102,7 @@ export function BusinessForm({
       coverLocalUri: null,
       coverMimeType: null,
       coverFileName: null,
+      coverFileSize: null,
       coverImageUrl: null,
       coverCleared: true,
     });
@@ -178,7 +193,7 @@ export function BusinessForm({
               Add Cover Photo
             </Text>
             <Text variant="caption" tone="muted" className="mt-1 text-center">
-              Optional — JPEG, PNG, or WebP. Town logo used if empty.
+              Optional — JPEG, PNG, or WebP, max 5 MB. Town logo used if empty.
             </Text>
           </Pressable>
         )}

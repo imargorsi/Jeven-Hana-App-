@@ -60,8 +60,8 @@ function mapBusiness(api: IApiBusiness): IBusiness {
 }
 
 /**
- * GET /api/v1/businesses — public list.
- * Optional client-side `query` filter (API has category filter only in part 1).
+ * GET /api/v1/businesses — public list (server-paginated).
+ * Pass `limit` / `offset` so the API applies SQL LIMIT (never client-slice).
  */
 export async function getBusinesses(params?: {
   categorySlug?: TBusinessCategorySlug;
@@ -69,15 +69,30 @@ export async function getBusinesses(params?: {
   query?: string;
   getToken?: TGetToken;
   limit?: number;
+  offset?: number;
 }): Promise<IPaginatedResult<IBusiness>> {
   requireApi();
   const getToken = params?.getToken ?? (async () => null);
   const client = createApiClient(getToken);
   const category = params?.category ?? params?.categorySlug;
-  const query = category ? `?category=${category}` : "";
+
+  const searchParams = new URLSearchParams();
+  if (category) searchParams.set("category", category);
+  if (params?.limit != null) searchParams.set("limit", String(params.limit));
+  if (params?.offset != null) searchParams.set("offset", String(params.offset));
+  const query = searchParams.toString();
+
   const { data } = await client.get<
-    IApiEnvelope<{ businesses: IApiBusiness[] }>
-  >(`/api/v1/businesses${query}`);
+    IApiEnvelope<{
+      businesses: IApiBusiness[];
+      meta?: {
+        limit: number;
+        offset: number;
+        hasMore: boolean;
+        nextOffset: number | null;
+      };
+    }>
+  >(`/api/v1/businesses${query ? `?${query}` : ""}`);
 
   if (!data.success || !data.data?.businesses) {
     throw new Error(data.message || "Failed to load businesses");
@@ -95,13 +110,11 @@ export async function getBusinesses(params?: {
     );
   }
 
-  if (params?.limit != null) {
-    items = items.slice(0, params.limit);
-  }
-
+  const meta = data.data.meta;
   return {
     items,
-    nextCursor: null,
+    nextCursor:
+      meta?.nextOffset != null ? String(meta.nextOffset) : null,
     total: items.length,
   };
 }

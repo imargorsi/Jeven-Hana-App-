@@ -11,7 +11,8 @@ import {
   ErrorState,
   FeaturedIcon,
   KeyboardAwareScrollView,
-  LoadingBlock,
+  ListingDetailSkeleton,
+  NotificationListSkeleton,
   RatingDisplay,
   Screen,
   Text,
@@ -47,7 +48,7 @@ export default function BusinessDetailScreen() {
   if (isLoading) {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
-        <LoadingBlock />
+        <ListingDetailSkeleton />
       </Screen>
     );
   }
@@ -277,7 +278,7 @@ export default function BusinessDetailScreen() {
             ) : null}
 
             {reviewsApi.isLoading ? (
-              <LoadingBlock className="py-8" />
+              <NotificationListSkeleton count={3} className="px-0" />
             ) : reviewsApi.isError ? (
               <View className="py-2">
                 <ErrorState onRetry={() => void reviewsApi.refetch()} />

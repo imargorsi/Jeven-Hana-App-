@@ -3,7 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, FlatList, View } from "react-native";
 
 import { EventCard } from "@/components/EventCard";
-import { EmptyState, ErrorState, LoadingBlock, Screen } from "@/components/ui";
+import {
+  EmptyState,
+  ErrorState,
+  EventListSkeleton,
+  Screen,
+} from "@/components/ui";
 import { useEventManage } from "@/features/events/useEventManage.hook";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
@@ -36,7 +41,7 @@ export default function EventsGoingScreen() {
   if (query.isLoading) {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
-        <LoadingBlock />
+        <EventListSkeleton count={3} className="px-4 pt-4" />
       </Screen>
     );
   }
@@ -58,6 +63,10 @@ export default function EventsGoingScreen() {
         data={query.data ?? []}
         keyExtractor={(item) => item.id}
         contentContainerClassName="gap-3.5 px-4 pb-10 pt-2"
+        initialNumToRender={6}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        removeClippedSubviews
         renderItem={({ item }) => (
           <EventCard
             event={item}

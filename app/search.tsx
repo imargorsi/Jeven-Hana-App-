@@ -9,14 +9,14 @@ import { EventCard } from "@/components/EventCard";
 import {
   EmptyState,
   ErrorState,
-  LoadingBlock,
   Screen,
   SearchInput,
+  SearchResultsSkeleton,
   Text,
 } from "@/components/ui";
 import { StackBackButton } from "@/components/ui/StackBackButton";
 import { isClerkConfigured } from "@/features/auth/auth.config";
-import { useCommunityPosts } from "@/features/community/useCommunityPosts.hook";
+import { useTogglePostLike } from "@/features/community/useTogglePostLike.hook";
 import { SearchChipCloud } from "@/features/search/components/SearchChipCloud";
 import {
   SearchFilterRow,
@@ -54,7 +54,7 @@ function SearchScreenInner({ getToken }: { getToken: TGetToken }) {
   const addRecent = useSearchStore((s) => s.addRecentSearch);
   const clearRecent = useSearchStore((s) => s.clearRecentSearches);
   const removeRecent = useSearchStore((s) => s.removeRecentSearch);
-  const { likePost } = useCommunityPosts();
+  const { likePost } = useTogglePostLike();
 
   useEffect(() => {
     const timer = setTimeout(() => setDebounced(input.trim()), 300);
@@ -190,7 +190,7 @@ function SearchScreenInner({ getToken }: { getToken: TGetToken }) {
           ) : null}
         </ScrollView>
       ) : resultsQuery.isLoading ? (
-        <LoadingBlock className="py-16" />
+        <SearchResultsSkeleton />
       ) : resultsQuery.isError ? (
         <ErrorState onRetry={() => void resultsQuery.refetch()} />
       ) : visibleCount === 0 ? (

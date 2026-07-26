@@ -1,7 +1,13 @@
 import { FlatList, View } from "react-native";
 
 import { BusinessCard } from "@/components/BusinessCard";
-import { ErrorState, EmptyState, LoadingBlock, Screen, Text } from "@/components/ui";
+import {
+  BusinessListSkeleton,
+  EmptyState,
+  ErrorState,
+  Screen,
+  Text,
+} from "@/components/ui";
 import { useBusinessManage } from "@/features/businesses/useBusinessManage.hook";
 import { CreateListingActionCard } from "@/features/explore/components/CreateListingActionCard";
 import { ExploreCategoryRow } from "@/features/explore/components/ExploreCategoryRow";
@@ -20,15 +26,7 @@ export default function ExploreScreen() {
   const { canManage, openCreate, openEdit, confirmDelete, deletingId } =
     useBusinessManage();
 
-  if (isLoading) {
-    return (
-      <Screen>
-        <LoadingBlock className="py-16" />
-      </Screen>
-    );
-  }
-
-  if (isError) {
+  if (isError && !isLoading) {
     return (
       <Screen>
         <ErrorState onRetry={() => void refetch()} />
@@ -40,9 +38,13 @@ export default function ExploreScreen() {
     <Screen>
       <FlatList
         className="flex-1"
-        data={businesses}
+        data={isLoading ? [] : businesses}
         keyExtractor={(item) => item.id}
         contentContainerClassName="px-4 pb-28 pt-4"
+        initialNumToRender={6}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        removeClippedSubviews
         ListHeaderComponent={
           <View className="mb-5">
             <CreateListingActionCard onPress={openCreate} />
@@ -56,11 +58,18 @@ export default function ExploreScreen() {
               <View>
                 <Text variant="h3">Nearby</Text>
                 <Text variant="caption" tone="muted" className="mt-0.5">
-                  {count} {count === 1 ? "place" : "places"} in Jevan Hana
+                  {isLoading
+                    ? "Loading Places…"
+                    : `${count} ${count === 1 ? "place" : "places"} in Jevan Hana`}
                 </Text>
               </View>
             </View>
           </View>
+        }
+        ListFooterComponent={
+          isLoading ? (
+            <BusinessListSkeleton count={3} className="mt-4" />
+          ) : null
         }
         ItemSeparatorComponent={() => <View className="h-4" />}
         renderItem={({ item }) => (
@@ -74,10 +83,12 @@ export default function ExploreScreen() {
           />
         )}
         ListEmptyComponent={
-          <EmptyState
-            title="No Places Found"
-            description="Nothing in this category yet. Try another filter or create a listing."
-          />
+          isLoading ? null : (
+            <EmptyState
+              title="No Places Found"
+              description="Nothing in this category yet. Try another filter or create a listing."
+            />
+          )
         }
         showsVerticalScrollIndicator={false}
       />

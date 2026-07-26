@@ -10,7 +10,7 @@ import { isClerkConfigured } from "@/features/auth/auth.config";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { href } from "@/lib/navigation.utils";
-import { getNotifications } from "@/lib/services/notifications.service";
+import { getNotificationsUnreadCount } from "@/lib/services/notifications.service";
 
 interface IAppHeaderProps {
   className?: string;
@@ -75,14 +75,13 @@ function AppHeaderView({
   const router = useRouter();
 
   const notificationsQuery = useQuery({
-    queryKey: ["notifications", userId ?? "guest"],
-    queryFn: () => getNotifications(getToken),
-    staleTime: 30_000,
+    queryKey: ["notifications-unread", userId ?? "guest"],
+    queryFn: () => getNotificationsUnreadCount(getToken),
+    staleTime: 60_000,
     enabled: isSignedIn && Boolean(userId),
   });
 
-  const unreadCount =
-    notificationsQuery.data?.filter((n) => !n.isRead).length ?? 0;
+  const unreadCount = notificationsQuery.data ?? 0;
 
   return (
     <View

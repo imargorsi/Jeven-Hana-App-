@@ -17,7 +17,7 @@ export function useMe() {
     queryKey: meQueryKey,
     queryFn: () => fetchMe(getToken),
     enabled,
-    staleTime: 60_000,
+    staleTime: 5 * 60_000,
     retry: 1,
   });
 }

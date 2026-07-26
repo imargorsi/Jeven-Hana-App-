@@ -4,7 +4,11 @@ import { useRouter } from "expo-router";
 import { Alert, View } from "react-native";
 
 import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
-import { ErrorState, LoadingBlock, SectionHeader } from "@/components/ui";
+import {
+  CommunityFeedSkeleton,
+  ErrorState,
+  SectionHeader,
+} from "@/components/ui";
 import { useCommunityManage } from "@/features/community/useCommunityManage.hook";
 import { HomeSectionEmpty } from "@/features/home/components/HomeSectionEmpty";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
@@ -15,7 +19,7 @@ import {
   toggleLikePost,
 } from "@/lib/services/community.service";
 
-const POST_LIMIT = 5;
+const POST_LIMIT = 6;
 
 interface IHomeCommunityUpdatesProps {
   className?: string;
@@ -55,7 +59,7 @@ export function HomeCommunityUpdates({ className }: IHomeCommunityUpdatesProps) 
     return (
       <View className={cn(className)}>
         <SectionHeader isUrdu title="کمیونٹی اپڈیٹس" />
-        <LoadingBlock className="py-10" />
+        <CommunityFeedSkeleton count={3} />
       </View>
     );
   }

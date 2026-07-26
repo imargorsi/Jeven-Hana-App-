@@ -71,6 +71,8 @@ export function BusinessCard({
             source={toImageSource(image)}
             style={{ width: "100%", height: LIST_IMAGE_HEIGHT }}
             contentFit="cover"
+            cachePolicy="memory-disk"
+            recyclingKey={business.id}
             transition={200}
           />
 
@@ -255,6 +257,8 @@ export function BusinessCard({
           height: isHorizontal ? HORIZONTAL_IMAGE_HEIGHT : LIST_IMAGE_HEIGHT,
         }}
         contentFit="cover"
+        cachePolicy="memory-disk"
+        recyclingKey={business.id}
         transition={200}
       />
       <View className="gap-1.5 p-3.5">

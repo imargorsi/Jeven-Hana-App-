@@ -7,7 +7,7 @@ import {
   Button,
   EmptyState,
   ErrorState,
-  LoadingBlock,
+  NotificationListSkeleton,
   Screen,
   Text,
 } from "@/components/ui";
@@ -18,7 +18,7 @@ import { formatRelativeTime } from "@/lib/formatter.utils";
 import { href } from "@/lib/navigation.utils";
 import { groupNotifications } from "@/lib/notificationGrouping.utils";
 import {
-  getNotifications,
+  getNotificationsPage,
   markAllNotificationsRead,
   markNotificationRead,
 } from "@/lib/services/notifications.service";
@@ -36,6 +36,13 @@ function navigateForNotification(
   if (n.targetType === "place") router.push(href("/(tabs)/explore"));
 }
 
+function invalidateNotificationQueries(
+  queryClient: ReturnType<typeof useQueryClient>,
+) {
+  void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+  void queryClient.invalidateQueries({ queryKey: ["notifications-unread"] });
+}
+
 function NotificationsContent() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -43,29 +50,29 @@ function NotificationsContent() {
 
   const query = useQuery({
     queryKey: ["notifications", userId ?? "guest"],
-    queryFn: () => getNotifications(getToken),
-    staleTime: 30_000,
+    queryFn: () => getNotificationsPage(getToken),
+    staleTime: 60_000,
     enabled: Boolean(userId),
   });
 
   const markAll = useMutation({
     mutationFn: () => markAllNotificationsRead(getToken),
-    onSuccess: () =>
-      void queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+    onSuccess: () => invalidateNotificationQueries(queryClient),
   });
 
   const markOne = useMutation({
     mutationFn: (id: string) => markNotificationRead(id, getToken),
-    onSuccess: () =>
-      void queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+    onSuccess: () => invalidateNotificationQueries(queryClient),
   });
 
-  const grouped = groupNotifications(query.data ?? []);
+  const notifications = query.data?.notifications ?? [];
+  const unreadFromApi = query.data?.unreadCount ?? 0;
+  const grouped = groupNotifications(notifications);
 
   if (query.isLoading) {
     return (
       <Screen title="Notifications" showBack>
-        <LoadingBlock />
+        <NotificationListSkeleton />
       </Screen>
     );
   }
@@ -95,7 +102,7 @@ function NotificationsContent() {
     >
       <View className="px-4 pb-2">
         <Text variant="bodySmall" tone="muted">
-          {grouped.reduce((sum, g) => sum + g.unreadCount, 0)} unread
+          {unreadFromApi} unread
         </Text>
       </View>
 
@@ -103,6 +110,10 @@ function NotificationsContent() {
         data={grouped}
         keyExtractor={(item) => item.key}
         contentContainerClassName="px-4 pb-10"
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        removeClippedSubviews
         ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => {
           const n = item.latest;

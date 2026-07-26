@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert } from "react-native";
 
-import { ErrorState, LoadingBlock, Screen } from "@/components/ui";
+import { ErrorState, FormScreenSkeleton, Screen } from "@/components/ui";
 import { useMe } from "@/features/auth/useMe.hook";
 import { canManageCommunityPost } from "@/features/community/communityOwnership.utils";
 import {
@@ -109,7 +109,7 @@ export default function EditCommunityPostScreen() {
   if (postQuery.isLoading || meQuery.isLoading) {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
-        <LoadingBlock />
+        <FormScreenSkeleton />
       </Screen>
     );
   }

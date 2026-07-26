@@ -3,7 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, FlatList, View } from "react-native";
 
 import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
-import { EmptyState, ErrorState, LoadingBlock, Screen } from "@/components/ui";
+import {
+  CommunityFeedSkeleton,
+  EmptyState,
+  ErrorState,
+  Screen,
+} from "@/components/ui";
 import { useCommunityManage } from "@/features/community/useCommunityManage.hook";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
@@ -41,7 +46,7 @@ export default function MyPostsScreen() {
   if (query.isLoading) {
     return (
       <Screen withSafeArea={false} withAppHeader={false}>
-        <LoadingBlock />
+        <CommunityFeedSkeleton count={4} className="px-4 pt-4" />
       </Screen>
     );
   }
@@ -63,6 +68,10 @@ export default function MyPostsScreen() {
         data={query.data ?? []}
         keyExtractor={(item) => item.id}
         contentContainerClassName="gap-3.5 px-4 pb-10 pt-2"
+        initialNumToRender={6}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        removeClippedSubviews
         renderItem={({ item }) => (
           <CommunityUpdateCard
             post={item}

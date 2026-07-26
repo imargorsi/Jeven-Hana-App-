@@ -87,34 +87,48 @@ function mapPost(api: IApiCommunityPost): ICommunityPost {
 }
 
 /**
- * GET /api/v1/community/posts — public feed.
- * Returns a single page (API has no cursor yet).
+ * GET /api/v1/community/posts — public feed (server-paginated).
+ * Pass `limit` / `offset` so the API applies SQL LIMIT.
  */
 export async function getCommunityPosts(params?: {
   category?: TPostCategory;
   getToken?: TGetToken;
   limit?: number;
+  offset?: number;
 }): Promise<IPaginatedResult<ICommunityPost>> {
   requireApi();
   const getToken = params?.getToken ?? (async () => null);
   const client = createApiClient(getToken);
-  const query = params?.category ? `?category=${params.category}` : "";
+
+  const searchParams = new URLSearchParams();
+  if (params?.category) searchParams.set("category", params.category);
+  if (params?.limit != null) searchParams.set("limit", String(params.limit));
+  if (params?.offset != null) searchParams.set("offset", String(params.offset));
+  const query = searchParams.toString();
+
   const { data } = await client.get<
-    IApiEnvelope<{ posts: IApiCommunityPost[] }>
-  >(`/api/v1/community/posts${query}`);
+    IApiEnvelope<{
+      posts: IApiCommunityPost[];
+      meta?: {
+        limit: number;
+        offset: number;
+        hasMore: boolean;
+        nextOffset: number | null;
+      };
+    }>
+  >(`/api/v1/community/posts${query ? `?${query}` : ""}`);
 
   if (!data.success || !data.data?.posts) {
     throw new Error(data.message || "Failed to load posts");
   }
 
-  let items = data.data.posts.map(mapPost);
-  if (params?.limit != null) {
-    items = items.slice(0, params.limit);
-  }
+  const items = data.data.posts.map(mapPost);
+  const meta = data.data.meta;
 
   return {
     items,
-    nextCursor: null,
+    nextCursor:
+      meta?.nextOffset != null ? String(meta.nextOffset) : null,
     total: items.length,
   };
 }
@@ -136,15 +150,16 @@ export async function getMyCommunityPosts(
   return data.data.posts.map(mapPost);
 }
 
-/** Home highlights — pinned first from public feed. */
+/**
+ * Home community strip — pinned-first page from the public feed.
+ * Limit is applied on the server (SQL LIMIT), not after download.
+ */
 export async function getAdminCommunityHighlights(
   limit = 5,
   getToken?: TGetToken,
 ): Promise<ICommunityPost[]> {
-  const result = await getCommunityPosts({ getToken });
-  const pinned = result.items.filter((p) => p.isPinned);
-  const rest = result.items.filter((p) => !p.isPinned);
-  return [...pinned, ...rest].slice(0, limit);
+  const result = await getCommunityPosts({ getToken, limit });
+  return result.items;
 }
 
 export async function getCommunityPostById(

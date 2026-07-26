@@ -22,6 +22,7 @@ export async function resolveBusinessCoverForSubmit(
         uri: values.coverLocalUri,
         mimeType: values.coverMimeType,
         fileName: values.coverFileName,
+        fileSize: values.coverFileSize,
       },
       getToken,
     );

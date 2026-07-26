@@ -51,6 +51,8 @@ export function NearbyHighlightCard({
             height: IMAGE_HEIGHT,
           }}
           contentFit="cover"
+          cachePolicy="memory-disk"
+          recyclingKey={business.id}
           transition={200}
         />
         {openStatus.hasHours ? (
