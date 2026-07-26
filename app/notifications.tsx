@@ -28,6 +28,10 @@ function navigateForNotification(
   router: ReturnType<typeof useRouter>,
   n: INotification,
 ) {
+  if (n.targetType === "about") {
+    router.push(href("/about"));
+    return;
+  }
   if (!n.targetType || !n.targetId) return;
   if (n.targetType === "post") router.push(href("/(tabs)/community"));
   if (n.targetType === "event") router.push(href("/(tabs)/events"));
