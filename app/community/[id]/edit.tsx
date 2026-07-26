@@ -12,6 +12,7 @@ import {
   CommunityPostForm,
   type ICommunityPostFormValues,
 } from "@/features/community/components/CommunityPostForm";
+import { resolveCommunityPostImageForSubmit } from "@/features/community/resolveCommunityPostImage.utils";
 import { invalidateCommunityQueries } from "@/features/community/useCommunityManage.hook";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import {
@@ -33,20 +34,30 @@ function EditPostForm({
   const [values, setValues] = useState<ICommunityPostFormValues>(() => ({
     content: post.content,
     category: post.category,
+    imageUrl: post.imageUrl?.trim() || null,
+    imageLocalUri: null,
+    imageMimeType: null,
+    imageFileName: null,
+    imageFileSize: null,
+    imageCleared: false,
   }));
   const [isPinned, setIsPinned] = useState(Boolean(post.isPinned));
 
   const mutation = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       const result = buildCommunityPostPayload(values);
       if ("error" in result) {
         throw new Error(result.error);
       }
+
+      const image = await resolveCommunityPostImageForSubmit(values, getToken);
+
       return updateCommunityPost(
         post.id,
         {
           ...result.payload,
           ...(isAdmin ? { isPinned } : {}),
+          ...(image.includeImage ? { imageUrl: image.imageUrl } : {}),
         },
         getToken,
       );

@@ -53,4 +53,6 @@ export interface ICommunityPost {
   isLikedByMe?: boolean;
   isPinned?: boolean;
   createdByUserId?: number;
+  /** Optional single R2 photo URL. */
+  imageUrl?: string | null;
 }

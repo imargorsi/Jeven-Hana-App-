@@ -44,6 +44,7 @@ interface IApiCommunityPost {
   category: string;
   isPinned: boolean;
   likeCount: number;
+  imageUrl?: string | null;
   isLikedByMe?: boolean;
   createdByUserId: number;
   author: IApiAuthor | null;
@@ -140,6 +141,7 @@ function mapPost(api: IApiCommunityPost): ICommunityPost {
       : undefined,
     user: mapAuthor(api.author),
     likeCount: api.likeCount,
+    imageUrl: api.imageUrl?.trim() || null,
     isLikedByMe: Boolean(api.isLikedByMe),
     isPinned: Boolean(api.isPinned),
     createdByUserId: api.createdByUserId,

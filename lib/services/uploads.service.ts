@@ -110,6 +110,7 @@ export async function createPresignedCoverUpload(
     contentType: string;
     filename?: string;
     byteSize: number;
+    folder?: "businesses/covers" | "community/posts";
   },
   getToken: TGetToken,
 ): Promise<IPresignUploadResult> {
@@ -119,18 +120,19 @@ export async function createPresignedCoverUpload(
     throw new Error("Use a JPEG, PNG, or WebP image.");
   }
   if (!isCoverWithinSizeLimit(params.byteSize)) {
-    throw new Error("Cover photo must be 5 MB or smaller.");
+    throw new Error("Photo must be 5 MB or smaller.");
   }
 
+  const folder = params.folder ?? "businesses/covers";
   const filename =
     params.filename?.trim() ||
-    `cover.${extensionForContentType(contentType)}`;
+    `image.${extensionForContentType(contentType)}`;
 
   const client = createApiClient(getToken);
   const { data } = await client.post<IApiEnvelope<IPresignUploadResult>>(
     "/api/v1/uploads/presign",
     {
-      folder: "businesses/covers",
+      folder,
       contentType,
       filename,
       byteSize: params.byteSize,
@@ -180,6 +182,32 @@ export async function uploadBusinessCover(
   },
   getToken: TGetToken,
 ): Promise<string> {
+  return uploadR2Image(asset, getToken, "businesses/covers");
+}
+
+/** Optional community post photo (single image, max 5 MB). */
+export async function uploadCommunityPostImage(
+  asset: {
+    uri: string;
+    mimeType?: string | null;
+    fileName?: string | null;
+    fileSize?: number | null;
+  },
+  getToken: TGetToken,
+): Promise<string> {
+  return uploadR2Image(asset, getToken, "community/posts");
+}
+
+async function uploadR2Image(
+  asset: {
+    uri: string;
+    mimeType?: string | null;
+    fileName?: string | null;
+    fileSize?: number | null;
+  },
+  getToken: TGetToken,
+  folder: "businesses/covers" | "community/posts",
+): Promise<string> {
   const contentType = normalizeCoverContentType(asset.mimeType);
   if (!contentType) {
     throw new Error("Use a JPEG, PNG, or WebP image.");
@@ -187,15 +215,15 @@ export async function uploadBusinessCover(
 
   const byteSize = await getLocalFileByteSize(asset.uri, asset.fileSize);
   if (!isCoverWithinSizeLimit(byteSize)) {
-    throw new Error("Cover photo must be 5 MB or smaller.");
+    throw new Error("Photo must be 5 MB or smaller.");
   }
 
   const filename =
     asset.fileName?.trim() ||
-    `cover.${extensionForContentType(contentType)}`;
+    `image.${extensionForContentType(contentType)}`;
 
   const presign = await createPresignedCoverUpload(
-    { contentType, filename, byteSize: byteSize as number },
+    { contentType, filename, byteSize: byteSize as number, folder },
     getToken,
   );
 

@@ -1,3 +1,4 @@
+import { Image } from "expo-image";
 import { SymbolView } from "expo-symbols";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
@@ -8,6 +9,7 @@ import { palette } from "@/constants/Colors";
 import { useRequireAuth } from "@/features/auth/useRequireAuth.hook";
 import { cn } from "@/lib/cn.utils";
 import { formatRelativeTime } from "@/lib/formatter.utils";
+import { toImageSource } from "@/lib/image.utils";
 import { shareAppLink } from "@/lib/linking.utils";
 import { hasUrduScript } from "@/lib/text.utils";
 import {
@@ -38,6 +40,7 @@ export function CommunityUpdateCard({
   const { requireAuth } = useRequireAuth();
   const isUrdu = post.contentIsUrdu ?? hasUrduScript(post.content);
   const likeCount = post.likeCount;
+  const imageUrl = post.imageUrl?.trim() || null;
 
   return (
     <View
@@ -99,6 +102,18 @@ export function CommunityUpdateCard({
       >
         {post.content}
       </Text>
+
+      {imageUrl ? (
+        <View className="mt-3 overflow-hidden rounded-xl border border-cream/10">
+          <Image
+            source={toImageSource(imageUrl)}
+            style={{ width: "100%", height: 168 }}
+            contentFit="cover"
+            cachePolicy="memory-disk"
+            transition={200}
+          />
+        </View>
+      ) : null}
 
       <View className="mt-3 flex-row items-center border-t border-cream/10 pt-2.5">
         <Pressable

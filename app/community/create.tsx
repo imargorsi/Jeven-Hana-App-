@@ -12,6 +12,7 @@ import {
   emptyCommunityPostFormValues,
   type ICommunityPostFormValues,
 } from "@/features/community/components/CommunityPostForm";
+import { resolveCommunityPostImageForSubmit } from "@/features/community/resolveCommunityPostImage.utils";
 import { invalidateCommunityQueries } from "@/features/community/useCommunityManage.hook";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
 import { createCommunityPost } from "@/lib/services/community.service";
@@ -28,15 +29,19 @@ export default function CreateCommunityPostScreen() {
   const isAdmin = meQuery.data?.role === "admin";
 
   const mutation = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       const result = buildCommunityPostPayload(values);
       if ("error" in result) {
         throw new Error(result.error);
       }
+
+      const image = await resolveCommunityPostImageForSubmit(values, getToken);
+
       return createCommunityPost(
         {
           ...result.payload,
           ...(isAdmin ? { isPinned } : {}),
+          ...(image.includeImage ? { imageUrl: image.imageUrl } : {}),
         },
         getToken,
       );

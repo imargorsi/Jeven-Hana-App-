@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/expo";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Alert, FlatList, View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { FlatList, View } from "react-native";
 
 import { CommunityUpdateCard } from "@/components/CommunityUpdateCard";
 import {
@@ -10,37 +10,20 @@ import {
   Screen,
 } from "@/components/ui";
 import { useCommunityManage } from "@/features/community/useCommunityManage.hook";
+import { useTogglePostLike } from "@/features/community/useTogglePostLike.hook";
 import { getApiErrorMessage } from "@/lib/apiError.utils";
-import {
-  getMyCommunityPosts,
-  toggleLikePost,
-} from "@/lib/services/community.service";
+import { getMyCommunityPosts } from "@/lib/services/community.service";
 
 export default function MyPostsScreen() {
   const { getToken, userId } = useAuth();
-  const queryClient = useQueryClient();
   const { canManage, openEdit, confirmDelete, deletingId } =
     useCommunityManage();
+  const { likePost } = useTogglePostLike();
 
   const query = useQuery({
     queryKey: ["my-posts", userId],
     queryFn: () => getMyCommunityPosts(getToken),
     enabled: Boolean(userId),
-  });
-
-  const likeMutation = useMutation({
-    mutationFn: (id: string) => toggleLikePost(id, getToken),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["my-posts", userId] });
-      void queryClient.invalidateQueries({ queryKey: ["community-posts"] });
-      void queryClient.invalidateQueries({ queryKey: ["search"] });
-      void queryClient.invalidateQueries({
-        queryKey: ["home-community-updates"],
-      });
-    },
-    onError: (error) => {
-      Alert.alert("Could not update", getApiErrorMessage(error));
-    },
   });
 
   if (query.isLoading) {
@@ -75,7 +58,7 @@ export default function MyPostsScreen() {
         renderItem={({ item }) => (
           <CommunityUpdateCard
             post={item}
-            onLike={(id) => likeMutation.mutate(id)}
+            onLike={likePost}
             canManage={canManage(item)}
             onEdit={() => openEdit(item.id)}
             onDelete={() => confirmDelete(item)}
