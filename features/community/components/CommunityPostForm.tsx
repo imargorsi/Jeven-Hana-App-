@@ -147,7 +147,7 @@ export function CommunityPostForm({
         <View className="overflow-hidden rounded-card border border-cream/15">
           <Image
             source={toImageSource(previewUri)}
-            style={{ width: "100%", height: 180 }}
+            style={{ width: "100%", aspectRatio: 4 / 3 }}
             contentFit="cover"
             cachePolicy="memory-disk"
             transition={200}

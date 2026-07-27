@@ -27,6 +27,12 @@ interface ICommunityUpdateCardProps {
   className?: string;
 }
 
+/**
+ * Feed photo frame — 4:3 matches common social feed photos (and our picker crop).
+ * Full-bleed inside the card like Facebook / Instagram feed media.
+ */
+const FEED_IMAGE_ASPECT = 4 / 3;
+
 /** Feed card for v1 — like + share; owner/admin edit/delete (no detail screen). */
 export function CommunityUpdateCard({
   post,
@@ -45,84 +51,88 @@ export function CommunityUpdateCard({
   return (
     <View
       className={cn(
-        "rounded-card border border-cream/10 bg-surface p-3.5",
+        "overflow-hidden rounded-card border border-cream/10 bg-surface",
         className,
       )}
     >
-      <View className="mb-2.5 flex-row items-center justify-between gap-2">
-        <View className="rounded-chip bg-primary/15 px-2 py-0.5">
-          <Text variant="caption" weight="semibold" tone="primary">
-            {POST_CATEGORY_LABELS[post.category]}
-          </Text>
+      <View className="px-3.5 pt-3.5">
+        <View className="mb-3 flex-row items-center gap-2.5">
+          <Avatar
+            uri={post.user.avatarUrl}
+            name={post.user.fullName}
+            size="sm"
+          />
+          <View className="min-w-0 flex-1">
+            <View className="flex-row items-center gap-1.5">
+              <Text
+                variant="bodySmall"
+                weight="semibold"
+                numberOfLines={1}
+                className="shrink"
+              >
+                {post.user.fullName}
+              </Text>
+              {post.user.isAdmin ? (
+                <SymbolView
+                  name={{
+                    ios: "checkmark.seal.fill",
+                    android: "verified",
+                    web: "verified",
+                  }}
+                  size={13}
+                  tintColor={palette.primary}
+                />
+              ) : null}
+              {post.isPinned ? (
+                <Text variant="caption" tone="primary" weight="semibold">
+                  Pinned
+                </Text>
+              ) : null}
+            </View>
+            <View className="mt-0.5 flex-row items-center gap-1.5">
+              <View className="rounded-chip bg-primary/15 px-2 py-0.5">
+                <Text variant="caption" weight="semibold" tone="primary">
+                  {POST_CATEGORY_LABELS[post.category]}
+                </Text>
+              </View>
+              <Text variant="caption" tone="muted">
+                · {formatRelativeTime(post.createdAt)}
+              </Text>
+            </View>
+          </View>
         </View>
-        <Text variant="caption" tone="muted">
-          {formatRelativeTime(post.createdAt)}
+
+        <Text
+          variant="bodySmall"
+          isUrdu={isUrdu}
+          className={cn("mb-3", isUrdu ? "text-right" : "text-left")}
+          numberOfLines={5}
+        >
+          {post.content}
         </Text>
       </View>
 
-      <View className="mb-2.5 flex-row items-center gap-2.5">
-        <Avatar
-          uri={post.user.avatarUrl}
-          name={post.user.fullName}
-          size="sm"
-        />
-        <View className="min-w-0 flex-1 flex-row items-center gap-1.5">
-          <Text
-            variant="bodySmall"
-            weight="semibold"
-            numberOfLines={1}
-            className="shrink"
-          >
-            {post.user.fullName}
-          </Text>
-          {post.user.isAdmin ? (
-            <SymbolView
-              name={{
-                ios: "checkmark.seal.fill",
-                android: "verified",
-                web: "verified",
-              }}
-              size={13}
-              tintColor={palette.primary}
-            />
-          ) : null}
-          {post.isPinned ? (
-            <Text variant="caption" tone="primary" weight="semibold">
-              Pinned
-            </Text>
-          ) : null}
-        </View>
-      </View>
-
-      <Text
-        variant="bodySmall"
-        isUrdu={isUrdu}
-        className={cn(isUrdu ? "text-right" : "text-left")}
-        numberOfLines={5}
-      >
-        {post.content}
-      </Text>
-
       {imageUrl ? (
-        <View className="mt-3 overflow-hidden rounded-xl border border-cream/10">
+        <View className="bg-background">
           <Image
             source={toImageSource(imageUrl)}
-            style={{ width: "100%", height: 168 }}
+            style={{ width: "100%", aspectRatio: FEED_IMAGE_ASPECT }}
             contentFit="cover"
             cachePolicy="memory-disk"
             transition={200}
+            accessibilityLabel="Post Photo"
           />
         </View>
       ) : null}
 
-      <View className="mt-3 flex-row items-center border-t border-cream/10 pt-2.5">
+      <View className="flex-row items-center px-3.5 py-2.5">
         <Pressable
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={post.isLikedByMe ? "Unlike" : "Like"}
           disabled={!onLike}
           onPress={() => requireAuth(() => onLike?.(post.id))}
-          className="flex-row items-center gap-1.5 active:opacity-70"
+          className="flex-row items-center gap-1.5 rounded-full px-1 py-1 active:opacity-70"
         >
           <SymbolView
             name={{
@@ -130,7 +140,7 @@ export function CommunityUpdateCard({
               android: post.isLikedByMe ? "favorite" : "favorite_border",
               web: "favorite",
             }}
-            size={14}
+            size={18}
             tintColor={post.isLikedByMe ? palette.primary : palette.muted}
           />
           <Text
@@ -142,14 +152,14 @@ export function CommunityUpdateCard({
           </Text>
         </Pressable>
 
-        <View className="mx-3 h-1 w-1 rounded-full bg-muted" />
+        <View className="mx-2.5 h-1 w-1 rounded-full bg-muted/80" />
 
         <Pressable
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Share"
           onPress={() => void shareAppLink("/community", "Jevan Hana Community")}
-          className="flex-row items-center gap-1.5 active:opacity-70"
+          className="flex-row items-center gap-1.5 rounded-full px-1 py-1 active:opacity-70"
         >
           <SymbolView
             name={{
@@ -157,7 +167,7 @@ export function CommunityUpdateCard({
               android: "share",
               web: "share",
             }}
-            size={14}
+            size={17}
             tintColor={palette.muted}
           />
           <Text variant="caption" tone="muted">
@@ -167,7 +177,7 @@ export function CommunityUpdateCard({
 
         {!canManage ? (
           <>
-            <View className="mx-3 h-1 w-1 rounded-full bg-muted" />
+            <View className="mx-2.5 h-1 w-1 rounded-full bg-muted/80" />
             <ReportButton targetType="post" targetId={post.id} />
           </>
         ) : null}
@@ -182,7 +192,7 @@ export function CommunityUpdateCard({
               disabled={isDeleting}
               hitSlop={8}
               onPress={onEdit}
-              className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
+              className="h-9 w-9 items-center justify-center rounded-full active:bg-cream/10"
             >
               <SymbolView
                 name={{
@@ -200,7 +210,7 @@ export function CommunityUpdateCard({
               disabled={isDeleting}
               hitSlop={8}
               onPress={onDelete}
-              className="h-8 w-8 items-center justify-center rounded-full active:bg-cream/10"
+              className="h-9 w-9 items-center justify-center rounded-full active:bg-cream/10"
             >
               {isDeleting ? (
                 <ActivityIndicator size="small" color={palette.error} />
