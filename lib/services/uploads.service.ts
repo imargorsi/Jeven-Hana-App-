@@ -66,28 +66,27 @@ export function isCoverWithinSizeLimit(byteSize: number | null | undefined): boo
 }
 
 /**
- * Resolve local file byte size (picker `fileSize` or FileSystem).
+ * Resolve local file byte size for the URI that will be uploaded.
+ * Prefer FileSystem size over picker `fileSize` — after crop/edit those diverge
+ * and a wrong size used to break signed ContentLength uploads (R2 403).
  */
 export async function getLocalFileByteSize(
   uri: string,
   knownSize?: number | null,
 ): Promise<number | null> {
-  if (
-    knownSize != null &&
-    Number.isFinite(knownSize) &&
-    knownSize > 0
-  ) {
+  try {
+    const info = await FileSystem.getInfoAsync(uri);
+    if (info.exists && "size" in info && typeof info.size === "number" && info.size > 0) {
+      return Math.trunc(info.size);
+    }
+  } catch {
+    // Fall through to picker metadata.
+  }
+
+  if (knownSize != null && Number.isFinite(knownSize) && knownSize > 0) {
     return Math.trunc(knownSize);
   }
 
-  try {
-    const info = await FileSystem.getInfoAsync(uri);
-    if (info.exists && "size" in info && typeof info.size === "number") {
-      return info.size;
-    }
-  } catch {
-    // Fall through — caller should reject unknown size.
-  }
   return null;
 }
 
@@ -164,8 +163,12 @@ export async function putLocalFileToPresignedUrl(
   });
 
   if (result.status < 200 || result.status >= 300) {
+    const body =
+      typeof result.body === "string" && result.body.trim()
+        ? ` ${result.body.trim().slice(0, 180)}`
+        : "";
     throw new Error(
-      `Photo upload failed (${result.status}). Check R2 keys and that R2_PUBLIC_BASE_URL is your pub-….r2.dev URL.`,
+      `Photo upload failed (${result.status}).${body} Check R2 keys, bucket public URL, and that Content-Type matches the presign.`,
     );
   }
 }
