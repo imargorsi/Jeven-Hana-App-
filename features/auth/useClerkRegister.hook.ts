@@ -11,22 +11,35 @@ import {
 import { createClerkFinalizeNavigate } from "@/features/auth/clerk.navigation";
 import { splitFullName } from "@/features/auth/fullName.utils";
 
+function isAwaitingEmailVerification(
+  signUp: ReturnType<typeof useSignUp>["signUp"],
+): boolean {
+  if (!signUp) {
+    return false;
+  }
+
+  return (
+    signUp.status === "missing_requirements" &&
+    signUp.unverifiedFields.includes("email_address") &&
+    signUp.missingFields.length === 0
+  );
+}
+
 export function useClerkRegister() {
   const { signUp, errors, fetchStatus } = useSignUp();
   const router = useRouter();
   const [isVerifying, setIsVerifying] = useState(false);
+  // Force the verify step the moment our own code confirms the email code
+  // was sent — don't rely solely on Clerk's store re-rendering this
+  // component after sendEmailCode() resolves, since that re-render was
+  // sometimes missed, leaving the user stuck on the form screen despite the
+  // code already being sent.
+  const [forceVerifyStep, setForceVerifyStep] = useState(false);
 
-  const needsEmailVerification = useMemo(() => {
-    if (!signUp) {
-      return false;
-    }
-
-    return (
-      signUp.status === "missing_requirements" &&
-      signUp.unverifiedFields.includes("email_address") &&
-      signUp.missingFields.length === 0
-    );
-  }, [signUp]);
+  const needsEmailVerification = useMemo(
+    () => forceVerifyStep || isAwaitingEmailVerification(signUp),
+    [forceVerifyStep, signUp],
+  );
 
   const register = useCallback(
     async ({ fullName, username, email, password }: IRegisterFormValues) => {
@@ -71,7 +84,14 @@ export function useClerkRegister() {
           return;
         }
 
-        await signUp.verifications.sendEmailCode();
+        const { error: sendCodeError } = await signUp.verifications.sendEmailCode();
+
+        if (sendCodeError) {
+          Alert.alert("Registration Failed", getClerkErrorMessage(sendCodeError));
+          return;
+        }
+
+        setForceVerifyStep(true);
       } catch (error) {
         Alert.alert("Registration Failed", getClerkErrorMessage(error));
       }

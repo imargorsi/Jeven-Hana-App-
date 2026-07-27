@@ -2,7 +2,7 @@ import { useAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
-import { useMe } from "@/features/auth/useMe.hook";
+import { meQueryKey, useMe } from "@/features/auth/useMe.hook";
 import { useSavedItemsStore } from "@/stores/useSavedItemsStore";
 
 /**
@@ -28,6 +28,7 @@ export function AuthSessionSync() {
         previousUserId.current !== undefined &&
         previousUserId.current !== nextId
       ) {
+        void queryClient.removeQueries({ queryKey: meQueryKey });
         void queryClient.removeQueries({ queryKey: ["my-posts"] });
         void queryClient.removeQueries({ queryKey: ["events-going"] });
         void queryClient.removeQueries({ queryKey: ["saved-item"] });
